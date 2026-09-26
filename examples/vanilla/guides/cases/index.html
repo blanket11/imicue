@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="架空製品DemoContractを使ってImicueのローカル計測とルール判定を確認するデモ"><title>事例ガイド | DemoContract</title><link rel="stylesheet" href="/styles.css"></head>
+<body data-page-id="cases-guide"><header><a class="brand" href="/">DemoContract <small>架空製品</small></a><nav aria-label="メインナビゲーション"><a href="/#features">機能</a><a href="/#pricing">料金</a><a href="/#cases">事例</a><a href="/guides/features/">機能ガイド</a><a href="/guides/pricing/">料金ガイド</a><a href="/guides/cases/">事例ガイド</a></nav></header>
+<div class="layout"><main><div class="introduction"><p class="eyebrow">DEMOCONTRACT / GUIDE</p><h1>事例ガイド</h1><p>Imicueの計測を試すための架空のコンテンツです。</p></div>
+    <section class="content-section" data-imicue-signal="demo-cases-guide-view"><h2>書類をそろえてチームで確認する</h2><p>この架空のガイドでは、契約書を探す場面とチームで確認する場面を紹介します。実在する企業の事例や導入効果を示すものではありません。</p><p>計測を開始すると、この本文の表示を記録します。現在表示しているガイドは追加の案内候補から除外されます。</p><button id="complete-guide" type="button">このガイドの確認を完了</button><p id="guide-result" class="output" role="status"></p></section><p><a href="/">デモのトップへ戻る</a></p></main><aside class="debug-panel" aria-labelledby="debug-title" data-imicue-ignore>
+  <section class="panel">
+    <h2 id="debug-title" class="panel-title">Imicue 確認パネル</h2>
+    <p class="muted">ローカルのルール判定を試すための操作例です。法的な同意要件に対応した完成済みのバナーではありません。</p>
+    <label class="consent"><input id="consent" type="checkbox">このページの表示・操作の計測を許可する</label>
+    <div class="controls">
+      <button id="start" type="button" disabled>計測を開始</button>
+      <button id="stop" type="button" disabled>計測を停止</button>
+      <button id="revoke" type="button">同意を撤回</button>
+      <button id="reset" type="button">記録をリセット</button>
+    </div>
+    <p id="status" class="status" role="status">未許可・計測停止中</p>
+    <p class="muted">保存先はメモリです。再読み込みやページ移動で記録と許可はリセットされます。判定データを外部に送信しません。</p>
+    <div id="recommendation-slot" class="recommendation-slot" aria-label="追加の案内" data-imicue-source="recommendation"></div>
+    <h3>現在の判定</h3>
+    <p id="decision-status">計測を開始すると判定を確認できます。</p>
+    <div id="scores"></div>
+    <p class="muted">スコアは関連性を順位付けするための計算値です。興味や購入の確率、confidenceではありません。評価間隔は15秒以上です。</p>
+    <button id="evaluate" type="button" disabled>今の記録で判定</button>
+    <details class="debug-summary"><summary>現在の集計</summary><pre id="snapshot"></pre></details>
+    <details><summary>登録済みシグナルの意味</summary><dl id="dictionary"></dl></details>
+    <details><summary>判定の詳細</summary><pre id="decision">判定前</pre></details>
+    <details><summary>診断</summary><pre id="diagnostics">診断なし</pre></details>
+  </section>
+</aside></div><footer>Imicue M0–M2 / APIキー不要のローカルデモ。デモの案内が表示されなくても、ナビゲーションと各ガイドは利用できます。</footer><script type="module" src="/main.js"></script></body></html>

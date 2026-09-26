@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="架空製品DemoContractを使ってImicueのローカル計測とルール判定を確認するデモ"><title>Imicue ローカルデモ | DemoContract</title><link rel="stylesheet" href="/styles.css"></head>
+<body data-page-id="home"><header><a class="brand" href="/">DemoContract <small>架空製品</small></a><nav aria-label="メインナビゲーション"><a href="/#features">機能</a><a href="/#pricing">料金</a><a href="/#cases">事例</a><a href="/guides/features/">機能ガイド</a><a href="/guides/pricing/">料金ガイド</a><a href="/guides/cases/">事例ガイド</a></nav></header>
+<div class="layout"><main><div class="introduction"><p class="eyebrow">IMICUE / LOCAL RULES DEMO</p>
+<h1>ページの表示と操作から、<br>次の案内を試す。</h1>
+<p>DemoContractはImicueの動作確認用の架空製品です。計測を開始して、機能・料金・事例の各セクションを表示したり、操作したりしてみてください。</p>
+<p class="muted">表示は読了を意味しません。操作が少ない場合や候補の差が小さい場合は、案内を見送ります。</p></div><section id="features" class="content-section" data-imicue-signal="demo-features">
+<p class="eyebrow">FEATURES</p><h2>契約書を探す場面</h2>
+<p>DemoContractの架空の機能例です。検索例を開くと、あらかじめ用意した契約書名を表示します。</p>
+<button id="feature-action" type="button">検索例を開く</button>
+<p id="feature-result" class="output" role="status"></p>
+<a href="/guides/features/">機能ガイドを見る</a>
+</section>
+<section id="pricing" class="content-section" data-imicue-signal="demo-pricing">
+<p class="eyebrow">PRICING</p><h2>料金の考え方</h2>
+<p>利用人数、管理する契約書の数、必要な機能を整理する架空の料金案内です。このデモに実際の料金や申し込み機能はありません。</p>
+<button id="pricing-action" type="button">費用の確認項目を表示</button>
+<p id="pricing-result" class="output" role="status"></p>
+<a href="/guides/pricing/">料金ガイドを見る</a>
+</section>
+<section id="cases" class="content-section" data-imicue-signal="demo-cases">
+<p class="eyebrow">CASES</p><h2>チームで確認する場面</h2>
+<p>契約書の更新予定を確認したり、参照する書類をそろえたりする架空の利用例です。実際の導入事例や効果の報告ではありません。</p>
+<button id="cases-action" type="button">利用例を表示</button>
+<p id="cases-result" class="output" role="status"></p>
+<a href="/guides/cases/">事例ガイドを見る</a>
+</section>
+<section class="content-section" data-imicue-ignore><h2>入力を妨げないことを試す</h2>
+<form id="example-form"><label for="example-note">ローカルの試し書き</label><input id="example-note" name="note" autocomplete="off" aria-describedby="form-help">
+<p id="form-help" class="muted">入力中は新しい案内を表示しません。入力内容はImicueに渡さず、送信・保存もしません。</p>
+<button type="submit">入力操作を完了</button><p id="form-result" class="output" role="status"></p></form></section></main><aside class="debug-panel" aria-labelledby="debug-title" data-imicue-ignore>
+  <section class="panel">
+    <h2 id="debug-title" class="panel-title">Imicue 確認パネル</h2>
+    <p class="muted">ローカルのルール判定を試すための操作例です。法的な同意要件に対応した完成済みのバナーではありません。</p>
+    <label class="consent"><input id="consent" type="checkbox">このページの表示・操作の計測を許可する</label>
+    <div class="controls">
+      <button id="start" type="button" disabled>計測を開始</button>
+      <button id="stop" type="button" disabled>計測を停止</button>
+      <button id="revoke" type="button">同意を撤回</button>
+      <button id="reset" type="button">記録をリセット</button>
+    </div>
+    <p id="status" class="status" role="status">未許可・計測停止中</p>
+    <p class="muted">保存先はメモリです。再読み込みやページ移動で記録と許可はリセットされます。判定データを外部に送信しません。</p>
+    <div id="recommendation-slot" class="recommendation-slot" aria-label="追加の案内" data-imicue-source="recommendation"></div>
+    <h3>現在の判定</h3>
+    <p id="decision-status">計測を開始すると判定を確認できます。</p>
+    <div id="scores"></div>
+    <p class="muted">スコアは関連性を順位付けするための計算値です。興味や購入の確率、confidenceではありません。評価間隔は15秒以上です。</p>
+    <button id="evaluate" type="button" disabled>今の記録で判定</button>
+    <details class="debug-summary"><summary>現在の集計</summary><pre id="snapshot"></pre></details>
+    <details><summary>登録済みシグナルの意味</summary><dl id="dictionary"></dl></details>
+    <details><summary>判定の詳細</summary><pre id="decision">判定前</pre></details>
+    <details><summary>診断</summary><pre id="diagnostics">診断なし</pre></details>
+  </section>
+</aside></div><footer>Imicue M0–M2 / APIキー不要のローカルデモ。デモの案内が表示されなくても、ナビゲーションと各ガイドは利用できます。</footer><script type="module" src="/main.js"></script></body></html>

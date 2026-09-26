@@ -2,13 +2,13 @@
 
 ## 1. 公開APIの設計
 
-次は実装目標であり、既存ライブラリの呼び出し方ではない。
+次はM0〜M2のローカルSDKで使うAPI。パッケージは未公開で、RemoteEngineはM3の実装予定。実装の補足と検証範囲は [実装メモ](09-local-implementation.md) を参照。
 
 ```ts
 const tracker = createTracker({
   definition,
   pageId: 'home',
-  engine: createRulesEngine(), // またはcreateRemoteEngine({ endpoint })
+  engine: createRulesEngine(), // RemoteEngineはM3で追加予定
   storage: 'memory',         // 明示指定した場合だけ'session'
 });
 
@@ -17,7 +17,7 @@ tracker.setConsent('granted');
 tracker.start();
 
 const unsubscribe = tracker.onDecision((decision) => {
-  if (decision.type === 'recommend') {
+  if (decision.type === 'recommend' && tracker.canDisplay(decision)) {
     // 利用サイトがcontentsを解決し、表示してよいタイミングで描画する。
   }
 });

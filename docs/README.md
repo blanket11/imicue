@@ -1,11 +1,11 @@
 # Imicue — 開発仕様書
 
-**状態: v0.1 Draft / 実装前**  
+**状態: v0.1 Draft / M0〜M2のローカル版を実装**
 作成・外部資料確認: 2026-09-26
 
 Imicueは、WebサイトやWebアプリの行動シグナルに辞書で意味を与え、ルールやAIによる判断につなげるヘッドレスなOSSライブラリです。ヘッドレスとは、表示UIをライブラリ本体から分離し、利用サイトが自由に結果を使えることを指します。
 
-このフォルダは実装者とCodexへの引き継ぎ用です。仕様書追加時点では実装コード、実行用script、公開済みnpmパッケージはありません。コード例はこれから実装するAPIの設計案です。
+このフォルダは実装者とCodexへの引き継ぎ用です。01〜08はv0.1全体の設計を含みます。現在の実装範囲と検証結果は [ローカル版の実装メモ](09-local-implementation.md)、実行手順は [ルートREADME](../README.md) を参照してください。npmパッケージは未公開です。
 
 ## 最初に読むもの
 
@@ -42,7 +42,7 @@ HTMLに埋め込むのは登録済みIDです。辞書の参照はコードで�
 
 ## 今回の実装着手点
 
-最初はM0〜M2、すなわち基盤・Core・Browser・Vanillaデモです。APIキーなしで計測とルール判定を確認できる状態を先に作ります。
+M0〜M2、すなわち基盤・Core・Browser・Vanillaデモを実装しています。APIキーなしで計測とルール判定を確認できます。
 
 その後にM3のJev接続、M4の配布用ビルドとNext.js static export例、M5の公開準備を進めます。キーがなくてもローカル版の実装は進められます。
 
@@ -66,8 +66,8 @@ AIは承認済み候補の評価に使い、自由なURL・HTML・コードを�
 
 外部サービスの最新仕様が変わっていたら、08の資料を再確認し、影響する契約とテストを一緒に更新します。未検証の外部APIを呼べたことにしないでください。
 
-## このドキュメント追加の範囲
+## 仕様書を追加した時点の範囲
 
-追加対象はdocs配下のMarkdownのみです。既存のルートREADMEとApache-2.0 LICENSEは維持し、実装コード、Issue、GitHub Project、公開設定は変更しません。
+初回の仕様書追加はdocs配下のMarkdownのみを対象としました。今回のM0〜M2実装ではローカルコードと手順を追加し、Apache-2.0 LICENSE、Issue、GitHub Project、公開設定は変更していません。
 
 [Repository](https://github.com/blanket11/imicue) / [Development Project](https://github.com/users/blanket11/projects/1/views/1) / [License](../LICENSE)
