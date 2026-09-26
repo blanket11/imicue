@@ -22,7 +22,7 @@
     "dev": "vite --host 127.0.0.1",
     "preview": "vite preview --host 127.0.0.1",
     "test:e2e": "playwright test",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run check:bundle && npm run check:distribution && npm run test:e2e",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run check:bundle && npm run check:distribution && npm run check:package && npm run eval:rules && npm run test:e2e",
     "check:bundle": "node scripts/check-bundle.mjs",
     "dev:server": "tsx --conditions=imicue-source examples/server-node/index.ts",
     "dev:server:jev": "tsx --conditions=imicue-source examples/server-node/index.ts --jev",
@@ -34,7 +34,9 @@
     "dev:next": "npm run build:packages && npm run dev --workspace @imicue/example-next-static",
     "preview:next": "node scripts/serve-static.mjs examples/next-static/out 5184",
     "preview:distribution": "node scripts/serve-static.mjs dist/browser 5185",
-    "check:distribution": "node scripts/check-distribution.mjs"
+    "check:distribution": "node scripts/check-distribution.mjs",
+    "eval:rules": "tsx --conditions=imicue-source scripts/evaluate-rules.ts",
+    "check:package": "node scripts/check-package.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

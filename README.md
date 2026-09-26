@@ -139,7 +139,7 @@ npx playwright install chromium firefox webkit
 npm run check
 ```
 
-`check` は型検査、lint、単体・統合テスト、ビルド、配布ファイルの検査、Chromium・Firefox・WebKitでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run check:distribution`、`npm run test:e2e` を使います。配布検査とE2Eの前には `npm run build` が必要です。E2Eは4173・5184・5185・5193を使うため、このリポジトリの手動プレビューは先に停止してください。通常テストから実APIは呼びません。
+`check` は型検査、lint、単体・統合テスト、ビルド、配布ファイルとnpm梱包予定の検査、12シナリオのRules評価、Chromium・Firefox・WebKitでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run check:distribution`、`npm run test:e2e` を使います。配布検査とE2Eの前には `npm run build` が必要です。E2Eは4173・5184・5185・5193を使うため、このリポジトリの手動プレビューは先に停止してください。通常テストから実APIは呼びません。
 
 macOSでPlaywright同梱のFirefoxとWebKitを検証しています。WebKitはSafariの基盤ですが、Safari製品版の検証とは分けています。Safari 26.4のWebDriver試験はローカル設定の「リモートオートメーション」が無効で未実施です。iPhone/iPadの実機検証も残っています。
 
@@ -147,6 +147,6 @@ macOSでPlaywright同梱のFirefoxとWebKitを検証しています。WebKitはS
 
 Coreに辞書検証・期間限定集計・Rules・共通ポリシー、Browserに同意・属性計測・保存・購読・判定スケジューラー・HTTP通信を実装しています。Serverは固定辞書を解決し、入力と利用枠を検査してJev Adapterへ渡します。CoreはDOMやJev SDKに依存しません。公開APIと詳しい設計は [仕様書一覧](docs/README.md)、検証結果は [M0〜M2](docs/09-local-implementation.md)、[M3](docs/10-server-implementation.md)、[M4](docs/11-distribution-and-next.md) を参照してください。
 
-公開準備のM5は未着手です。npm公開・デプロイ・実サイト導入は行っていません。メモリ内の利用制限は開発用で、本番モードでは共有カウンターを持つ制限フックがないと起動を拒否します。共有基盤は未実装です。
+M5の利用手順・貢献ガイド・評価レポート・梱包検査を追加しました。[公開前の残る確認](docs/12-release-preparation.md)と[貢献ガイド](CONTRIBUTING.md)を参照してください。リリース承認は未実施です。npm公開・デプロイ・実サイト導入は行っていません。メモリ内の利用制限は開発用で、本番モードでは共有カウンターを持つ制限フックがないと起動を拒否します。共有基盤は未実装です。
 
 通常の同一documentのDOMが対象です。iframe、Shadow DOM、特殊なCSS transformや重なりの完全な判定には対応しません。60秒無操作で表示時間の計測を止めるため、操作せず長文を読む時間も停止対象です。推薦品質やCV改善、未検証のブラウザ・OSでの互換性は、このローカル試験からは保証しません。
