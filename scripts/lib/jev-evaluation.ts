@@ -1,9 +1,14 @@
 import type { Fetch } from '@typesafe-ai/sdk';
+import { createHash } from 'node:crypto';
 import { createRulesEngine, evaluateSnapshot, validateDefinition } from '@imicue/core';
 import { createJevEngine, JEV_MODEL } from '@imicue/server';
 import { definition, NOW, scenarios } from '../../packages/core/test/fixtures.js';
 import { freshnessScenarios } from './freshness-scenarios.js';
 import { evaluationInput, type InputVariant } from './evaluation-input.js';
+import { semanticScenarios } from './semantic-scenarios.js';
+import type { EvaluationScenario } from './evaluation-scenario.js';
+
+export type EvaluationSuite = 'regression' | 'freshness' | 'semantic';
 
 export interface RequestMetric {
   status: number | null;
@@ -39,8 +44,11 @@ export function measuredTransport(transport: Fetch, limit = 12) {
   return { fetch, requests };
 }
 
-export async function compareScenarios(options: { apiKey: string; transport: Fetch; suite?: 'regression' | 'freshness'; variant?: InputVariant }) {
-  const selected = options.suite === 'freshness' ? freshnessScenarios : scenarios;
+export async function compareScenarios(options: { apiKey: string; transport: Fetch; suite?: EvaluationSuite; variant?: InputVariant }) {
+  if (options.suite === 'semantic' && options.variant === 'dictionary-en') throw new Error('semantic_english_not_defined');
+  const selected: readonly EvaluationScenario[] = options.suite === 'semantic' ? semanticScenarios
+    : options.suite === 'freshness' ? freshnessScenarios : scenarios;
+  const fixtureHash = createHash('sha256').update(JSON.stringify(selected.map((row) => ({ ...row, source: row.source ?? definition() })))).digest('hex');
   const measured = measuredTransport(options.transport);
   const baseEngine = createJevEngine({ model: JEV_MODEL, apiKey: options.apiKey, fetch: measured.fetch });
   const engine: typeof baseEngine = { ...baseEngine,
@@ -48,7 +56,7 @@ export async function compareScenarios(options: { apiKey: string; transport: Fet
   };
   const results = [];
   for (const scenario of selected) {
-    const source = definition();
+    const source = scenario.source ?? definition();
     const config = validateDefinition('expiresFeature' in scenario ? {
       ...source, contents: { ...source.contents, 'feature-guide': {
         ...source.contents['feature-guide']!, availableUntil: '2026-09-25T23:59:59Z',
@@ -61,9 +69,11 @@ export async function compareScenarios(options: { apiKey: string; transport: Fet
     const jev = await evaluateSnapshot(config, scenario.input, engine, fixed);
     const elapsedMs = Math.round((performance.now() - start) * 100) / 100;
     const actual = jev.type === 'recommend' ? jev.contentId : jev.reason;
-    const failed = jev.type === 'abstain' && ['engine_unavailable', 'invalid_result'].includes(jev.reason);
+    const failed = jev.type === 'abstain' && ['engine_unavailable', 'invalid_result', 'definition_mismatch', 'capacity_limit'].includes(jev.reason);
+    const proposedMatch = scenario.review ? !failed && scenario.review.acceptable.includes(jev.type === 'recommend' ? jev.contentId : 'abstain') : null;
     results.push({ id: scenario.id, split: scenario.split, expected: scenario.expected,
-      matchesAuthoredExpectation: actual === scenario.expected, actual, rules, jev,
+      matchesAuthoredExpectation: scenario.review ? null : actual === scenario.expected, actual, rules, jev,
+      ...(scenario.review ? { review: scenario.review } : {}), proposedMatch,
       elapsedMs, requests: measured.requests.slice(offset), failed });
     // A failed request is not a semantic disagreement; stop without retrying.
     if (failed) break;
@@ -75,11 +85,13 @@ export async function compareScenarios(options: { apiKey: string; transport: Fet
   return {
     schemaVersion: 1, suite: options.suite ?? 'regression', runAt: new Date().toISOString(), fixtureTime: new Date(NOW).toISOString(),
     model: JEV_MODEL, humanReview: 'pending', comparison: 'rules-vs-jev', variant: options.variant ?? 'dictionary-ja',
-    holdoutCaveat: 'already_used_in_regression_tests', requestLimit: 12, retries: 0,
+    fixtureHash,
+    holdoutCaveat: options.suite === 'semantic' ? 'authored_for_this_evaluation_not_independent_holdout' : 'already_used_in_regression_tests', requestLimit: 12, retries: 0,
     summary: {
       completed: results.length, planned: selected.length, requests: measured.requests.length,
       gatedWithoutApi: results.filter((row) => row.requests.length === 0).length,
-      matchesAuthoredExpectation: results.filter((row) => row.matchesAuthoredExpectation).length,
+      matchesAuthoredExpectation: results.some((row) => row.review) ? null : results.filter((row) => row.matchesAuthoredExpectation).length,
+      matchesProposedOutcomes: results.some((row) => row.proposedMatch !== null) ? results.filter((row) => row.proposedMatch).length : null,
       failures: results.filter((row) => row.failed).length,
       inputTokens, outputTokens,
       estimatedInputCostUsd: inputTokens === null ? null : inputTokens / 1_000_000 * 0.042,

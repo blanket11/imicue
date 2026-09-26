@@ -9,7 +9,7 @@ Imicueは、WebサイトやWebアプリの行動シグナルに辞書で意味�
 
 ## 最初に読むもの
 
-最近の変更は [Jevの鮮度制限と実ブラウザ接続](15-freshness-and-live-browser.md)、最新のブラウザ検証は [Safari製品版の確認](16-safari-verification.md)に記録しています。
+最新の評価は [複雑な辞書での12ケースと推薦内容の確認表](17-recommendation-review.md)にまとめています。[Jevの鮮度制限と実ブラウザ接続](15-freshness-and-live-browser.md)、[Safari製品版の確認](16-safari-verification.md)も参照してください。
 
 まず [目的と構成](01-product-and-architecture.md)、次に [データ契約](02-data-contracts.md) を読み、担当領域の詳細と [受け入れテスト](06-implementation-and-tests.md) を確認してください。初回の実装依頼では01〜08を通して読みます。
 

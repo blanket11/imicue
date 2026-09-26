@@ -3,8 +3,58 @@ import { compareScenarios, measuredTransport } from '../../scripts/lib/jev-evalu
 import { JEV_MODEL } from '@imicue/server';
 import { evaluationInput } from '../../scripts/lib/evaluation-input.js';
 import { definition, observation, snapshot } from '../../packages/core/test/fixtures.js';
+import { semanticScenarios } from '../../scripts/lib/semantic-scenarios.js';
+import { validateDefinition, validateSnapshot } from '@imicue/core';
 
 describe('bounded live-evaluation harness (mock transport only)', () => {
+  it('validates all semantic fixtures and their proposed candidate IDs before live inference', () => {
+    expect(semanticScenarios).toHaveLength(12);
+    for (const scenario of semanticScenarios) {
+      const source = validateDefinition(scenario.source!);
+      expect(() => validateSnapshot(scenario.input, source)).not.toThrow();
+      expect(scenario.review!.acceptable.every((id) => id === 'abstain' || Object.hasOwn(source.contents, id))).toBe(true);
+      expect(Object.keys(source.contents).length).toBeLessThanOrEqual(8);
+    }
+  });
+
+  it('applies exclusions with custom dictionaries, records proposed outcome sets, and does not call them human labels', async () => {
+    const sent: { questions: Record<string, unknown> }[] = [];
+    const transport = vi.fn(async (_url: string, init?: RequestInit) => {
+      const request = JSON.parse(String(init?.body)); sent.push(request);
+      return Response.json({ model: JEV_MODEL, usage: { input_tokens: 100, output_tokens: 0 },
+        answers: Object.fromEntries(Object.keys(request.questions).map((id) => [id, {
+          type: 'score', score: 0, confidence: 0.9, legend: {}, probabilities: {},
+        }])),
+      });
+    });
+    const report = await compareScenarios({ apiKey: 'synthetic-key', transport, suite: 'semantic' });
+    expect(report.summary).toMatchObject({ completed: 12, failures: 0, requests: 12,
+      matchesAuthoredExpectation: null, matchesProposedOutcomes: 8 });
+    expect(sent[7]!.questions).not.toHaveProperty('c1'); // Completed.
+    expect(sent[8]!.questions).not.toHaveProperty('c2'); // Foreign product.
+    expect(report.humanReview).toBe('pending');
+    expect(report.fixtureHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(report.results.find((row) => row.id === 'Q07')!.proposedMatch).toBe(true);
+    expect(report.results.every((row) => row.matchesAuthoredExpectation === null)).toBe(true);
+  });
+
+  it('does not count a technical abstention as an acceptable semantic result', async () => {
+    let calls = 0;
+    const report = await compareScenarios({ apiKey: 'synthetic-key', suite: 'semantic',
+      transport: async (_url, init) => {
+        if (++calls === 3) return new Response('', { status: 503 });
+        const request = JSON.parse(String(init?.body));
+        return Response.json({ model: JEV_MODEL, usage: { input_tokens: 1, output_tokens: 0 },
+          answers: Object.fromEntries(Object.keys(request.questions).map((id) => [id, {
+            type: 'score', score: 0, confidence: 0.9, legend: {}, probabilities: {},
+          }])),
+        });
+      } });
+    expect(report.summary).toMatchObject({ completed: 3, failures: 1, matchesProposedOutcomes: 0 });
+    expect(report.results[2]!.review!.acceptable).toContain('abstain');
+    expect(report.results[2]!.proposedMatch).toBe(false);
+  });
+
   it.each(['labels', 'dictionary-en'] as const)('changes only presentation of meaning for %s, preserving evidence and candidate scope', (variant) => {
     const def = definition();
     const input = { snapshot: snapshot(), page: def.pages.home!, topics: def.topics,

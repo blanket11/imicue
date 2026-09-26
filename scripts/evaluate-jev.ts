@@ -7,7 +7,7 @@ if (process.env.RUN_JEV_EVALUATION !== '1') {
   console.log('SKIP: TYPESAFE_API_KEYが未設定です。');
 } else {
   const suite = process.env.JEV_EVALUATION_SUITE ?? 'regression';
-  if (suite !== 'regression' && suite !== 'freshness') throw new Error('invalid_evaluation_suite');
+  if (suite !== 'regression' && suite !== 'freshness' && suite !== 'semantic') throw new Error('invalid_evaluation_suite');
   const variant = process.env.JEV_EVALUATION_VARIANT ?? 'dictionary-ja';
   if (!['dictionary-ja', 'dictionary-en', 'labels'].includes(variant)) throw new Error('invalid_input_variant');
   const report = await compareScenarios({ apiKey: process.env.TYPESAFE_API_KEY, transport: globalThis.fetch, suite,
