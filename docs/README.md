@@ -1,13 +1,15 @@
 # Imicue — 開発仕様書
 
-**状態: v0.1 Draft / 実装前**  
+**状態: v0.1 Draft / M0〜M4を実装、M5の資料・ローカル検証を整備、公開承認は未実施**
 作成・外部資料確認: 2026-09-26
 
 Imicueは、WebサイトやWebアプリの行動シグナルに辞書で意味を与え、ルールやAIによる判断につなげるヘッドレスなOSSライブラリです。ヘッドレスとは、表示UIをライブラリ本体から分離し、利用サイトが自由に結果を使えることを指します。
 
-このフォルダは実装者とCodexへの引き継ぎ用です。仕様書追加時点では実装コード、実行用script、公開済みnpmパッケージはありません。コード例はこれから実装するAPIの設計案です。
+このフォルダは実装者とCodexへの引き継ぎ用です。01〜08はv0.1全体の設計を含みます。現在の実装範囲と検証結果は [ローカル版](09-local-implementation.md)、[M3](10-server-implementation.md)、[M4](11-distribution-and-next.md) の実装メモ、実行手順は [ルートREADME](../README.md) を参照してください。npmパッケージは未公開です。
 
 ## 最初に読むもの
+
+最新の変更は [公開用サイトのローカル版と運用案](19-public-site-and-operations.md)にまとめています。Jevの判定については [単発操作に対応する採点基準と再検証](18-jev-relevance-rubric.md)を参照してください。変更前の [複雑な辞書での12ケースと確認表](17-recommendation-review.md)、[Jevの鮮度制限](15-freshness-and-live-browser.md)、[Safari製品版の確認](16-safari-verification.md)も参照してください。
 
 まず [目的と構成](01-product-and-architecture.md)、次に [データ契約](02-data-contracts.md) を読み、担当領域の詳細と [受け入れテスト](06-implementation-and-tests.md) を確認してください。初回の実装依頼では01〜08を通して読みます。
 
@@ -42,9 +44,9 @@ HTMLに埋め込むのは登録済みIDです。辞書の参照はコードで�
 
 ## 今回の実装着手点
 
-最初はM0〜M2、すなわち基盤・Core・Browser・Vanillaデモです。APIキーなしで計測とルール判定を確認できる状態を先に作ります。
+M0〜M2、すなわち基盤・Core・Browser・Vanillaデモを実装しています。M3のHTTP境界、Jev Adapter、ブラウザの通信処理も追加しました。APIキーなしで計測・ルール判定・モックサーバー接続を確認できます。
 
-その後にM3のJev接続、M4の配布用ビルドとNext.js static export例、M5の公開準備を進めます。キーがなくてもローカル版の実装は進められます。
+M4のESM・型定義・IIFEとNext.js static export例も実装し、ローカルの静的配信から検証しました。M5の資料・評価レポート・梱包検査も追加しました。公開前の残る確認は [公開準備と評価](12-release-preparation.md) を参照してください。Vanillaの[ページ横断デモ](13-session-demo.md)も追加しました。[試す手順](../README.md#ページ移動後の記録を試す)を参照してください。許可を受けてJev実APIの疎通と[12シナリオの比較](14-jev-evaluation.md)を実施しました。人による推薦品質の評価は残っています。
 
 最初の依頼文は [Codexへの引き継ぎ](07-codex-handoff.md#2-最初の依頼文ローカルで動く最小版) にあります。別の環境へ渡す場合も、このリポジトリ内のdocsを読める状態にしてから依頼してください。
 
@@ -66,8 +68,8 @@ AIは承認済み候補の評価に使い、自由なURL・HTML・コードを�
 
 外部サービスの最新仕様が変わっていたら、08の資料を再確認し、影響する契約とテストを一緒に更新します。未検証の外部APIを呼べたことにしないでください。
 
-## このドキュメント追加の範囲
+## 仕様書を追加した時点の範囲
 
-追加対象はdocs配下のMarkdownのみです。既存のルートREADMEとApache-2.0 LICENSEは維持し、実装コード、Issue、GitHub Project、公開設定は変更しません。
+初回の仕様書追加はdocs配下のMarkdownのみを対象としました。今回のM0〜M2実装ではローカルコードと手順を追加し、Apache-2.0 LICENSE、Issue、GitHub Project、公開設定は変更していません。
 
 [Repository](https://github.com/blanket11/imicue) / [Development Project](https://github.com/users/blanket11/projects/1/views/1) / [License](../LICENSE)

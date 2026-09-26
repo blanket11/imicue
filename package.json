@@ -1,0 +1,61 @@
+{
+  "name": "imicue-workspace",
+  "version": "0.1.0-dev.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "packages/*",
+    "examples/next-static"
+  ],
+  "engines": {
+    "node": "24.14.0",
+    "npm": "11.9.0"
+  },
+  "packageManager": "npm@11.9.0",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "build": "npm run typecheck && npm run build:packages && npm run build:browser && npm run build:demo && npm run build:next && npm run build:site",
+    "dev": "vite --host 127.0.0.1",
+    "preview": "vite preview --host 127.0.0.1",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run check:bundle && npm run check:distribution && npm run check:package && npm run eval:rules && npm run test:e2e && npm run test:site",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "dev:server": "tsx --conditions=imicue-source examples/server-node/index.ts",
+    "dev:server:jev": "tsx --conditions=imicue-source examples/server-node/index.ts --jev",
+    "test:jev": "tsx --conditions=imicue-source scripts/jev-integration.ts",
+    "build:packages": "node scripts/build-packages.mjs",
+    "build:browser": "node scripts/build-browser.mjs",
+    "build:demo": "vite build",
+    "build:next": "npm run build --workspace @imicue/example-next-static",
+    "dev:next": "npm run build:packages && npm run dev --workspace @imicue/example-next-static",
+    "preview:next": "node scripts/serve-static.mjs examples/next-static/out 5184",
+    "preview:distribution": "node scripts/serve-static.mjs dist/browser 5185",
+    "check:distribution": "node scripts/check-distribution.mjs",
+    "eval:rules": "tsx --conditions=imicue-source scripts/evaluate-rules.ts",
+    "check:package": "node scripts/check-package.mjs",
+    "eval:jev": "tsx --conditions=imicue-source scripts/evaluate-jev.ts",
+    "test:jev:browser": "tsx --conditions=imicue-source scripts/jev-browser.ts",
+    "test:safari": "tsx --conditions=imicue-source scripts/safari-smoke.ts",
+    "dev:site": "vite --config vite.site.config.ts",
+    "build:site": "vite build --config vite.site.config.ts",
+    "preview:site": "vite preview --config vite.site.config.ts --port 5187",
+    "test:site": "playwright test --config playwright.site.config.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.13.6",
+    "eslint": "10.11.0",
+    "globals": "17.12.0",
+    "jsdom": "29.1.1",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.1",
+    "vite": "8.3.1",
+    "vitest": "5.0.2"
+  }
+}

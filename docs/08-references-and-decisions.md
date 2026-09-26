@@ -18,7 +18,7 @@ Imicueでは、各候補のdescriptionを対応する質問に明示し、辞書
 
 [Score](https://docs.typesafe.ai/primitives/score)
 
-Scoreは説明を持つ段階上の値を返す。4段階なら0〜3。Imicue内の0〜1値は順位付け用に正規化したもので、人物の関心や購入の確率ではない。
+Scoreは説明を持つ段階ごとの確率で重み付けした期待値を返す。4段階なら0〜3で、小数も含む。Imicue内の0〜1値は順位付け用に正規化したもので、人物の関心や購入の確率ではない。M3では公式仕様とSDKのScoreResponse型を再確認し、整数に限定していたM2の検証を修正した。
 
 ## S3
 
@@ -48,6 +48,8 @@ SDKは@typesafe-ai/sdk、環境変数はTYPESAFE_API_KEY。ブラウザ利用を
 
 ImicueはSDKをserver内に隔離する。既定のリトライ任せにせず、入力本文がログに出ないことを確認する。SDKの最小Node要件と、現在サポート中のNodeを選ぶ判断は別である。
 
+M3実装時の再確認（2026-09-26）: `@typesafe-ai/sdk@0.6.0` を固定し、同梱の型と公式資料で `score(instructions, criteria)`、`TypeSafeClient.systemOne` を確認した。`retry: { maxRetries: 0 }`、`logLevel: 'off'`、固定baseURLとモデル `jev-1.13.0` を明示している。[RetryPolicy](https://docs.typesafe.ai/sdk/javascript/api/interfaces/RetryPolicy) も参照。モックfetchで呼び出し回数とログ出力を検証したが、アカウントでのモデル利用可否と実API応答は未確認。
+
 ## S6
 
 **Next.js — Static Exports**
@@ -57,6 +59,10 @@ ImicueはSDKをserver内に隔離する。既定のリトライ任せにせず�
 静的エクスポートでは動的POST処理を提供できない。Client Componentもビルド時に事前レンダリングされるため、ブラウザAPIへのアクセスを実行時に限定する必要がある。
 
 ImicueのJev接続は別のendpoint。ローカルRulesは静的ファイルだけで動く構成にする。
+
+M4実装時の再確認（2026-09-26）: Next.js 16.3.6、React/React DOM 19.3.0を固定した。`output: 'export'`、`trailingSlash: true` で生成したoutを静的サーバーから配信する。React Strict Modeのeffect再実行は開発時の検査なので、静的出力のE2Eとは別に実Reactを使う統合試験で確認する。[Next.jsのStrict Mode設定](https://nextjs.org/docs/app/api-reference/config/next-config-js/reactStrictMode)・[React StrictMode](https://react.dev/reference/react/StrictMode) を参照。
+
+配布は [Vite Library Mode](https://vite.dev/guide/build.html#library-mode) と [TypeScript declaration](https://www.typescriptlang.org/tsconfig/declaration.html) を参照した。通常のpackage importは生成済みESMと型定義を解決し、リポジトリ内の開発時だけ明示した条件でソースを参照する。[Node.js Conditional Exports](https://nodejs.org/api/packages.html#conditional-exports) に従う構成で、外部利用を模した型検査ではソースをコピーせずに確認した。
 
 ## S7
 
@@ -132,6 +138,8 @@ npmスコープ・パッケージ公開名、CDNの実URL、独自ドメイン�
 Cloudflare Workers等のEdge環境、他フレームワーク専用SDK、iframe/Shadow DOMの自動計測、複数サイトを横断する識別はv0.1で対応済みと記載しない。
 
 ## 変更するときのルール
+
+2026-09-26のM0〜M2実装ではNode 24系のLTS状態と開発ツールの公式資料・依存条件を再確認した。採用バージョンと理由は [ローカル版の実装メモ](09-local-implementation.md#依存関係の確認資料) に記録している。JevとNext.jsの外部仕様の再検証は、それぞれM3とM4の実装時に行う。
 
 新しい一次資料で前提が変わった場合は、確認日、変わった事実、影響する仕様、テストを同じ変更で記録する。プロバイダーの宣伝上の数値をImicueの性能保証に置き換えない。
 
