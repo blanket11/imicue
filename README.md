@@ -31,7 +31,7 @@ npm run preview
 npm run dev:site
 ```
 
-[紹介サイト](http://127.0.0.1:5187/)で、仕組み・合成記録によるRulesデモ・導入手順・制約を確認できます。このページは閲覧履歴を収集せず、実APIも呼びません。静的ファイルを作る場合は `npm run build:site`、その確認には `npm run preview:site` を使います。出力先は `dist/site` です。まだデプロイしていません。[公開用サイトと運用案](docs/19-public-site-and-operations.md)を参照してください。
+[紹介サイト](http://127.0.0.1:5187/)で、仕組み・合成記録によるRulesデモ・導入手順・制約を確認できます。このページは閲覧履歴を収集せず、実APIも呼びません。静的ファイルを作る場合は `npm run build:site`、出力検査は `npm run check:site`、公開用ヘッダーと404を含む確認には `npm run preview:site` を使います。出力先は `dist/site` です。まだデプロイしていません。[Cloudflare Pagesでの公開準備](docs/20-cloudflare-pages.md)を参照してください。
 
 ## ページ移動後の記録を試す
 

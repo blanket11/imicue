@@ -39,9 +39,9 @@ npm run preview:site
 
 外部フォントや解析タグは読み込まない。GitHubへのリンクを選ぶと、遷移先への通信は発生する。公開後の配信サービスによるアクセスログは別途、そのサービスの設定と方針を確認する。
 
-## 最初の公開は静的サイトを提案
+## 最初の公開は静的サイト
 
-まずは `dist/site` の配信を提案する。この範囲なら公開用JevサーバーやAPI課金は不要で、公開前に仕組みと使い方を紹介できる。配信サービスの契約・設定はまだ行っていない。
+まずは `dist/site` の配信を行う方針とした。この範囲なら公開用JevサーバーやAPI課金は不要で、仕組みと使い方を紹介できる。配信先はCloudflare Pagesに決定し、[設定と確認手順](20-cloudflare-pages.md)を追加した。サービスへの接続・デプロイはまだ行っていない。
 
 2026-09-26に公式資料で確認した候補は次のとおり。無料枠の条件は公開時にも確認する。
 
@@ -52,14 +52,14 @@ npm run preview:site
 
 出典: [Cloudflareの静的配信料金](https://developers.cloudflare.com/pages/functions/pricing/)、[Pagesの制限](https://developers.cloudflare.com/pages/platform/limits/)、[カスタムドメイン](https://developers.cloudflare.com/pages/configuration/custom-domains/)、[GitHub Pagesの概要](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)。
 
-運用案はCloudflare Pagesを第一候補とする。サブドメインのためにネームサーバーを移す必要がない点を重視した。これは提案であり、採用は未確定。ドメインの維持費や将来の有料プランは、この静的配信の無料枠とは別に扱う。
+比較の後、Cloudflare Pagesを採用する方針を確認した。サブドメインのためにネームサーバーを移す必要がない点を重視した。ドメインの維持費や将来の有料プランは、この静的配信の無料枠とは別に扱う。
 
 ## 公開を決めた後の作業順
 
 1. 変更をPRでレビューし、必要なチェックと承認を経てmainへマージする。mainへの直接反映は行わない。サイト内の仕様書リンクとclone手順はmainを参照するため、マージ前のサイトを正式公開しない。
 2. 配信サービスと公開範囲を確定する。管理アカウント、認証情報、DNS管理に関する個人情報はリポジトリに保存しない。
-3. ビルド設定を適用する。Cloudflare Pagesならルートをリポジトリ直下、ビルドコマンドを `npm run build:site`、出力を `dist/site` とする。Node.js・npmのバージョンと依存関係のインストールを配信サービス上でも確認する。参照: [公式ビルド設定](https://developers.cloudflare.com/pages/configuration/build-configuration/)。
-4. 仮の公開URLでHTTPS、表示、リンク、4つの判定、コピー、外部通信を確認する。CSPなどの配信ヘッダーとキャッシュ方針も、この時点で設定・確認する。
+3. [Cloudflare Pagesの設定表](20-cloudflare-pages.md#pagesのgit連携に設定する値)に従い、依存関係のインストール、ビルド、出力検査を実行する。出力は `dist/site` とし、Node.js・npmのバージョンも配信サービス上で確認する。参照: [公式ビルド設定](https://developers.cloudflare.com/pages/configuration/build-configuration/)。
+4. 仮の公開URLでHTTPS、表示、リンク、4つの判定、コピー、外部通信を確認する。CSPなどの配信ヘッダーとキャッシュ方針も、実際の配信環境で反映を確認する。
 5. カスタムドメインを接続する。Cloudflare Pagesでは管理画面で先にドメインを追加し、その画面で示された接続先へCNAMEを設定する。接続先を推測しない。DNS設定後に証明書の発行とHTTPSを確認する。
 6. 公開URLで再確認し、問題があれば直前のデプロイへ戻せることを確かめる。公開の事実と利用者向けURLは、公開範囲の承認に合わせて案内する。
 
