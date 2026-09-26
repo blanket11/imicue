@@ -6,6 +6,7 @@ test('synthetic Rules decisions, ambiguity, reset, and no collection or outbound
   page.on('request', (request) => requests.push(`${request.method()} ${new URL(request.url()).origin}`));
   page.on('pageerror', (error) => errors.push(error.name));
   await page.addInitScript(() => {
+    document.addEventListener('securitypolicyviolation', () => { document.documentElement.dataset.cspViolation = 'true'; });
     for (const method of ['getItem', 'setItem', 'removeItem', 'clear'] as const) {
       Storage.prototype[method] = () => { throw new Error('Playground must not access storage'); };
     }
@@ -28,6 +29,7 @@ test('synthetic Rules decisions, ambiguity, reset, and no collection or outbound
   await expect(page.locator('input:checked')).toHaveCount(0);
   await expect(page.locator('#reason')).toBeHidden();
   expect(errors).toEqual([]);
+  await expect(page.locator('html')).not.toHaveAttribute('data-csp-violation');
   expect(requests.every((request) => request === 'GET http://127.0.0.1:4187')).toBe(true);
 });
 
@@ -70,4 +72,49 @@ test('static content and documentation remain usable without JavaScript', async 
   await expect(page.getByRole('link', { name: '詳しい導入手順' })).toHaveAttribute('href', /^https:\/\/github.com\/blanket11\/imicue/);
   await expect(page.getByLabel('機能を使う', { exact: true })).toBeDisabled();
   await context.close();
+});
+
+test('deployment headers block inline scripts and decision requests', async ({ page }) => {
+  const response = await page.goto('/');
+  expect(response?.headers()['x-content-type-options']).toBe('nosniff');
+  expect(response?.headers()['x-frame-options']).toBe('DENY');
+  expect(response?.headers()['referrer-policy']).toBe('no-referrer');
+  expect(response?.headers()['content-security-policy']).toContain("frame-ancestors 'none'");
+  const directives = await page.evaluate(async () => {
+    const seen: string[] = [];
+    const done = new Promise<string[]>((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('CSP did not block both attempts')), 2_000);
+      document.addEventListener('securitypolicyviolation', (event) => {
+        seen.push(event.effectiveDirective);
+        if (seen.some((item) => item.startsWith('script-src')) && seen.includes('connect-src')) {
+          clearTimeout(timeout); resolve(seen);
+        }
+      });
+    });
+    const script = document.createElement('script');
+    script.textContent = "document.documentElement.dataset.inlineExecuted = 'true'";
+    document.body.append(script);
+    await fetch('/blocked-decision-request', { method: 'POST', body: '{}' }).catch(() => undefined);
+    return done;
+  });
+  expect(directives).toContain('connect-src');
+  await expect(page.locator('html')).not.toHaveAttribute('data-inline-executed');
+});
+
+test('missing and private paths return the 404 page with working assets and home link', async ({ page, request }) => {
+  const response = await page.goto('/missing/nested/page');
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole('heading', { name: 'ページが見つかりません' })).toBeVisible();
+  expect(await page.locator('h1').evaluate((element) => getComputedStyle(element).fontFamily)).toContain('Mincho');
+  expect(response?.headers()['content-security-policy']).toContain("connect-src 'none'");
+  for (const path of ['/_headers', '/.env.local', '/_worker.js']) {
+    expect((await request.get(path)).status()).toBe(404);
+  }
+  expect((await request.head('/missing/nested/page')).status()).toBe(404);
+  expect((await request.post('/')).status()).toBe(405);
+  await page.setViewportSize({ width: 320, height: 850 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole('link', { name: 'トップページへ戻る', exact: true }).click();
+  await expect(page).toHaveURL('http://127.0.0.1:4187/');
+  await expect(page.getByLabel('機能を使う', { exact: true })).toBeEnabled();
 });

@@ -9,7 +9,7 @@ Imicueは、WebサイトやWebアプリの行動シグナルに辞書で意味�
 
 ## 最初に読むもの
 
-最新の変更は [公開用サイトのローカル版と運用案](19-public-site-and-operations.md)にまとめています。Jevの判定については [単発操作に対応する採点基準と再検証](18-jev-relevance-rubric.md)を参照してください。変更前の [複雑な辞書での12ケースと確認表](17-recommendation-review.md)、[Jevの鮮度制限](15-freshness-and-live-browser.md)、[Safari製品版の確認](16-safari-verification.md)も参照してください。
+最新の変更は [Cloudflare Pagesでの公開準備](20-cloudflare-pages.md)にまとめています。サイトの構成は [ローカル版と運用案](19-public-site-and-operations.md)、Jevの判定は [単発操作に対応する採点基準と再検証](18-jev-relevance-rubric.md)を参照してください。変更前の [複雑な辞書での12ケースと確認表](17-recommendation-review.md)、[Jevの鮮度制限](15-freshness-and-live-browser.md)、[Safari製品版の確認](16-safari-verification.md)も参照してください。
 
 まず [目的と構成](01-product-and-architecture.md)、次に [データ契約](02-data-contracts.md) を読み、担当領域の詳細と [受け入れテスト](06-implementation-and-tests.md) を確認してください。初回の実装依頼では01〜08を通して読みます。
 

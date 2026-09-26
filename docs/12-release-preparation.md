@@ -53,7 +53,7 @@ npm run check
 | 実API | [鮮度制限後の19件を各2回、3ブラウザ接続](15-freshness-and-live-browser.md)を実施。実請求額・長期の安定性・推薦品質は未検証 |
 | Safari製品版・モバイル実機 | Safari 26.4でVanillaの計測・ページ横断・実Jev推薦を確認。iPhone/iPad実機とSafariでの他の利用例は未確認 |
 | 意味評価 | 単発操作でも内容が一致すれば案内する方針を確認し、[採点基準を更新して再検証](18-jev-relevance-rubric.md)。該当3件は推薦、曖昧・無関係なケースは見送りを維持。残りの許容案の確認と別の利用場面での評価が必要 |
-| 公開用サイト | [紹介サイト・Rulesデモ・運用案](19-public-site-and-operations.md)をローカルに追加。PRでのmainへの反映、配信サービスの確定、公開承認、HTTPSと接続先の確認が必要 |
+| 公開用サイト | [紹介サイト・Rulesデモ](19-public-site-and-operations.md)はPRでmainへ反映済み。[Cloudflare Pagesの公開準備](20-cloudflare-pages.md)を追加。公開実行、HTTPS・DNS・配信環境の確認が必要 |
 | 本番判定サーバー | 共有の利用制限基盤と運用設計が必要。開発用メモリ制限だけでは公開しない |
 | 公開の承認 | 成果物・費用・制約を確認した後、オーナーが公開範囲を判断 |
 

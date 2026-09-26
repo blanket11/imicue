@@ -1019,6 +1019,14 @@ details[open] summary span {
   }
 }
 
+.not-found {
+  padding-block: 80px;
+}
+
+.not-found .button {
+  margin-top: 32px;
+}
+
 @media(prefers-reduced-motion:reduce) {
   html {
     scroll-behavior:auto;

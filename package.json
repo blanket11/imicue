@@ -22,7 +22,7 @@
     "dev": "vite --host 127.0.0.1",
     "preview": "vite preview --host 127.0.0.1",
     "test:e2e": "playwright test",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run check:bundle && npm run check:distribution && npm run check:package && npm run eval:rules && npm run test:e2e && npm run test:site",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run check:bundle && npm run check:distribution && npm run check:package && npm run check:site && npm run eval:rules && npm run test:e2e && npm run test:site",
     "check:bundle": "node scripts/check-bundle.mjs",
     "dev:server": "tsx --conditions=imicue-source examples/server-node/index.ts",
     "dev:server:jev": "tsx --conditions=imicue-source examples/server-node/index.ts --jev",
@@ -42,8 +42,9 @@
     "test:safari": "tsx --conditions=imicue-source scripts/safari-smoke.ts",
     "dev:site": "vite --config vite.site.config.ts",
     "build:site": "vite build --config vite.site.config.ts",
-    "preview:site": "vite preview --config vite.site.config.ts --port 5187",
-    "test:site": "playwright test --config playwright.site.config.ts"
+    "preview:site": "node scripts/preview-site.mjs",
+    "test:site": "playwright test --config playwright.site.config.ts",
+    "check:site": "node scripts/check-site.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
