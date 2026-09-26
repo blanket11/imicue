@@ -25,6 +25,14 @@ npm run preview
 
 [静的ビルドのデモ](http://127.0.0.1:4173/)は `dist/demo` を配信します。通常のガイドへのリンクは、計測を許可しなくても使えます。
 
+## 公開用サイトのローカル版
+
+```sh
+npm run dev:site
+```
+
+[紹介サイト](http://127.0.0.1:5187/)で、仕組み・合成記録によるRulesデモ・導入手順・制約を確認できます。このページは閲覧履歴を収集せず、実APIも呼びません。静的ファイルを作る場合は `npm run build:site`、その確認には `npm run preview:site` を使います。出力先は `dist/site` です。まだデプロイしていません。[公開用サイトと運用案](docs/19-public-site-and-operations.md)を参照してください。
+
 ## ページ移動後の記録を試す
 
 [ページ横断のデモ](http://127.0.0.1:5183/?storage=session)を開きます。通常モードの確認パネル末尾にも切り替えリンクがあります。
@@ -167,7 +175,7 @@ npx playwright install chromium firefox webkit
 npm run check
 ```
 
-`check` は型検査、lint、単体・統合テスト、ビルド、配布ファイルとnpm梱包予定の検査、12シナリオのRules評価、Chromium・Firefox・WebKitでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run check:distribution`、`npm run test:e2e` を使います。配布検査とE2Eの前には `npm run build` が必要です。E2Eは4173・5184・5185・5193を使うため、このリポジトリの手動プレビューは先に停止してください。通常テストから実APIは呼びません。
+`check` は型検査、lint、単体・統合テスト、ビルド、配布ファイルとnpm梱包予定の検査、12シナリオのRules評価、Chromium・Firefox・WebKitでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run check:distribution`、`npm run test:e2e`、`npm run test:site` を使います。配布検査とE2Eの前には `npm run build` が必要です。E2Eは4173・4187・5184・5185・5193を使うため、同じポートを使うこのリポジトリの手動プレビューは先に停止してください。通常テストから実APIは呼びません。
 
 macOSでPlaywright同梱のFirefoxとWebKitを検証しています。別途、[Safari 26.4製品版でVanillaデモの計測・ページ横断・実Jev接続](docs/16-safari-verification.md)を確認しました。Safari向け試験は `npm run test:safari` で再現できます。WebDriverには「リモートオートメーションを許可」の事前設定が必要です。iPhone/iPadの実機検証は残っています。
 

@@ -27,6 +27,7 @@
     "tests/**/*.ts",
     "scripts/**/*.ts",
     "examples/server-node/**/*.ts",
+    "site/**/*.ts",
     "*.config.ts",
     "tests/**/*.tsx"
   ]

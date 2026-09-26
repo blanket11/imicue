@@ -64,4 +64,5 @@ async function scan(directory) {
 }
 await scan('examples/next-static/out');
 await scan('dist/browser');
+await scan('dist/site');
 console.log(JSON.stringify({ declarationConsumer: 'passed', importWithoutDOM: 'passed', staticFilesScanned: scanned }));
