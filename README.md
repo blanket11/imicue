@@ -165,7 +165,7 @@ npm run check
 
 `check` は型検査、lint、単体・統合テスト、ビルド、配布ファイルとnpm梱包予定の検査、12シナリオのRules評価、Chromium・Firefox・WebKitでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run check:distribution`、`npm run test:e2e` を使います。配布検査とE2Eの前には `npm run build` が必要です。E2Eは4173・5184・5185・5193を使うため、このリポジトリの手動プレビューは先に停止してください。通常テストから実APIは呼びません。
 
-macOSでPlaywright同梱のFirefoxとWebKitを検証しています。WebKitはSafariの基盤ですが、Safari製品版の検証とは分けています。Safari製品版とiPhone/iPadの実機検証は残っています。SafariのWebDriver試験には「リモートオートメーションを許可」の事前設定が必要です。
+macOSでPlaywright同梱のFirefoxとWebKitを検証しています。別途、[Safari 26.4製品版でVanillaデモの計測・ページ横断・実Jev接続](docs/16-safari-verification.md)を確認しました。Safari向け試験は `npm run test:safari` で再現できます。WebDriverには「リモートオートメーションを許可」の事前設定が必要です。iPhone/iPadの実機検証は残っています。
 
 ## 実装範囲と制約
 
