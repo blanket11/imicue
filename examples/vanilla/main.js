@@ -5,29 +5,58 @@ import { definition } from './definition.js';
 const element = (id) => document.getElementById(id);
 const pageId = document.body.dataset.pageId;
 const remoteMode = new URLSearchParams(location.search).get('engine') === 'remote';
+const sessionMode = new URLSearchParams(location.search).get('storage') === 'session';
+function demoHref(href) {
+  const url = new URL(href, location.href);
+  if (url.origin === location.origin) {
+    if (remoteMode) url.searchParams.set('engine', 'remote');
+    if (sessionMode) url.searchParams.set('storage', 'session');
+  }
+  return url.href;
+}
 const diagnostics = [];
 function recordDiagnostic(diagnostic) {
   diagnostics.push(diagnostic);
   if (diagnostics.length > 20) diagnostics.shift();
   element('diagnostics').textContent = JSON.stringify(diagnostics, null, 2);
+  if (sessionMode && ['storage_unavailable', 'storage_capacity'].includes(diagnostic.code)) {
+    element('storage-warning').textContent = 'ブラウザへの保存を利用できません。このページ内だけで計測します。';
+  }
 }
 const engine = remoteMode ? createRemoteEngine({
   endpoint: 'http://127.0.0.1:5193/v1/decide', allowedOrigins: ['http://127.0.0.1:5193'],
   onDiagnostic: recordDiagnostic,
 }) : createRulesEngine();
-const tracker = createTracker({ definition, pageId, engine, storage: 'memory' });
+const tracker = createTracker({ definition, pageId, engine, storage: sessionMode ? 'session' : 'memory' });
 if (remoteMode) {
   element('mode-description').textContent = '判定サーバーへの接続を試すモードです。通常の起動コマンドではモックが応答します。法的な同意要件に対応した完成済みのバナーではありません。';
   element('storage-description').textContent = '計測を開始すると、登録済みIDと集計値をローカルの判定サーバーへ送信します。ブラウザの保存先はメモリで、再読み込みやページ移動で記録と許可はリセットされます。';
   document.querySelector('footer').textContent = 'Imicue M3 / 判定サーバー接続デモ。判定できない場合も、ナビゲーションと各ガイドは利用できます。';
-  for (const link of document.querySelectorAll('a[href]')) {
-    const url = new URL(link.href);
-    if (url.origin === location.origin && url.pathname !== location.pathname) {
-      url.searchParams.set('engine', 'remote');
-      link.href = url.href;
-    }
-  }
 }
+for (const link of document.querySelectorAll('a[href]')) link.href = demoHref(link.href);
+if (sessionMode) {
+  element('storage-description').textContent = 'ページ移動後も記録を使うモードです。同じタブ・同じサイトの直近30分の記録をブラウザに保存します。移動先でも許可して「計測を開始」を押すと復元します。同意撤回・リセットで保存した記録も削除します。'
+    + (remoteMode ? '開始後は集計値をローカルの判定サーバーへ送信します。' : '判定データを外部に送信しません。');
+}
+const modeLink = document.createElement('a');
+modeLink.id = 'storage-mode-link';
+const modeUrl = new URL(location.href);
+if (sessionMode) modeUrl.searchParams.delete('storage');
+else modeUrl.searchParams.set('storage', 'session');
+modeLink.href = modeUrl.href;
+modeLink.textContent = sessionMode ? 'ページ内だけで記録するモードに戻る' : 'ページ移動後も記録を使うデモを開く';
+const modeHelp = document.createElement('p');
+modeHelp.className = 'muted';
+modeHelp.textContent = 'モードを変えるとページを読み直します。許可は引き継ぎません。'
+  + (sessionMode ? '保存済みの記録を消す場合は、先に「同意を撤回」を押してください。' : '保存した記録を試す場合は、移動先で許可して計測を開始してください。');
+const storageWarning = document.createElement('p');
+storageWarning.id = 'storage-warning';
+storageWarning.setAttribute('role', 'status');
+const sessionSummary = document.createElement('p');
+sessionSummary.id = 'session-summary';
+sessionSummary.hidden = !sessionMode;
+sessionSummary.textContent = '記録はまだ読み込んでいません。';
+element('diagnostics').parentElement.after(modeLink, modeHelp, storageWarning, sessionSummary);
 // The example explicitly carries its own fixed source marker. The SDK never reads a URL.
 if (location.hash === '#imicue-recommendation') {
   tracker.setPage(pageId, { source: 'recommendation' });
@@ -88,7 +117,7 @@ function tryDisplay() {
   actions.className = 'controls';
   const link = document.createElement('a');
   link.className = 'button-link';
-  link.href = `${content.href}${remoteMode ? '?engine=remote' : ''}#imicue-recommendation`;
+  link.href = demoHref(`${content.href}#imicue-recommendation`);
   link.textContent = content.title;
   link.addEventListener('click', () => tracker.recordOutcome(decision.contentId, 'clicked'));
   const dismiss = document.createElement('button');
@@ -106,7 +135,13 @@ function tryDisplay() {
   tracker.recordOutcome(decision.contentId, 'shown');
 }
 
-tracker.onSnapshot((snapshot) => { element('snapshot').textContent = JSON.stringify(snapshot, null, 2); });
+tracker.onSnapshot((snapshot) => {
+  element('snapshot').textContent = JSON.stringify(snapshot, null, 2);
+  if (sessionMode) {
+    const labels = [...new Set(snapshot.observations.map((row) => definition.signals[row.signalId].label))];
+    sessionSummary.textContent = labels.length ? `記録がある項目：${labels.join('、')}` : '記録がある項目はありません。';
+  }
+});
 tracker.onDiagnostic(recordDiagnostic);
 tracker.onDecision((decision) => {
   element('decision').textContent = JSON.stringify(decision, null, 2);
@@ -184,6 +219,15 @@ function scheduleDisplay() {
 document.addEventListener('focusout', scheduleDisplay);
 window.addEventListener('scroll', scheduleDisplay, { passive: true });
 window.addEventListener('resize', scheduleDisplay);
-window.addEventListener('pagehide', () => tracker.stop());
+window.addEventListener('pagehide', () => { tracker.stop(); started = false; clearDecision(); updateState(); });
+window.addEventListener('pageshow', (event) => {
+  // History navigation may restore form values even for a new document. A
+  // restored checkbox is not a new consent event and must match our actual state.
+  element('consent').checked = consent;
+  updateState();
+  // A cached document holds an old in-memory archive. Recreate it so it cannot
+  // overwrite newer session records from another page; consent is requested again.
+  if (sessionMode && event.persisted) location.reload();
+});
 // Local development harness for reproducible browser tests; omitted from production builds.
 if (import.meta.env.DEV) window.__imicueDemo = { tracker, definition };
