@@ -118,10 +118,18 @@ export type Decision = DecisionBase & (
 );
 
 export interface ResolvedEvaluationInput {
+  readonly topics?: Readonly<Record<Id, Meaning>>;
   readonly snapshot: Snapshot;
   readonly page: PageDefinition;
   readonly observations: readonly (SignalObservation & { readonly definition: SignalDefinition })[];
   readonly candidates: readonly (ContentDefinition & { readonly contentId: Id })[];
+}
+
+export class EngineFailure extends Error {
+  constructor(readonly reason: 'capacity_limit' | 'invalid_result' | 'engine_unavailable') {
+    super(reason);
+    this.name = 'EngineFailure';
+  }
 }
 
 export interface DecisionEngine {

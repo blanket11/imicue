@@ -18,7 +18,7 @@ Imicueでは、各候補のdescriptionを対応する質問に明示し、辞書
 
 [Score](https://docs.typesafe.ai/primitives/score)
 
-Scoreは説明を持つ段階上の値を返す。4段階なら0〜3。Imicue内の0〜1値は順位付け用に正規化したもので、人物の関心や購入の確率ではない。
+Scoreは説明を持つ段階ごとの確率で重み付けした期待値を返す。4段階なら0〜3で、小数も含む。Imicue内の0〜1値は順位付け用に正規化したもので、人物の関心や購入の確率ではない。M3では公式仕様とSDKのScoreResponse型を再確認し、整数に限定していたM2の検証を修正した。
 
 ## S3
 
@@ -47,6 +47,8 @@ Imicueでは英語のmodelDescriptionを任意に用意できるようにし、�
 SDKは@typesafe-ai/sdk、環境変数はTYPESAFE_API_KEY。ブラウザ利用を許可する設定はキーの露出につながる。timeout、retry、ログの設定は実装時に現行の型を確認する。
 
 ImicueはSDKをserver内に隔離する。既定のリトライ任せにせず、入力本文がログに出ないことを確認する。SDKの最小Node要件と、現在サポート中のNodeを選ぶ判断は別である。
+
+M3実装時の再確認（2026-09-26）: `@typesafe-ai/sdk@0.6.0` を固定し、同梱の型と公式資料で `score(instructions, criteria)`、`TypeSafeClient.systemOne` を確認した。`retry: { maxRetries: 0 }`、`logLevel: 'off'`、固定baseURLとモデル `jev-1.13.0` を明示している。[RetryPolicy](https://docs.typesafe.ai/sdk/javascript/api/interfaces/RetryPolicy) も参照。モックfetchで呼び出し回数とログ出力を検証したが、アカウントでのモデル利用可否と実API応答は未確認。
 
 ## S6
 

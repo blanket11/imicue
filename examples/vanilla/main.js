@@ -1,10 +1,33 @@
-import { createTracker } from '@imicue/browser';
+import { createTracker, createRemoteEngine } from '@imicue/browser';
 import { createRulesEngine, isAllowedHref } from '@imicue/core';
 import { definition } from './definition.js';
 
 const element = (id) => document.getElementById(id);
 const pageId = document.body.dataset.pageId;
-const tracker = createTracker({ definition, pageId, engine: createRulesEngine(), storage: 'memory' });
+const remoteMode = new URLSearchParams(location.search).get('engine') === 'remote';
+const diagnostics = [];
+function recordDiagnostic(diagnostic) {
+  diagnostics.push(diagnostic);
+  if (diagnostics.length > 20) diagnostics.shift();
+  element('diagnostics').textContent = JSON.stringify(diagnostics, null, 2);
+}
+const engine = remoteMode ? createRemoteEngine({
+  endpoint: 'http://127.0.0.1:5193/v1/decide', allowedOrigins: ['http://127.0.0.1:5193'],
+  onDiagnostic: recordDiagnostic,
+}) : createRulesEngine();
+const tracker = createTracker({ definition, pageId, engine, storage: 'memory' });
+if (remoteMode) {
+  element('mode-description').textContent = '判定サーバーへの接続を試すモードです。通常の起動コマンドではモックが応答します。法的な同意要件に対応した完成済みのバナーではありません。';
+  element('storage-description').textContent = '計測を開始すると、登録済みIDと集計値をローカルの判定サーバーへ送信します。ブラウザの保存先はメモリで、再読み込みやページ移動で記録と許可はリセットされます。';
+  document.querySelector('footer').textContent = 'Imicue M3 / 判定サーバー接続デモ。判定できない場合も、ナビゲーションと各ガイドは利用できます。';
+  for (const link of document.querySelectorAll('a[href]')) {
+    const url = new URL(link.href);
+    if (url.origin === location.origin && url.pathname !== location.pathname) {
+      url.searchParams.set('engine', 'remote');
+      link.href = url.href;
+    }
+  }
+}
 // The example explicitly carries its own fixed source marker. The SDK never reads a URL.
 if (location.hash === '#imicue-recommendation') {
   tracker.setPage(pageId, { source: 'recommendation' });
@@ -24,7 +47,6 @@ let pendingDecision;
 let visibleContentId;
 let consent = false;
 let started = false;
-const diagnostics = [];
 
 function updateState() {
   element('status').textContent = consent ? (started ? '許可済み・計測中' : '許可済み・計測停止中') : '未許可・計測停止中';
@@ -66,7 +88,7 @@ function tryDisplay() {
   actions.className = 'controls';
   const link = document.createElement('a');
   link.className = 'button-link';
-  link.href = `${content.href}#imicue-recommendation`;
+  link.href = `${content.href}${remoteMode ? '?engine=remote' : ''}#imicue-recommendation`;
   link.textContent = content.title;
   link.addEventListener('click', () => tracker.recordOutcome(decision.contentId, 'clicked'));
   const dismiss = document.createElement('button');
@@ -85,11 +107,7 @@ function tryDisplay() {
 }
 
 tracker.onSnapshot((snapshot) => { element('snapshot').textContent = JSON.stringify(snapshot, null, 2); });
-tracker.onDiagnostic((diagnostic) => {
-  diagnostics.push(diagnostic);
-  if (diagnostics.length > 20) diagnostics.shift();
-  element('diagnostics').textContent = JSON.stringify(diagnostics, null, 2);
-});
+tracker.onDiagnostic(recordDiagnostic);
 tracker.onDecision((decision) => {
   element('decision').textContent = JSON.stringify(decision, null, 2);
   element('scores').replaceChildren();
@@ -99,7 +117,7 @@ tracker.onDecision((decision) => {
     const name = document.createElement('span');
     name.textContent = definition.contents[assessment.contentId]?.title ?? assessment.contentId;
     const score = document.createElement('strong');
-    score.textContent = `${assessment.score.toFixed(3)} / heuristic`;
+    score.textContent = `${assessment.score.toFixed(3)} / ${assessment.scoreKind}${decision.engine.model === 'mock-local-v1' ? '（モック）' : ''}`;
     row.append(name, score);
     element('scores').append(row);
   }

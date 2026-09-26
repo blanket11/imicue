@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createRulesEngine, type Decision, type DecisionEngine, type Definition } from '@imicue/core';
-import { createTracker, exposureRatio, type Tracker, type TrackerOptions } from '../src/index.js';
+import { createRulesEngine, evaluateSnapshot, type Decision, type DecisionEngine, type Definition } from '@imicue/core';
+import { createTracker, createRemoteEngine, exposureRatio, type Tracker, type TrackerOptions } from '../src/index.js';
 
 const definition: Definition = {
   schemaVersion: '0.1', siteId: 'browser-test', definitionVersion: 'test-1',
@@ -446,6 +446,28 @@ describe('B07/B09 — consent and opt-in storage', () => {
 });
 
 describe('B08 — scheduler, stale asynchronous results and render guards', () => {
+  it.each(['withdraw', 'page', 'revision'])('discards a real remote transport response after %s', async (action) => {
+    let finish!: () => void;
+    let signal: AbortSignal | null | undefined;
+    const fetch = vi.fn<typeof globalThis.fetch>(async (_url, init) => {
+      signal = init?.signal;
+      const decision = await evaluateSnapshot(definition, JSON.parse(String(init?.body)), createRulesEngine(), { now: epoch });
+      return new Promise<Response>((resolve) => { finish = () => resolve(Response.json(decision)); });
+    });
+    const tracker = setup({ engine: createRemoteEngine({ endpoint: 'https://example.test/v1/decide', baseOrigin: 'https://example.test', fetch }) });
+    const outputs = vi.fn(); tracker.onDecision(outputs);
+    begin(tracker); tracker.track('action');
+    const pending = tracker.evaluate();
+    await Promise.resolve(); await Promise.resolve();
+    if (action === 'withdraw') tracker.setConsent('denied');
+    if (action === 'page') tracker.setPage('other');
+    if (action === 'revision') tracker.track('action');
+    finish();
+    expect(await pending).toBeUndefined();
+    expect(outputs).not.toHaveBeenCalled();
+    if (action !== 'revision') expect(signal?.aborted).toBe(true);
+    if (action === 'withdraw') expect(tracker.getSnapshot().observations).toEqual([]);
+  });
   function delayed() {
     const resolvers: (() => void)[] = [];
     const signals: AbortSignal[] = [];

@@ -1,5 +1,6 @@
 import { deepFreeze, own } from './definition.js';
 import { validateSnapshot } from './snapshot.js';
+import { EngineFailure } from './types.js';
 import type {
   AbstainReason, CandidateAssessment, Decision, DecisionBase, DecisionEngine,
   Definition, ResolvedEvaluationInput, SignalObservation, Snapshot,
@@ -72,6 +73,8 @@ function prepare(definition: Definition, snapshot: Snapshot, now: number): Prepa
   if (views < 2 && explicit < 1) return { reason: 'insufficient_evidence' };
   const directIds = new Set(observations.map((observation) => observation.signalId));
   const input: ResolvedEvaluationInput = {
+    topics: Object.fromEntries(Object.entries(definition.topics ?? {}).filter(([id]) =>
+      observations.some((item) => item.definition.topicIds?.includes(id)) || candidates.some((item) => item.topicIds?.includes(id)))),
     snapshot: { ...snapshot, observations: snapshot.observations.filter((observation) => observation.source === 'direct' && directIds.has(observation.signalId)), recent: snapshot.recent.filter((event) => event.source === 'direct' && directIds.has(event.signalId)) },
     page, observations, candidates,
   };
@@ -98,7 +101,7 @@ function validAssessments(input: ResolvedEvaluationInput, output: unknown, engin
         !Number.isFinite(assessment.providerConfidence) || assessment.providerConfidence < 0 || assessment.providerConfidence > 1) return false;
       const raw = assessment.rawScore as Record<string, unknown> | undefined;
       if (!raw || typeof raw !== 'object' || Object.keys(raw).some((key) => !['value', 'min', 'max'].includes(key)) ||
-        raw.min !== 0 || raw.max !== 3 || typeof raw.value !== 'number' || !Number.isInteger(raw.value) || raw.value < 0 || raw.value > 3 ||
+        raw.min !== 0 || raw.max !== 3 || typeof raw.value !== 'number' || !Number.isFinite(raw.value) || raw.value < 0 || raw.value > 3 ||
         Math.abs(assessment.score - raw.value / 3) > 1e-12) return false;
     }
   }
@@ -112,7 +115,7 @@ export async function evaluateSnapshot(definition: Definition, snapshot: Snapsho
   let base: DecisionBase = {
     schemaVersion: '0.1', decisionId: options.id?.() ?? globalThis.crypto.randomUUID(),
     snapshotId: snapshot.snapshotId, revision: snapshot.revision, pageViewId: snapshot.pageViewId,
-    definitionVersion: definition.definitionVersion, policyVersion: POLICY_VERSION,
+    definitionVersion: definition.definitionVersion, policyVersion: engine.name === 'jev' ? 'jev-rubric-v1' : POLICY_VERSION,
     engine: { name: engine.name, version: engine.version }, assessments: [], maxAgeMs: DECISION_MAX_AGE_MS,
   };
   const abstain = (reason: AbstainReason): Decision => deepFreeze({ ...base, type: 'abstain', reason });
@@ -127,7 +130,9 @@ export async function evaluateSnapshot(definition: Definition, snapshot: Snapsho
   const signal = options.signal ?? new AbortController().signal;
   if (signal.aborted) return abstain('engine_unavailable');
   let result: unknown;
-  try { result = await engine.evaluate(prepared.input, { signal }); } catch { return abstain('engine_unavailable'); }
+  try { result = await engine.evaluate(prepared.input, { signal }); } catch (error) {
+    return abstain(error instanceof EngineFailure ? error.reason : 'engine_unavailable');
+  }
   if (signal.aborted) return abstain('engine_unavailable');
   if (!validAssessments(prepared.input, result, engine)) return abstain('invalid_result');
   const assessments = result.assessments.map((assessment) => ({ ...assessment, ...(assessment.rawScore ? { rawScore: { ...assessment.rawScore } } : {}) }))
@@ -137,6 +142,57 @@ export async function evaluateSnapshot(definition: Definition, snapshot: Snapsho
   if (top.score < (engine.name === 'rules' ? 0.35 : 0.65) || (engine.name === 'jev' && top.providerConfidence! < 0.6)) return abstain('below_threshold');
   if (assessments[1] && top.score - assessments[1].score < 0.1 - 1e-12) return abstain('ambiguous');
   return deepFreeze({ ...base, type: 'recommend', contentId: top.contentId });
+}
+
+export function preflightReason(definition: Definition, snapshot: Snapshot, now = Date.now()): AbstainReason | undefined {
+  if (!Number.isFinite(now)) return 'invalid_result';
+  if (snapshot.definitionVersion !== definition.definitionVersion || snapshot.siteId !== definition.siteId) return 'definition_mismatch';
+  try {
+    const result = prepare(definition, validateSnapshot(snapshot, definition), now);
+    return 'reason' in result ? result.reason : undefined;
+  } catch { return 'invalid_result'; }
+}
+
+export function technicalDecision(snapshot: Snapshot, reason: AbstainReason): Decision {
+  return deepFreeze({ schemaVersion: '0.1', decisionId: globalThis.crypto.randomUUID(),
+    snapshotId: snapshot.snapshotId, revision: snapshot.revision, pageViewId: snapshot.pageViewId,
+    definitionVersion: snapshot.definitionVersion, policyVersion: 'jev-rubric-v1',
+    engine: { name: 'jev', version: 'remote-v1' }, assessments: [], maxAgeMs: DECISION_MAX_AGE_MS,
+    type: 'abstain', reason });
+}
+
+/** Treat HTTP results as untrusted data, including correlation and recommendation policy. */
+export function validateDecision(value: unknown, definition: Definition, snapshot: Snapshot, now = Date.now()): Decision {
+  const invalid = () => { throw new EngineFailure('invalid_result'); };
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return invalid();
+  const result = value as Decision;
+  const keys = ['schemaVersion', 'decisionId', 'snapshotId', 'revision', 'pageViewId', 'definitionVersion', 'policyVersion', 'engine', 'assessments', 'maxAgeMs', 'type', result.type === 'recommend' ? 'contentId' : 'reason'];
+  if (Object.keys(value).length !== keys.length || Object.keys(value).some((key) => !keys.includes(key))
+    || result.schemaVersion !== '0.1' || typeof result.decisionId !== 'string'
+    || !/^[a-zA-Z0-9_-]{1,128}$/.test(result.decisionId) || result.snapshotId !== snapshot.snapshotId
+    || result.revision !== snapshot.revision || result.pageViewId !== snapshot.pageViewId
+    || result.definitionVersion !== definition.definitionVersion || !Number.isInteger(result.maxAgeMs)
+    || result.maxAgeMs <= 0 || result.maxAgeMs > DECISION_MAX_AGE_MS) return invalid();
+  const engine = result.engine;
+  if (!engine || !['rules', 'jev'].includes(engine.name) || typeof engine.version !== 'string'
+    || engine.version.length < 1 || engine.version.length > 120
+    || Object.keys(engine).some((key) => !['name', 'version', 'model'].includes(key))
+    || (engine.model !== undefined && (typeof engine.model !== 'string' || !engine.model || engine.model.length > 120))
+    || result.policyVersion !== (engine.name === 'jev' ? 'jev-rubric-v1' : POLICY_VERSION)) return invalid();
+  if (!Array.isArray(result.assessments)) return invalid();
+  const prepared = prepare(definition, validateSnapshot(snapshot, definition), now);
+  if (result.assessments.length) {
+    if (!('input' in prepared) || !validAssessments(prepared.input, { assessments: result.assessments }, engine as DecisionEngine)) return invalid();
+  }
+  if (result.type === 'recommend') {
+    if (!('input' in prepared) || !result.assessments.length) return invalid();
+    const ranked = [...result.assessments].sort((a, b) => b.score - a.score);
+    const top = ranked[0]!;
+    if (top.contentId !== result.contentId || top.score < (engine.name === 'rules' ? 0.35 : 0.65)
+      || (engine.name === 'jev' && (top.providerConfidence ?? 0) < 0.6)
+      || (ranked[1] && top.score - ranked[1].score < 0.1 - 1e-12)) return invalid();
+  } else if (result.type !== 'abstain' || !['insufficient_evidence', 'no_eligible_content', 'below_threshold', 'ambiguous', 'suppressed', 'capacity_limit', 'definition_mismatch', 'engine_unavailable', 'invalid_result'].includes(result.reason)) return invalid();
+  return deepFreeze(JSON.parse(JSON.stringify(value)) as Decision);
 }
 
 /** The browser additionally owns consent, generation, receipt time, and URL validation. */

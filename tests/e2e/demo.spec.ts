@@ -214,6 +214,9 @@ test('B10: 201 DOM targets are bounded and the measured start cost is reported',
     return performance.now() - before;
   });
   const scrollMetrics = await page.evaluate(async () => {
+    // ResizeObserver delivers its initial notification after layout. Let that
+    // initialization refresh finish before attributing scans to scrolling.
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 0))));
     const original = document.querySelectorAll.bind(document);
     let documentScans = 0;
     Object.defineProperty(document, 'querySelectorAll', { configurable: true, value(selector: string) { documentScans += 1; return original(selector); } });

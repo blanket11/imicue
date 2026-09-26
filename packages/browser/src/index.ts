@@ -11,6 +11,9 @@ import {
   type Snapshot,
   type Source,
 } from '@imicue/core';
+import type { RemoteEngine } from './remote.js';
+export { createRemoteEngine } from './remote.js';
+export type { RemoteEngine, RemoteOptions, RemoteDiagnostic } from './remote.js';
 
 export type Consent = 'unknown' | 'granted' | 'denied';
 export type DiagnosticCode =
@@ -26,7 +29,7 @@ export interface Diagnostic { readonly code: DiagnosticCode }
 export interface TrackerOptions {
   readonly definition: unknown;
   readonly pageId: string;
-  readonly engine?: DecisionEngine;
+  readonly engine?: DecisionEngine | RemoteEngine;
   readonly storage?: 'memory' | 'session';
   readonly root?: Document | Element;
   readonly allowedOrigins?: readonly string[];
@@ -298,7 +301,10 @@ export function createTracker(options: TrackerOptions): Tracker {
     lastEvaluation = requestedAt;
     aborter = new AbortController();
     const controller = aborter;
-    const work = evaluateSnapshot(definition, snapshot, engine, { now: wallNow(), signal: controller.signal })
+    const evaluation = 'kind' in engine && engine.kind === 'remote'
+      ? engine.evaluate(snapshot, { definition, now: wallNow(), signal: controller.signal })
+      : evaluateSnapshot(definition, snapshot, engine as DecisionEngine, { now: wallNow(), signal: controller.signal });
+    const work = evaluation
       .then((decision): Decision | undefined => {
         if (destroyed || !started || consent !== 'granted' || controller.signal.aborted
           || generation !== currentGeneration || revision !== snapshot.revision

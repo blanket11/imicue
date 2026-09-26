@@ -5,11 +5,12 @@
     "moduleResolution": "Bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "strict": true,
+    "allowJs": true,
     "noUncheckedIndexedAccess": true,
     "noEmit": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     "types": ["node"]
   },
-  "include": ["packages/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts", "*.config.ts"]
+  "include": ["packages/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts", "examples/server-node/**/*.ts", "*.config.ts"]
 }

@@ -5,7 +5,7 @@
     <section class="content-section" data-imicue-signal="demo-features-guide-view"><h2>契約書を検索して確認する</h2><p>この架空のガイドでは、契約書の検索と一覧表示という2つの機能を紹介します。検索例には固定のサンプルを使い、検索語を計測しません。</p><p>計測を開始すると、この本文の表示を記録します。現在表示しているガイドは追加の案内候補から除外されます。</p><button id="complete-guide" type="button">このガイドの確認を完了</button><p id="guide-result" class="output" role="status"></p></section><p><a href="/">デモのトップへ戻る</a></p></main><aside class="debug-panel" aria-labelledby="debug-title" data-imicue-ignore>
   <section class="panel">
     <h2 id="debug-title" class="panel-title">Imicue 確認パネル</h2>
-    <p class="muted">ローカルのルール判定を試すための操作例です。法的な同意要件に対応した完成済みのバナーではありません。</p>
+    <p id="mode-description" class="muted">ローカルのルール判定を試すための操作例です。法的な同意要件に対応した完成済みのバナーではありません。</p>
     <label class="consent"><input id="consent" type="checkbox">このページの表示・操作の計測を許可する</label>
     <div class="controls">
       <button id="start" type="button" disabled>計測を開始</button>
@@ -14,7 +14,7 @@
       <button id="reset" type="button">記録をリセット</button>
     </div>
     <p id="status" class="status" role="status">未許可・計測停止中</p>
-    <p class="muted">保存先はメモリです。再読み込みやページ移動で記録と許可はリセットされます。判定データを外部に送信しません。</p>
+    <p id="storage-description" class="muted">保存先はメモリです。再読み込みやページ移動で記録と許可はリセットされます。判定データを外部に送信しません。</p>
     <div id="recommendation-slot" class="recommendation-slot" aria-label="追加の案内" data-imicue-source="recommendation"></div>
     <h3>現在の判定</h3>
     <p id="decision-status">計測を開始すると判定を確認できます。</p>

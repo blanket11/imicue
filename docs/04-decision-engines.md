@@ -116,7 +116,7 @@ SDKのデフォルト再試行に任せない。v0.1はプロバイダーへの�
 
 ### スコアの解釈
 
-Scoreの値は定義した段階上の値で、4段階なら0〜3。`score = rawScore / 3` として順位付け用に正規化し、rawScoreも保持する。確率に変換したわけではない。[S2](08-references-and-decisions.md#s2)
+Scoreは段階ごとの確率で重み付けした期待値で、4段階なら0〜3の小数を含む値となる。整数には制限しない。`score = rawScore / 3` として順位付け用に正規化し、rawScoreも保持する。人物の関心や購入の確率に変換したわけではない。[S2](08-references-and-decisions.md#s2)
 
 Jevのconfidenceは確率分布由来の指標であり、正答率の保証ではない。Rulesへ同じ意味のconfidenceを付けない。[S3](08-references-and-decisions.md#s3)
 
