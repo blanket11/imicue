@@ -28,5 +28,5 @@ const report = {
 await mkdir('test-results', { recursive: true });
 await writeFile('test-results/rules-evaluation.json', `${JSON.stringify(report, null, 2)}\n`);
 for (const row of results) console.log(`${row.regressionPassed ? 'PASS' : 'FAIL'} ${row.split}/${row.id}: ${row.actual}`);
-console.log('test-results/rules-evaluation.json（回帰確認のみ。人の意味評価・Jev比較は未実施）');
+console.log('test-results/rules-evaluation.json（このコマンドはRulesの回帰確認のみ。人の意味評価・Jev比較は行いません）');
 if (results.some((row) => !row.regressionPassed)) process.exitCode = 1;

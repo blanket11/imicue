@@ -1,6 +1,6 @@
 # 実装計画と受け入れテスト
 
-状態: M0〜M4を実装。Jev接続はモック検証までで、実API試験は未実施。M5の資料・ローカル検証は整備済みで、公開承認は未実施。詳細は [公開準備と評価](12-release-preparation.md) を参照する。検証結果と未実施項目は [ローカル版](09-local-implementation.md)、[M3](10-server-implementation.md)、[M4](11-distribution-and-next.md) の実装メモを参照する。
+状態: M0〜M4を実装。Jev接続はモック試験に加えて、[実APIの疎通と12シナリオ比較](14-jev-evaluation.md)を実施。人の意味評価は未実施。M5の資料・ローカル検証は整備済みで、公開承認は未実施。詳細は [公開準備と評価](12-release-preparation.md) を参照する。各段階の検証結果は [ローカル版](09-local-implementation.md)、[M3](10-server-implementation.md)、[M4](11-distribution-and-next.md) の実装メモを参照する。
 
 ## 1. 進め方
 

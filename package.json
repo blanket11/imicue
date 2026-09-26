@@ -36,7 +36,8 @@
     "preview:distribution": "node scripts/serve-static.mjs dist/browser 5185",
     "check:distribution": "node scripts/check-distribution.mjs",
     "eval:rules": "tsx --conditions=imicue-source scripts/evaluate-rules.ts",
-    "check:package": "node scripts/check-package.mjs"
+    "check:package": "node scripts/check-package.mjs",
+    "eval:jev": "tsx --conditions=imicue-source scripts/evaluate-jev.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

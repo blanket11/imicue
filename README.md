@@ -1,7 +1,7 @@
 # imicue
 An open-source library that turns website and app behavior signals into meaningful decisions and recommendations.
 
-登録した行動シグナルに辞書で意味を付け、次に案内する候補を評価する、UIを持たないライブラリです。M0〜M4を実装し、ローカルの配布ファイルとNext.jsの静的デモまで確認しています。Jev接続はモック検証までで、実API試験は未実施です。表示時間は読了時間ではなく、Rulesのスコアも購入確率ではありません。
+登録した行動シグナルに辞書で意味を付け、次に案内する候補を評価する、UIを持たないライブラリです。M0〜M4を実装し、ローカルの配布ファイルとNext.jsの静的デモまで確認しています。Jev実APIの疎通と合成12シナリオの比較も実施しました。[実測結果と制約](docs/14-jev-evaluation.md)を参照してください。表示時間は読了時間ではなく、Rulesのスコアも購入確率ではありません。
 
 ## ローカルデモを動かす
 
@@ -107,13 +107,21 @@ const engine = createRemoteEngine({
 
 ## Jev実API試験は許可後に別コマンドで行う
 
-実APIを使うには、実行の許可とローカル環境変数 `TYPESAFE_API_KEY` の設定が必要です。キーをチャットやGitへ貼らず、サーバー側だけで扱ってください。次のコマンドは有料APIを呼び得るため、今回は実行していません。
+実APIを使うには、実行の許可とローカル環境変数 `TYPESAFE_API_KEY` の設定が必要です。キーをチャットやGitへ貼らず、サーバー側だけで扱ってください。次のコマンドは有料APIを呼び得ます。
 
 ```sh
 RUN_JEV_INTEGRATION=1 JEV_INTEGRATION_REQUESTS=1 npm run test:jev
 ```
 
 合成データのみで1回実行します。回数は1〜5に制限し、再試行は行いません。フラグやキーがない場合はSKIPを表示します。継続してデモを実APIへ接続する場合も別途許可が必要で、`RUN_JEV_SERVER=1 npm run dev:server:jev` を明示して起動します。
+
+Rulesと辞書付きJevを12シナリオで比較する場合は、Git管理外の `.env.local` にキーを設定して、次を実行します。
+
+```sh
+RUN_JEV_EVALUATION=1 node --env-file=.env.local --import tsx --conditions=imicue-source scripts/evaluate-jev.ts
+```
+
+最大12リクエスト、再試行なし。現在のシナリオでは3件をAPI呼び出し前に見送るため、実API呼び出しは9回です。通信・応答検証の失敗で打ち切ります。結果はGit管理外の `test-results/jev-evaluation.json` に保存し、キー・ヘッダー・生の応答本文は残しません。人の意味評価は未実施で、期待値との一致数は推薦精度を表しません。
 
 ## M4の配布ファイルとNext.jsデモを試す
 
