@@ -7,7 +7,7 @@ import type {
 } from './types.js';
 
 export const POLICY_VERSION = 'rules-v1';
-export const JEV_POLICY_VERSION = 'jev-rubric-v2';
+export const JEV_POLICY_VERSION = 'jev-rubric-v3';
 export const JEV_EVIDENCE_MAX_AGE_MS = 300_000;
 export const DECISION_MAX_AGE_MS = 30_000;
 

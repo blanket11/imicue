@@ -3,10 +3,10 @@ import { EngineFailure, type DecisionEngine, type Meaning, type ResolvedEvaluati
 
 export const JEV_MODEL = 'jev-1.13.0';
 const criteria = [
-  'There is no evidence connecting this candidate to the observed content or actions.',
-  'This candidate is general information about the same product, with only a weak connection to the observations.',
-  'This candidate adds information about a topic supported by direct views or explicit actions.',
-  'This candidate develops a recent specific topic, supported by multiple observations or an explicit action.',
+  'The candidate is about an unrelated subject. No direct observation connects its content to what was viewed or done.',
+  'The candidate shares only a product or a general category with the observations. The descriptions do not establish a specific topic or task in common.',
+  'The candidate concerns the same specific topic as a direct observation, but covers an adjacent task or background information rather than explaining the observed feature or task itself.',
+  'The candidate directly explains or helps with the same feature, task, or subject described in a direct observation, including synonymous wording. This specific match is established by the descriptions; a single explicit action is sufficient.',
 ] as const;
 const meaning = (item: Meaning) => item.modelDescription ?? item.description;
 

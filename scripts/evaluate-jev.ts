@@ -21,6 +21,6 @@ if (process.env.RUN_JEV_EVALUATION !== '1') {
     console.log(`${row.id}: Rules=${rules}, Jev=${row.actual}, API=${row.requests.length}, ${row.elapsedMs}ms`);
   }
   console.log(JSON.stringify(report.summary));
-  console.log(`人の意味評価は未実施。詳細: ${path}`);
+  console.log(`人による全件レビューは未完了。詳細: ${path}`);
   if (report.summary.failures || report.summary.completed !== report.summary.planned) process.exitCode = 1;
 }

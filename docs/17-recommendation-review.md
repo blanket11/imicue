@@ -1,5 +1,7 @@
 # 推薦内容を確認するための12ケース
 
+このページは変更前（jev-rubric-v2、コミット98c502d）の記録。方針確認後の変更と最新結果は[単発操作に対応する採点基準](18-jev-relevance-rubric.md)を参照する。下記コマンドを現行コードで実行すると、現行の採点基準で評価する。
+
 2026-09-26。見出しの重複、言い換え、複数の関心、関連候補の欠落を含む合成シナリオを追加した。辞書付きJevは2回とも12件中2件を推薦し、10件を見送った。推薦した候補と見送り理由は2回とも同じだった。**関連する候補を高く採点しても、confidenceの基準に届かず案内しないケースが3件ある。**
 
 下表の「期待する動き（案）」は実API試験前に作成した提案。結果の確認後、Q01・Q02・Q12は「内容が明確に一致すれば、1回の操作でも案内する」とオーナーが確認した。それ以外の案は未確認。このページは変更前の基準による実測を記録する。
@@ -77,7 +79,7 @@ RUN_JEV_EVALUATION=1 JEV_EVALUATION_SUITE=semantic node --env-file=.env.local --
 RUN_JEV_EVALUATION=1 JEV_EVALUATION_SUITE=semantic JEV_EVALUATION_VARIANT=labels node --env-file=.env.local --import tsx --conditions=imicue-source scripts/evaluate-jev.ts
 ```
 
-合成入力と許容案は `scripts/lib/semantic-scenarios.ts` にある。JSON結果はGit管理外の `test-results/jev-semantic-evaluation.json`、`test-results/jev-semantic-labels-evaluation.json` と日時付きファイルへ保存する。APIキー、ヘッダー、生の応答本文は残さない。許容案との比較は `matchesProposedOutcomes` に記録し、技術的な失敗による見送りは一致に数えない。人のレビュー状態はpendingのままとする。
+合成入力と許容案は `scripts/lib/semantic-scenarios.ts` にある。JSON結果はGit管理外の `test-results/jev-semantic-evaluation.json`、`test-results/jev-semantic-labels-evaluation.json` と日時付きファイルへ保存する。APIキー、ヘッダー、生の応答本文は残さない。許容案との比較は `matchesProposedOutcomes` に記録し、技術的な失敗による見送りは一致に数えない。全件のレビュー状態はpendingのままとする。
 
 今回3実行のfixtureHashは共通で、`5341ede5485117bc9384b58f32f437b4d93792e557aec8d663157cccc174d457`。入力と許容案が同じだったことを確認するための値であり、結果の再現性を保証する値ではない。
 

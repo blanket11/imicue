@@ -59,7 +59,7 @@ if (process.env.RUN_JEV_BROWSER !== '1' || !process.env.TYPESAFE_API_KEY?.trim()
         }, scenario);
         await expect(page.locator('#decision')).toContainText(JEV_MODEL, { timeout: 15_000 });
         const decision = JSON.parse((await page.locator('#decision').textContent())!);
-        assert.equal(decision.policyVersion, 'jev-rubric-v2');
+        assert.equal(decision.policyVersion, 'jev-rubric-v3');
         assert.equal(measured.requests.length - offset, 1);
         assert.equal(posts, 1);
         assert.equal(unexpectedTraffic || credentialInBrowser, false);
