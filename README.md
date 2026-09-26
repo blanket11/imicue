@@ -1,7 +1,7 @@
 # imicue
 An open-source library that turns website and app behavior signals into meaningful decisions and recommendations.
 
-登録した行動シグナルに辞書で意味を付け、次に案内する候補を評価する、UIを持たないライブラリです。M0〜M4を実装し、ローカルの配布ファイルとNext.jsの静的デモまで確認しています。Jev実APIの疎通と合成12シナリオの比較も実施しました。[実測結果と制約](docs/14-jev-evaluation.md)を参照してください。表示時間は読了時間ではなく、Rulesのスコアも購入確率ではありません。
+登録した行動シグナルに辞書で意味を付け、次に案内する候補を評価する、UIを持たないライブラリです。M0〜M4を実装し、ローカルの配布ファイルとNext.jsの静的デモまで確認しています。Jev実APIのシナリオ比較と3ブラウザからの接続も実施しました。[実測結果と制約](docs/15-freshness-and-live-browser.md)を参照してください。表示時間は読了時間ではなく、Rulesのスコアも購入確率ではありません。
 
 ## ローカルデモを動かす
 
@@ -121,7 +121,9 @@ Rulesと辞書付きJevを12シナリオで比較する場合は、Git管理外�
 RUN_JEV_EVALUATION=1 node --env-file=.env.local --import tsx --conditions=imicue-source scripts/evaluate-jev.ts
 ```
 
-最大12リクエスト、再試行なし。現在のシナリオでは3件をAPI呼び出し前に見送るため、実API呼び出しは9回です。通信・応答検証の失敗で打ち切ります。結果はGit管理外の `test-results/jev-evaluation.json` に保存し、キー・ヘッダー・生の応答本文は残しません。人の意味評価は未実施で、期待値との一致数は推薦精度を表しません。
+最大12リクエスト、再試行なし。現在のシナリオでは4件をAPI呼び出し前に見送るため、実API呼び出しは8回です。通信・応答検証の失敗で打ち切ります。結果はGit管理外の `test-results/jev-regression-evaluation.json` と日時付きファイルに保存し、キー・ヘッダー・生の応答本文は残しません。人の意味評価は未実施で、期待値との一致数は推薦精度を表しません。
+
+Jevの推薦根拠は直近5分に最終観測されたシグナルへ限定しました。記録と既読・完了による除外は30分保持します。[追加7シナリオと実ブラウザ接続の検証手順・結果](docs/15-freshness-and-live-browser.md)を参照してください。サーバーとブラウザは同じバージョンへ更新する必要があります。古い判定ポリシーの応答は受け入れません。
 
 ## M4の配布ファイルとNext.jsデモを試す
 
@@ -163,7 +165,7 @@ npm run check
 
 `check` は型検査、lint、単体・統合テスト、ビルド、配布ファイルとnpm梱包予定の検査、12シナリオのRules評価、Chromium・Firefox・WebKitでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run check:distribution`、`npm run test:e2e` を使います。配布検査とE2Eの前には `npm run build` が必要です。E2Eは4173・5184・5185・5193を使うため、このリポジトリの手動プレビューは先に停止してください。通常テストから実APIは呼びません。
 
-macOSでPlaywright同梱のFirefoxとWebKitを検証しています。WebKitはSafariの基盤ですが、Safari製品版の検証とは分けています。Safari 26.4のWebDriver試験はローカル設定の「リモートオートメーション」が無効で未実施です。iPhone/iPadの実機検証も残っています。
+macOSでPlaywright同梱のFirefoxとWebKitを検証しています。WebKitはSafariの基盤ですが、Safari製品版の検証とは分けています。Safari製品版とiPhone/iPadの実機検証は残っています。SafariのWebDriver試験には「リモートオートメーションを許可」の事前設定が必要です。
 
 ## 実装範囲と制約
 

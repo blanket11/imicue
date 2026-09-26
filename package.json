@@ -37,7 +37,8 @@
     "check:distribution": "node scripts/check-distribution.mjs",
     "eval:rules": "tsx --conditions=imicue-source scripts/evaluate-rules.ts",
     "check:package": "node scripts/check-package.mjs",
-    "eval:jev": "tsx --conditions=imicue-source scripts/evaluate-jev.ts"
+    "eval:jev": "tsx --conditions=imicue-source scripts/evaluate-jev.ts",
+    "test:jev:browser": "tsx --conditions=imicue-source scripts/jev-browser.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

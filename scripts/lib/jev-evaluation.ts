@@ -2,6 +2,8 @@ import type { Fetch } from '@typesafe-ai/sdk';
 import { createRulesEngine, evaluateSnapshot, validateDefinition } from '@imicue/core';
 import { createJevEngine, JEV_MODEL } from '@imicue/server';
 import { definition, NOW, scenarios } from '../../packages/core/test/fixtures.js';
+import { freshnessScenarios } from './freshness-scenarios.js';
+import { evaluationInput, type InputVariant } from './evaluation-input.js';
 
 export interface RequestMetric {
   status: number | null;
@@ -37,11 +39,15 @@ export function measuredTransport(transport: Fetch, limit = 12) {
   return { fetch, requests };
 }
 
-export async function compareScenarios(options: { apiKey: string; transport: Fetch }) {
+export async function compareScenarios(options: { apiKey: string; transport: Fetch; suite?: 'regression' | 'freshness'; variant?: InputVariant }) {
+  const selected = options.suite === 'freshness' ? freshnessScenarios : scenarios;
   const measured = measuredTransport(options.transport);
-  const engine = createJevEngine({ model: JEV_MODEL, apiKey: options.apiKey, fetch: measured.fetch });
+  const baseEngine = createJevEngine({ model: JEV_MODEL, apiKey: options.apiKey, fetch: measured.fetch });
+  const engine: typeof baseEngine = { ...baseEngine,
+    evaluate: (input, context) => baseEngine.evaluate(evaluationInput(input, options.variant ?? 'dictionary-ja'), context),
+  };
   const results = [];
-  for (const scenario of scenarios) {
+  for (const scenario of selected) {
     const source = definition();
     const config = validateDefinition('expiresFeature' in scenario ? {
       ...source, contents: { ...source.contents, 'feature-guide': {
@@ -67,11 +73,11 @@ export async function compareScenarios(options: { apiKey: string; transport: Fet
   const outputTokens = measured.requests.every((row) => row.outputTokens !== null)
     ? measured.requests.reduce((sum, row) => sum + row.outputTokens!, 0) : null;
   return {
-    schemaVersion: 1, runAt: new Date().toISOString(), fixtureTime: new Date(NOW).toISOString(),
-    model: JEV_MODEL, humanReview: 'pending', comparison: 'rules-vs-dictionary-jev',
+    schemaVersion: 1, suite: options.suite ?? 'regression', runAt: new Date().toISOString(), fixtureTime: new Date(NOW).toISOString(),
+    model: JEV_MODEL, humanReview: 'pending', comparison: 'rules-vs-jev', variant: options.variant ?? 'dictionary-ja',
     holdoutCaveat: 'already_used_in_regression_tests', requestLimit: 12, retries: 0,
     summary: {
-      completed: results.length, planned: scenarios.length, requests: measured.requests.length,
+      completed: results.length, planned: selected.length, requests: measured.requests.length,
       gatedWithoutApi: results.filter((row) => row.requests.length === 0).length,
       matchesAuthoredExpectation: results.filter((row) => row.matchesAuthoredExpectation).length,
       failures: results.filter((row) => row.failed).length,

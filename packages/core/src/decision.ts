@@ -7,6 +7,8 @@ import type {
 } from './types.js';
 
 export const POLICY_VERSION = 'rules-v1';
+export const JEV_POLICY_VERSION = 'jev-rubric-v2';
+export const JEV_EVIDENCE_MAX_AGE_MS = 300_000;
 export const DECISION_MAX_AGE_MS = 30_000;
 
 function evidence(observation: SignalObservation): number {
@@ -43,7 +45,7 @@ export function createRulesEngine(): DecisionEngine {
 
 type Prepared = { reason: AbstainReason } | { input: ResolvedEvaluationInput };
 
-function prepare(definition: Definition, snapshot: Snapshot, now: number): Prepared {
+function prepare(definition: Definition, snapshot: Snapshot, now: number, engineName: 'rules' | 'jev' = 'rules'): Prepared {
   if (snapshot.coverage.truncated) return { reason: 'capacity_limit' };
   const page = own(definition.pages, snapshot.pageId);
   if (!page) return { reason: 'invalid_result' };
@@ -66,6 +68,7 @@ function prepare(definition: Definition, snapshot: Snapshot, now: number): Prepa
   const observations = snapshot.observations.filter((observation) => {
     const signal = own(definition.signals, observation.signalId);
     return observation.source === 'direct' && signal &&
+      (engineName !== 'jev' || observation.lastSeenAgoMs <= JEV_EVIDENCE_MAX_AGE_MS) &&
       !(page.productId && signal.productId && page.productId !== signal.productId);
   }).map((observation) => ({ ...observation, definition: definition.signals[observation.signalId]! }));
   const views = observations.reduce((sum, observation) => sum + observation.qualifiedViews, 0);
@@ -75,7 +78,8 @@ function prepare(definition: Definition, snapshot: Snapshot, now: number): Prepa
   const input: ResolvedEvaluationInput = {
     topics: Object.fromEntries(Object.entries(definition.topics ?? {}).filter(([id]) =>
       observations.some((item) => item.definition.topicIds?.includes(id)) || candidates.some((item) => item.topicIds?.includes(id)))),
-    snapshot: { ...snapshot, observations: snapshot.observations.filter((observation) => observation.source === 'direct' && directIds.has(observation.signalId)), recent: snapshot.recent.filter((event) => event.source === 'direct' && directIds.has(event.signalId)) },
+    snapshot: { ...snapshot, observations: snapshot.observations.filter((observation) => observation.source === 'direct' && directIds.has(observation.signalId)), recent: snapshot.recent.filter((event) => event.source === 'direct' && directIds.has(event.signalId) &&
+      (engineName !== 'jev' || event.ageMs <= JEV_EVIDENCE_MAX_AGE_MS)) },
     page, observations, candidates,
   };
   return { input: deepFreeze(input) };
@@ -115,7 +119,7 @@ export async function evaluateSnapshot(definition: Definition, snapshot: Snapsho
   let base: DecisionBase = {
     schemaVersion: '0.1', decisionId: options.id?.() ?? globalThis.crypto.randomUUID(),
     snapshotId: snapshot.snapshotId, revision: snapshot.revision, pageViewId: snapshot.pageViewId,
-    definitionVersion: definition.definitionVersion, policyVersion: engine.name === 'jev' ? 'jev-rubric-v1' : POLICY_VERSION,
+    definitionVersion: definition.definitionVersion, policyVersion: engine.name === 'jev' ? JEV_POLICY_VERSION : POLICY_VERSION,
     engine: { name: engine.name, version: engine.version }, assessments: [], maxAgeMs: DECISION_MAX_AGE_MS,
   };
   const abstain = (reason: AbstainReason): Decision => deepFreeze({ ...base, type: 'abstain', reason });
@@ -124,7 +128,7 @@ export async function evaluateSnapshot(definition: Definition, snapshot: Snapsho
   try { valid = validateSnapshot(snapshot, definition); } catch { return abstain('invalid_result'); }
   const now = options.now ?? Date.now();
   if (!Number.isFinite(now)) return abstain('invalid_result');
-  const prepared = prepare(definition, valid, now);
+  const prepared = prepare(definition, valid, now, engine.name);
   if ('reason' in prepared) return abstain(prepared.reason);
   if (engine.name === 'jev' && new TextEncoder().encode(JSON.stringify(prepared.input)).byteLength > 16 * 1_024) return abstain('capacity_limit');
   const signal = options.signal ?? new AbortController().signal;
@@ -156,7 +160,7 @@ export function preflightReason(definition: Definition, snapshot: Snapshot, now 
 export function technicalDecision(snapshot: Snapshot, reason: AbstainReason): Decision {
   return deepFreeze({ schemaVersion: '0.1', decisionId: globalThis.crypto.randomUUID(),
     snapshotId: snapshot.snapshotId, revision: snapshot.revision, pageViewId: snapshot.pageViewId,
-    definitionVersion: snapshot.definitionVersion, policyVersion: 'jev-rubric-v1',
+    definitionVersion: snapshot.definitionVersion, policyVersion: JEV_POLICY_VERSION,
     engine: { name: 'jev', version: 'remote-v1' }, assessments: [], maxAgeMs: DECISION_MAX_AGE_MS,
     type: 'abstain', reason });
 }
@@ -178,9 +182,9 @@ export function validateDecision(value: unknown, definition: Definition, snapsho
     || engine.version.length < 1 || engine.version.length > 120
     || Object.keys(engine).some((key) => !['name', 'version', 'model'].includes(key))
     || (engine.model !== undefined && (typeof engine.model !== 'string' || !engine.model || engine.model.length > 120))
-    || result.policyVersion !== (engine.name === 'jev' ? 'jev-rubric-v1' : POLICY_VERSION)) return invalid();
+    || result.policyVersion !== (engine.name === 'jev' ? JEV_POLICY_VERSION : POLICY_VERSION)) return invalid();
   if (!Array.isArray(result.assessments)) return invalid();
-  const prepared = prepare(definition, validateSnapshot(snapshot, definition), now);
+  const prepared = prepare(definition, validateSnapshot(snapshot, definition), now, engine.name);
   if (result.assessments.length) {
     if (!('input' in prepared) || !validAssessments(prepared.input, { assessments: result.assessments }, engine as DecisionEngine)) return invalid();
   }
@@ -205,7 +209,7 @@ export function canRecommend(definition: Definition, snapshot: Snapshot, decisio
   try {
     const now = options.now ?? Date.now();
     if (!Number.isFinite(now)) return false;
-    const prepared = prepare(definition, validateSnapshot(snapshot, definition), now);
+    const prepared = prepare(definition, validateSnapshot(snapshot, definition), now, decision.engine.name);
     return 'input' in prepared && prepared.input.candidates.some((candidate) => candidate.contentId === decision.contentId);
   } catch { return false; }
 }

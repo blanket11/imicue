@@ -1,8 +1,26 @@
 import { describe, it, expect, vi } from 'vitest';
 import { compareScenarios, measuredTransport } from '../../scripts/lib/jev-evaluation.js';
 import { JEV_MODEL } from '@imicue/server';
+import { evaluationInput } from '../../scripts/lib/evaluation-input.js';
+import { definition, observation, snapshot } from '../../packages/core/test/fixtures.js';
 
 describe('bounded live-evaluation harness (mock transport only)', () => {
+  it.each(['labels', 'dictionary-en'] as const)('changes only presentation of meaning for %s, preserving evidence and candidate scope', (variant) => {
+    const def = definition();
+    const input = { snapshot: snapshot(), page: def.pages.home!, topics: def.topics,
+      observations: [{ ...observation(), definition: def.signals.features! }],
+      candidates: [{ ...def.contents['feature-guide']!, contentId: 'feature-guide' }],
+    };
+    const modified = evaluationInput(input, variant);
+    expect(modified.snapshot).toBe(input.snapshot);
+    expect(modified.page).toBe(input.page);
+    expect(modified.observations[0]).toMatchObject({ signalId: 'features', qualifiedViews: 2, visibleMs: 30_000, lastSeenAgoMs: 0 });
+    expect(modified.candidates).toHaveLength(1);
+    expect(modified.candidates[0]).toMatchObject({ contentId: 'feature-guide', productId: 'demo-contract', topicIds: ['features'] });
+    expect(modified.observations[0]!.definition.modelDescription).toBe(variant === 'labels' ? 'features' : 'An introduction to the features of the fictional product DemoContract.');
+    expect(input.observations[0]!.definition.modelDescription).toBeUndefined();
+  });
+
   it('uses the common gates, exclusions, numeric usage and records disagreements without inventing human labels', async () => {
     const transport = vi.fn(async (_url: string, init?: RequestInit) => {
       const request = JSON.parse(String(init?.body));
@@ -16,8 +34,8 @@ describe('bounded live-evaluation harness (mock transport only)', () => {
         }])), account: 'synthetic-private-value' });
     });
     const report = await compareScenarios({ apiKey: 'synthetic-key', transport });
-    expect(report.summary).toMatchObject({ completed: 12, planned: 12, requests: 9, gatedWithoutApi: 3,
-      failures: 0, inputTokens: 900, outputTokens: 0 });
+    expect(report.summary).toMatchObject({ completed: 12, planned: 12, requests: 8, gatedWithoutApi: 4,
+      failures: 0, inputTokens: 800, outputTokens: 0 });
     expect(report.summary.matchesAuthoredExpectation).toBeLessThan(12);
     expect(report.humanReview).toBe('pending');
     expect(report.results.find((row) => row.id === 'expired-candidate')!.jev.assessments.map((row) => row.contentId)).not.toContain('feature-guide');
