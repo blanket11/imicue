@@ -5,7 +5,8 @@
   "type": "module",
   "license": "Apache-2.0",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/next-static"
   ],
   "engines": {
     "node": "24.14.0",
@@ -17,15 +18,23 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:unit": "vitest run",
-    "build": "npm run typecheck && vite build",
+    "build": "npm run typecheck && npm run build:packages && npm run build:browser && npm run build:demo && npm run build:next",
     "dev": "vite --host 127.0.0.1",
     "preview": "vite preview --host 127.0.0.1",
     "test:e2e": "playwright test",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run check:bundle && npm run test:e2e",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run check:bundle && npm run check:distribution && npm run test:e2e",
     "check:bundle": "node scripts/check-bundle.mjs",
-    "dev:server": "tsx examples/server-node/index.ts",
-    "dev:server:jev": "tsx examples/server-node/index.ts --jev",
-    "test:jev": "tsx scripts/jev-integration.ts"
+    "dev:server": "tsx --conditions=imicue-source examples/server-node/index.ts",
+    "dev:server:jev": "tsx --conditions=imicue-source examples/server-node/index.ts --jev",
+    "test:jev": "tsx --conditions=imicue-source scripts/jev-integration.ts",
+    "build:packages": "node scripts/build-packages.mjs",
+    "build:browser": "node scripts/build-browser.mjs",
+    "build:demo": "vite build",
+    "build:next": "npm run build --workspace @imicue/example-next-static",
+    "dev:next": "npm run build:packages && npm run dev --workspace @imicue/example-next-static",
+    "preview:next": "node scripts/serve-static.mjs examples/next-static/out 5184",
+    "preview:distribution": "node scripts/serve-static.mjs dist/browser 5185",
+    "check:distribution": "node scripts/check-distribution.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

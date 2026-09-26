@@ -1,38 +1,15 @@
-import { build } from 'vite';
+import { readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
-import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import assert from 'node:assert/strict';
 
-// This is a local inspection artifact, not a published package or an M4 distribution build.
-const result = await build({
-  configFile: false,
-  logLevel: 'error',
-  build: {
-    write: false,
-    minify: true,
-    lib: { entry: resolve('scripts/bundle-entry.ts'), formats: ['es'] },
-  },
-  plugins: [{
-    name: 'imicue-inspection',
-    generateBundle() {
-      for (const id of this.getModuleIds()) {
-        if (/packages\/server|@typesafe-ai|node_modules\/(react|react-dom)\//.test(id)) {
-          throw new Error(`Unexpected browser dependency: ${id}`);
-        }
-      }
-    },
-  }],
-});
-const outputs = Array.isArray(result) ? result : [result];
-let bytes = 0;
-let gzipBytes = 0;
-for (const output of outputs) {
-  if (!('output' in output)) throw new Error('Unexpected watch build');
-  for (const chunk of output.output) {
-    if (chunk.type !== 'chunk') continue;
-    if (/TYPESAFE_API_KEY|@typesafe-ai|NEXT_PUBLIC_/.test(chunk.code)) throw new Error('Unexpected provider or key configuration in browser bundle');
-    bytes += Buffer.byteLength(chunk.code);
-    gzipBytes += gzipSync(chunk.code).byteLength;
-  }
+const manifest = JSON.parse(await readFile('dist/browser/manifest.json', 'utf8'));
+for (const [format, entry] of Object.entries(manifest.files)) {
+  const bytes = await readFile(`dist/browser/${entry.filename}`);
+  assert.doesNotMatch(bytes.toString(), /TYPESAFE_API_KEY|@typesafe-ai|NEXT_PUBLIC_|node_modules\/(react|react-dom)/);
+  assert.equal(bytes.length, entry.bytes);
+  assert.equal(gzipSync(bytes).length, entry.gzipBytes);
+  assert.equal(`sha384-${createHash('sha384').update(bytes).digest('base64')}`, entry.integrity);
+  assert.ok(entry.gzipBytes <= 25 * 1024, 'Browser + Core + Rules exceeds 25 KiB gzip');
+  console.log(JSON.stringify({ format, ...entry, targetGzipBytes: 25 * 1024 }));
 }
-console.log(JSON.stringify({ artifact: 'Browser + Core + Rules', bytes, gzipBytes, targetGzipBytes: 25 * 1024 }));
-if (gzipBytes > 25 * 1024) throw new Error('Browser bundle exceeds the initial 25 KiB gzip target');

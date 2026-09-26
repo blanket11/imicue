@@ -18,7 +18,7 @@ const mock: DecisionEngine = {
 };
 const engine = mode === 'mock' ? mock : createJevEngine({ model: JEV_MODEL });
 const handler = createDecisionHandler({ definitions: [definition], engine, mode: 'development',
-  origins: ['http://127.0.0.1:5183', 'http://127.0.0.1:4173', 'http://127.0.0.1:5193'] });
+  origins: ['http://127.0.0.1:5183', 'http://127.0.0.1:4173', 'http://127.0.0.1:5193', 'http://127.0.0.1:5184', 'http://127.0.0.1:5186'] });
 const server = createNodeServer(handler);
 server.listen(5193, '127.0.0.1', () => console.log(`Imicue ${mode} endpoint: http://127.0.0.1:5193/v1/decide`));
 server.on('error', () => { console.error('Imicue server could not start (check port 5193).'); process.exitCode = 1; });

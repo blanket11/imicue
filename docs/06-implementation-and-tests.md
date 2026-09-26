@@ -1,6 +1,6 @@
 # 実装計画と受け入れテスト
 
-状態: M0〜M2のローカル版とM3の判定サーバーを実装。M3はモック検証までで、実API試験は未実施。M4〜M5は未実装。検証結果と未実施項目は [ローカル版](09-local-implementation.md) と [M3の実装メモ](10-server-implementation.md) を参照する。
+状態: M0〜M4を実装。Jev接続はモック検証までで、実API試験は未実施。M5は未着手。検証結果と未実施項目は [ローカル版](09-local-implementation.md)、[M3](10-server-implementation.md)、[M4](11-distribution-and-next.md) の実装メモを参照する。
 
 ## 1. 進め方
 

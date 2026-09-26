@@ -9,3 +9,6 @@ test-results/
 *.log
 *.tsbuildinfo
 .DS_Store
+.next/
+out/
+next-env.d.ts

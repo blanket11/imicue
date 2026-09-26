@@ -60,6 +60,10 @@ M3実装時の再確認（2026-09-26）: `@typesafe-ai/sdk@0.6.0` を固定し�
 
 ImicueのJev接続は別のendpoint。ローカルRulesは静的ファイルだけで動く構成にする。
 
+M4実装時の再確認（2026-09-26）: Next.js 16.3.6、React/React DOM 19.3.0を固定した。`output: 'export'`、`trailingSlash: true` で生成したoutを静的サーバーから配信する。React Strict Modeのeffect再実行は開発時の検査なので、静的出力のE2Eとは別に実Reactを使う統合試験で確認する。[Next.jsのStrict Mode設定](https://nextjs.org/docs/app/api-reference/config/next-config-js/reactStrictMode)・[React StrictMode](https://react.dev/reference/react/StrictMode) を参照。
+
+配布は [Vite Library Mode](https://vite.dev/guide/build.html#library-mode) と [TypeScript declaration](https://www.typescriptlang.org/tsconfig/declaration.html) を参照した。通常のpackage importは生成済みESMと型定義を解決し、リポジトリ内の開発時だけ明示した条件でソースを参照する。[Node.js Conditional Exports](https://nodejs.org/api/packages.html#conditional-exports) に従う構成で、外部利用を模した型検査ではソースをコピーせずに確認した。
+
 ## S7
 
 **MDN — Intersection Observerでの表示時間計測**

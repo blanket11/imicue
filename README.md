@@ -1,7 +1,7 @@
 # imicue
 An open-source library that turns website and app behavior signals into meaningful decisions and recommendations.
 
-登録した行動シグナルに辞書で意味を付け、次に案内する候補を評価する、UIを持たないライブラリです。M0〜M2のローカル版とM3の判定サーバーを実装しています。M3はモックで検証し、Jev実API試験は未実施です。表示時間は読了時間ではなく、Rulesのスコアも購入確率ではありません。
+登録した行動シグナルに辞書で意味を付け、次に案内する候補を評価する、UIを持たないライブラリです。M0〜M4を実装し、ローカルの配布ファイルとNext.jsの静的デモまで確認しています。Jev接続はモック検証までで、実API試験は未実施です。表示時間は読了時間ではなく、Rulesのスコアも購入確率ではありません。
 
 ## ローカルデモを動かす
 
@@ -27,7 +27,7 @@ npm run preview
 
 ## SDKの最小例
 
-以下はこのworkspaces内で使う例です。パッケージは未公開です。`definition` は [データ契約](docs/02-data-contracts.md) に従う固定の辞書です。
+以下はこのworkspaces内で使う例です。パッケージは未公開です。通常のimportは `npm run build:packages` で生成したESMと型定義を使います。`definition` は [データ契約](docs/02-data-contracts.md) に従う固定の辞書です。
 
 ```js
 import { createTracker } from '@imicue/browser';
@@ -59,6 +59,10 @@ tracker.destroy();
 ```
 
 `data-imicue-signal` は登録したcontentシグナルだけを計測します。手動 `track()` はactionシグナルだけを受け付け、任意のmetadataや入力テキストは受け付けません。`data-imicue-ignore` で対象外にし、`data-imicue-source="recommendation"` で推薦由来の記録を分離できます。
+
+ページをまたいで直近30分の記録を使う場合、SPAでは同じTrackerを維持して `setPage(pageId)` を呼びます。通常のリンク遷移や再読み込みにも対応する場合は、各ページで同じ辞書を使い `storage: 'session'` を指定します。同一Origin・同じタブのsessionStorageから、許可とstartの後に記録を復元します。同意自体は保存しないため、利用サイトの同意管理との接続が必要です。同意撤回・リセットでは保存分も削除します。別ドメインや別端末をまたぐユーザー識別は行いません。
+
+現状のVanillaデモはmemory設定のため通常のページ遷移で記録が消えます。Next.jsデモはLink遷移中の記録を維持しますが、再読み込みでは消えます。表示条件を満たしたガイドや確認完了したガイドは再推薦から除外します。別の候補を案内するには辞書の関連と観測の根拠が必要で、機能ガイドを見たことだけで料金への興味を断定しません。
 
 ## M3のモック接続を試す
 
@@ -97,19 +101,52 @@ RUN_JEV_INTEGRATION=1 JEV_INTEGRATION_REQUESTS=1 npm run test:jev
 
 合成データのみで1回実行します。回数は1〜5に制限し、再試行は行いません。フラグやキーがない場合はSKIPを表示します。継続してデモを実APIへ接続する場合も別途許可が必要で、`RUN_JEV_SERVER=1 npm run dev:server:jev` を明示して起動します。
 
+## M4の配布ファイルとNext.jsデモを試す
+
+まず `npm run build` でパッケージ、単体ブラウザファイル、Vanillaデモ、Next.jsの静的出力を生成します。
+
+```sh
+npm run build
+npm run preview:next
+```
+
+[Next.js静的デモ](http://127.0.0.1:5184/)で計測を許可・開始し、「検索例を開く」を操作します。上部のガイド間を移動するとpageIdとpageViewIdが変わり、記録と許可は維持されます。再読み込みではリセットされます。候補のリンクは「候補のガイドを表示」を押すと現れます。
+
+初期モードはRulesで、判定サーバーは不要です。「判定サーバー接続」を選ぶ場合だけ、別ターミナルで `npm run dev:server` を起動してください。モード変更時は許可と記録をリセットします。Next.js内には判定用のPOST APIを置いていません。
+
+配布形式を比べる場合は、次のサーバーを別ターミナルで起動します。
+
+```sh
+npm run preview:distribution
+```
+
+[ESMデモ](http://127.0.0.1:5185/es/)と[IIFEデモ](http://127.0.0.1:5185/iife/)は、生成した固定ファイルを読み込みます。IIFEは `window.Imicue` に `createTracker`・`createRulesEngine`・`createRemoteEngine`・`version` を公開します。読み込みだけでは計測を始めません。既存の `window.Imicue` は上書きせず、重複読み込みは `imicue:global_conflict` で知らせます。
+
+| 生成先 | 内容 |
+| --- | --- |
+| `packages/core/dist`・`packages/browser/dist`・`packages/server/dist` | ESM、`.d.ts`、LICENSE |
+| `dist/browser/imicue-0.1.0-dev.0.js` | CoreとRulesを含む単体ESM |
+| `dist/browser/imicue-0.1.0-dev.0.iife.js` | 通常のscriptタグ用ファイル |
+| `dist/browser/manifest.json` | バージョン、サイズ、SHA-384のSRI値 |
+| `examples/next-static/out` | Next.jsが出力したHTML・JS・CSS |
+
+すべてローカル成果物です。npmやCDNには公開していません。IIFEの自己配信例、CSP、型定義の扱いは [M4の実装メモ](docs/11-distribution-and-next.md) に記載しています。Next.jsの開発モードが必要な場合は `npm run dev:next` を使います。確認用の静的配信は5184、開発モードは5186です。
+
 ## 検証を実行する
 
 ```sh
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 npm run check
 ```
 
-`check` は型検査、lint、単体テスト、静的ビルド、ブラウザ用コードの依存・サイズ検査、ChromiumでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run test:e2e` を使います。E2Eの前には `npm run build` が必要です。E2Eは4173と5193を使うため、手動で起動したモックサーバーは先に停止してください。通常テストから実APIは呼びません。
+`check` は型検査、lint、単体・統合テスト、ビルド、配布ファイルの検査、Chromium・Firefox・WebKitでのE2Eを順に実行します。個別には `npm run typecheck`、`npm run lint`、`npm test`、`npm run check:bundle`、`npm run check:distribution`、`npm run test:e2e` を使います。配布検査とE2Eの前には `npm run build` が必要です。E2Eは4173・5184・5185・5193を使うため、このリポジトリの手動プレビューは先に停止してください。通常テストから実APIは呼びません。
+
+macOSでPlaywright同梱のFirefoxとWebKitを検証しています。WebKitはSafariの基盤ですが、Safari製品版の検証とは分けています。Safari 26.4のWebDriver試験はローカル設定の「リモートオートメーション」が無効で未実施です。iPhone/iPadの実機検証も残っています。
 
 ## 実装範囲と制約
 
-Coreに辞書検証・期間限定集計・Rules・共通ポリシー、Browserに同意・属性計測・保存・購読・判定スケジューラー・HTTP通信を実装しています。Serverは固定辞書を解決し、入力と利用枠を検査してJev Adapterへ渡します。CoreはDOMやJev SDKに依存しません。公開APIと詳しい設計は [仕様書一覧](docs/README.md)、検証結果は [M0〜M2](docs/09-local-implementation.md) と [M3の実装メモ](docs/10-server-implementation.md) を参照してください。
+Coreに辞書検証・期間限定集計・Rules・共通ポリシー、Browserに同意・属性計測・保存・購読・判定スケジューラー・HTTP通信を実装しています。Serverは固定辞書を解決し、入力と利用枠を検査してJev Adapterへ渡します。CoreはDOMやJev SDKに依存しません。公開APIと詳しい設計は [仕様書一覧](docs/README.md)、検証結果は [M0〜M2](docs/09-local-implementation.md)、[M3](docs/10-server-implementation.md)、[M4](docs/11-distribution-and-next.md) を参照してください。
 
-配布用ESM/型定義/IIFEとNext.jsの例はM4、公開準備はM5として残しています。npm公開・デプロイ・実サイト導入は行っていません。メモリ内の利用制限は開発用で、本番モードでは共有カウンターを持つ制限フックがないと起動を拒否します。共有基盤は未実装です。
+公開準備のM5は未着手です。npm公開・デプロイ・実サイト導入は行っていません。メモリ内の利用制限は開発用で、本番モードでは共有カウンターを持つ制限フックがないと起動を拒否します。共有基盤は未実装です。
 
-通常の同一documentのDOMが対象です。iframe、Shadow DOM、特殊なCSS transformや重なりの完全な判定には対応しません。60秒無操作で表示時間の計測を止めるため、操作せず長文を読む時間も停止対象です。推薦品質やCV改善、他ブラウザでの互換性は、このローカル試験からは保証しません。
+通常の同一documentのDOMが対象です。iframe、Shadow DOM、特殊なCSS transformや重なりの完全な判定には対応しません。60秒無操作で表示時間の計測を止めるため、操作せず長文を読む時間も停止対象です。推薦品質やCV改善、未検証のブラウザ・OSでの互換性は、このローカル試験からは保証しません。

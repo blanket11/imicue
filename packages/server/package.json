@@ -3,6 +3,22 @@
   "version": "0.1.0-dev.0",
   "private": true,
   "type": "module",
-  "exports": "./src/index.ts",
-  "dependencies": { "@imicue/core": "0.1.0-dev.0", "@typesafe-ai/sdk": "0.6.0" }
+  "exports": {
+    ".": {
+      "imicue-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@imicue/core": "0.1.0-dev.0",
+    "@typesafe-ai/sdk": "0.6.0"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "license": "Apache-2.0"
 }

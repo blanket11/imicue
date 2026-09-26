@@ -228,7 +228,7 @@ test('B10: 201 DOM targets are bounded and the measured start cost is reported',
     Reflect.deleteProperty(document, 'querySelectorAll');
     return { elapsedMs: performance.now() - before, documentScans };
   });
-  const metrics = { browser: 'Chromium', viewport: '1280x800', platform: process.platform, startMs, scrollMetrics };
+  const metrics = { browser: testInfo.project.name, viewport: '1280x800', platform: process.platform, startMs, scrollMetrics };
   console.info('200-element probe:', JSON.stringify(metrics));
   await testInfo.attach('200-elements-start-cost', { body: JSON.stringify(metrics), contentType: 'application/json' });
   expect(scrollMetrics.documentScans).toBe(0);

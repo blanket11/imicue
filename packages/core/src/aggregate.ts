@@ -1,4 +1,4 @@
-import type { Definition, Snapshot, Source, RecentEvent, ContentOutcome, SignalObservation } from './types';
+import type { Definition, Snapshot, Source, RecentEvent, ContentOutcome, SignalObservation } from './types.js';
 
 type EventKind = RecentEvent['kind'];
 type OutcomeKind = ContentOutcome['kind'];
