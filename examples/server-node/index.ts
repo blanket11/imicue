@@ -1,6 +1,7 @@
 import { createRulesEngine, type DecisionEngine } from '@imicue/core';
 import { createDecisionHandler, createJevEngine, createNodeServer, JEV_MODEL } from '@imicue/server';
 import { definition } from '../vanilla/definition.js';
+import { catalogDefinition } from '../vanilla/catalog/definition.js';
 
 // Mock mode remains the default even if a real key happens to be in the environment.
 const mode = process.argv.includes('--jev') ? 'jev' : 'mock';
@@ -17,7 +18,7 @@ const mock: DecisionEngine = {
   },
 };
 const engine = mode === 'mock' ? mock : createJevEngine({ model: JEV_MODEL });
-const handler = createDecisionHandler({ definitions: [definition], engine, mode: 'development',
+const handler = createDecisionHandler({ definitions: [definition, catalogDefinition], engine, mode: 'development',
   origins: ['http://127.0.0.1:5183', 'http://127.0.0.1:4173', 'http://127.0.0.1:5193', 'http://127.0.0.1:5184', 'http://127.0.0.1:5186'] });
 const server = createNodeServer(handler);
 server.listen(5193, '127.0.0.1', () => console.log(`Imicue ${mode} endpoint: http://127.0.0.1:5193/v1/decide`));

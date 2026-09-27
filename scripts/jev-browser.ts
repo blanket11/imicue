@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium, firefox, webkit, expect } from '@playwright/test';
 import { createDecisionHandler, createJevEngine, createNodeServer, JEV_MODEL } from '@imicue/server';
+import { JEV_POLICY_VERSION } from '@imicue/core';
 import { definition } from '../examples/vanilla/definition.js';
 import { measuredTransport } from './lib/jev-evaluation.js';
 
@@ -59,7 +60,7 @@ if (process.env.RUN_JEV_BROWSER !== '1' || !process.env.TYPESAFE_API_KEY?.trim()
         }, scenario);
         await expect(page.locator('#decision')).toContainText(JEV_MODEL, { timeout: 15_000 });
         const decision = JSON.parse((await page.locator('#decision').textContent())!);
-        assert.equal(decision.policyVersion, 'jev-rubric-v3');
+        assert.equal(decision.policyVersion, JEV_POLICY_VERSION);
         assert.equal(measured.requests.length - offset, 1);
         assert.equal(posts, 1);
         assert.equal(unexpectedTraffic || credentialInBrowser, false);

@@ -446,15 +446,20 @@ describe('B07/B09 — consent and opt-in storage', () => {
 });
 
 describe('B08 — scheduler, stale asynchronous results and render guards', () => {
-  it.each(['withdraw', 'page', 'revision'])('discards a real remote transport response after %s', async (action) => {
+  it.each([1, 100].flatMap((count) => ['withdraw', 'page', 'revision'].map((action) => ({ count, action }))))('discards a real remote response with $count candidates after $action', async ({ count, action }) => {
+    const source = { ...definition, contents: { ...definition.contents,
+      ...Object.fromEntries(Array.from({ length: count - 1 }, (_, index) => [`extra-${index}`, {
+        title: 'Synthetic unrelated guide', description: 'Synthetic unrelated content', href: `/extra/${index}`, enabled: true,
+      }])) } };
     let finish!: () => void;
     let signal: AbortSignal | null | undefined;
     const fetch = vi.fn<typeof globalThis.fetch>(async (_url, init) => {
       signal = init?.signal;
-      const decision = await evaluateSnapshot(definition, JSON.parse(String(init?.body)), createRulesEngine(), { now: epoch });
+      const decision = await evaluateSnapshot(source, JSON.parse(String(init?.body)), createRulesEngine(), { now: epoch });
+      expect(decision.assessments).toHaveLength(count);
       return new Promise<Response>((resolve) => { finish = () => resolve(Response.json(decision)); });
     });
-    const tracker = setup({ engine: createRemoteEngine({ endpoint: 'https://example.test/v1/decide', baseOrigin: 'https://example.test', fetch }) });
+    const tracker = setup({ definition: source, engine: createRemoteEngine({ endpoint: 'https://example.test/v1/decide', baseOrigin: 'https://example.test', fetch }) });
     const outputs = vi.fn(); tracker.onDecision(outputs);
     begin(tracker); tracker.track('action');
     const pending = tracker.evaluate();

@@ -7,9 +7,11 @@ import type {
 } from './types.js';
 
 export const POLICY_VERSION = 'rules-v1';
-export const JEV_POLICY_VERSION = 'jev-rubric-v3';
+export const JEV_POLICY_VERSION = 'jev-rubric-v4';
 export const JEV_EVIDENCE_MAX_AGE_MS = 300_000;
 export const DECISION_MAX_AGE_MS = 30_000;
+/** Bounds the complete resolved input; each provider request has a separate server budget. */
+export const RESOLVED_INPUT_MAX_BYTES = 1024 * 1024;
 
 function evidence(observation: SignalObservation): number {
   const base = Math.min(1,
@@ -64,7 +66,6 @@ function prepare(definition: Definition, snapshot: Snapshot, now: number, engine
     .sort(([a], [b]) => a.localeCompare(b, 'en'))
     .map(([contentId, content]) => ({ ...content, contentId }));
   if (!candidates.length) return { reason: 'no_eligible_content' };
-  if (candidates.length > 8) return { reason: 'capacity_limit' };
   const observations = snapshot.observations.filter((observation) => {
     const signal = own(definition.signals, observation.signalId);
     return observation.source === 'direct' && signal &&
@@ -130,7 +131,7 @@ export async function evaluateSnapshot(definition: Definition, snapshot: Snapsho
   if (!Number.isFinite(now)) return abstain('invalid_result');
   const prepared = prepare(definition, valid, now, engine.name);
   if ('reason' in prepared) return abstain(prepared.reason);
-  if (engine.name === 'jev' && new TextEncoder().encode(JSON.stringify(prepared.input)).byteLength > 16 * 1_024) return abstain('capacity_limit');
+  if (engine.name === 'jev' && new TextEncoder().encode(JSON.stringify(prepared.input)).byteLength > RESOLVED_INPUT_MAX_BYTES) return abstain('capacity_limit');
   const signal = options.signal ?? new AbortController().signal;
   if (signal.aborted) return abstain('engine_unavailable');
   let result: unknown;

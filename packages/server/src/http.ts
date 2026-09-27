@@ -1,5 +1,6 @@
 import { evaluateSnapshot, validateDefinition, validateSnapshot, type Definition, type DecisionEngine } from '@imicue/core';
 import { createMemoryLimiter, type UsageLimiter } from './limiter.js';
+import { assertSharedProviderEngine, ProviderLimitFailure } from './provider-limiter.js';
 
 class HttpFailure extends Error {
   constructor(readonly status: number, readonly code: string, readonly retryAfterMs?: number) { super(code); }
@@ -55,6 +56,7 @@ export function createDecisionHandler(options: HandlerOptions): (request: Reques
   if (!['development', 'production'].includes(options.mode)) throw new Error('explicit_mode_required');
   const limiter = options.limiter ?? createMemoryLimiter();
   if ((options.mode === 'production' || process.env.NODE_ENV === 'production') && !limiter.shared) throw new Error('shared_limiter_required');
+  if (options.mode === 'production' || process.env.NODE_ENV === 'production') assertSharedProviderEngine(options.engine);
   const timeoutMs = options.timeoutMs ?? 3_000;
   if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > 3_000) throw new Error('invalid_timeout');
   const origins = new Set(options.origins.map((origin) => {
@@ -115,6 +117,9 @@ export function createDecisionHandler(options: HandlerOptions): (request: Reques
           try {
             if (evaluation.signal.aborted) throw new Error('aborted');
             return await options.engine.evaluate(input, evaluation);
+          } catch (error) {
+            if (error instanceof ProviderLimitFailure) limitFailure = new HttpFailure(429, 'rate_limited', error.retryAfterMs);
+            throw error;
           } finally { reservation.release(); }
         },
       };

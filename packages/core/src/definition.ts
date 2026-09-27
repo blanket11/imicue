@@ -1,5 +1,9 @@
 import type { Definition } from './types.js';
 
+export const MAX_CONTENTS = 100;
+export const MAX_PAGES = 200;
+export const MAX_DEFINITION_BYTES = 2 * 1024 * 1024;
+
 export class ValidationError extends Error {
   readonly code = 'invalid_definition';
   constructor(readonly field: string) {
@@ -106,6 +110,7 @@ export function isAllowedHref(href: string, allowedOrigins: readonly string[] = 
 
 export interface DefinitionOptions {
   allowedOrigins?: readonly string[];
+  /** Retained for source compatibility. The former eight-candidate warning is no longer emitted. */
   onWarning?: (code: 'candidate_capacity') => void;
 }
 
@@ -118,8 +123,8 @@ export function validateDefinition(input: unknown, options: DefinitionOptions = 
   text(value.definitionVersion, 120, 'definitionVersion');
   const topics = dictionary(value.topics ?? {}, 32, 'topics');
   const signals = dictionary(value.signals, 200, 'signals');
-  const contents = dictionary(value.contents, 20, 'contents');
-  const pages = dictionary(value.pages, 100, 'pages');
+  const contents = dictionary(value.contents, MAX_CONTENTS, 'contents');
+  const pages = dictionary(value.pages, MAX_PAGES, 'pages');
   for (const [key, entry] of Object.entries(topics)) {
     const item = plain(entry, `topics.${key}`);
     fields(item, ['label', 'description', 'modelDescription'], `topics.${key}`);
@@ -154,6 +159,7 @@ export function validateDefinition(input: unknown, options: DefinitionOptions = 
     if (item.productId !== undefined) id(item.productId, `pages.${key}.productId`);
     if (item.contentId !== undefined) reference(item.contentId, contents, `pages.${key}.contentId`);
   }
-  if (Object.keys(contents).length > 8) options.onWarning?.('candidate_capacity');
-  return deepFreeze(JSON.parse(JSON.stringify(input)) as Definition);
+  const serialized = JSON.stringify(input);
+  if (new TextEncoder().encode(serialized).byteLength > MAX_DEFINITION_BYTES) throw new ValidationError('definition.capacity');
+  return deepFreeze(JSON.parse(serialized) as Definition);
 }

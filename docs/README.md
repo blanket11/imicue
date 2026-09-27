@@ -1,7 +1,7 @@
 # Imicue — 開発仕様書
 
-**状態: v0.1 Draft / M0〜M4を実装、M5の資料・ローカル検証を整備、公開承認は未実施**
-作成・外部資料確認: 2026-09-26
+**状態: v0.1 Draft / M0〜M4と100候補対応を実装、M5の資料・ローカル検証を整備、npmは未公開**
+最終更新・外部資料確認: 2026-09-27
 
 Imicueは、WebサイトやWebアプリの行動シグナルに辞書で意味を与え、ルールやAIによる判断につなげるヘッドレスなOSSライブラリです。ヘッドレスとは、表示UIをライブラリ本体から分離し、利用サイトが自由に結果を使えることを指します。
 
@@ -9,7 +9,7 @@ Imicueは、WebサイトやWebアプリの行動シグナルに辞書で意味�
 
 ## 最初に読むもの
 
-最新の変更は [Cloudflare Pagesでの公開準備](20-cloudflare-pages.md)にまとめています。サイトの構成は [ローカル版と運用案](19-public-site-and-operations.md)、Jevの判定は [単発操作に対応する採点基準と再検証](18-jev-relevance-rubric.md)を参照してください。変更前の [複雑な辞書での12ケースと確認表](17-recommendation-review.md)、[Jevの鮮度制限](15-freshness-and-live-browser.md)、[Safari製品版の確認](16-safari-verification.md)も参照してください。
+最新の変更は [100候補への拡張と評価](21-candidate-scale.md)にまとめています。公開設定は [Cloudflare Pagesでの公開準備](20-cloudflare-pages.md)、サイトの構成は [ローカル版と運用案](19-public-site-and-operations.md)を参照してください。変更前のJev判定は [単発操作の採点基準](18-jev-relevance-rubric.md)、[12ケースと確認表](17-recommendation-review.md)、[鮮度制限](15-freshness-and-live-browser.md)にあります。[Safari製品版の確認](16-safari-verification.md)も参照してください。
 
 まず [目的と構成](01-product-and-architecture.md)、次に [データ契約](02-data-contracts.md) を読み、担当領域の詳細と [受け入れテスト](06-implementation-and-tests.md) を確認してください。初回の実装依頼では01〜08を通して読みます。
 

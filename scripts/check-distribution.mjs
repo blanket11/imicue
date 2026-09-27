@@ -36,6 +36,42 @@ execFileSync(process.execPath, [resolve('node_modules/typescript/bin/tsc'), '-p'
 await writeFile(`${fixture}/browser-consumer.ts`, "import { createTracker, type TrackerOptions } from '@imicue/browser';\ndeclare const options: TrackerOptions;\nexport const tracker = createTracker(options);\n");
 await writeFile(`${fixture}/browser-tsconfig.json`, JSON.stringify({ extends: './tsconfig.json', compilerOptions: { types: [] }, include: ['browser-consumer.ts'] }));
 execFileSync(process.execPath, [resolve('node_modules/typescript/bin/tsc'), '-p', `${fixture}/browser-tsconfig.json`], { stdio: 'inherit' });
+// Exercise the package files and declarations a compiled consumer (including static Next clients) receives.
+await writeFile(`${fixture}/scale-consumer.ts`, `
+import assert from 'node:assert/strict';
+import { createRulesEngine, evaluateSnapshot, validateDefinition, validateDecision, type Definition, type Snapshot } from '@imicue/core';
+import { createTracker } from '@imicue/browser';
+const definition: Definition = validateDefinition({
+  schemaVersion: '0.1', siteId: 'compiled-scale', definitionVersion: 'scale-v1',
+  signals: { overview: { kind: 'content', description: 'Synthetic overview' }, features: { kind: 'content', description: 'Synthetic feature' } },
+  contents: Object.fromEntries(Array.from({ length: 100 }, (_, index) => ['candidate-' + String(index).padStart(3, '0'), {
+    title: 'Synthetic guide', description: 'Synthetic guide', href: '/guide/' + index, enabled: true,
+    relatedSignalIds: index === 99 ? ['features'] : [],
+  }])),
+  pages: { home: {}, ...Object.fromEntries(Array.from({ length: 100 }, (_, index) => ['page-' + index, { contentId: 'candidate-' + String(index).padStart(3, '0') }])) },
+});
+const snapshot: Snapshot = {
+  schemaVersion: '0.1', siteId: definition.siteId, definitionVersion: definition.definitionVersion,
+  snapshotId: 'snapshot', pageViewId: 'page-view', revision: 1, pageId: 'home', windowMs: 1800000,
+  observations: ['overview', 'features'].map((signalId) => ({ signalId, source: 'direct', qualifiedViews: 1,
+    visibleMs: 30000, clicks: 0, actions: 0, lastSeenAgoMs: 0 })),
+  recent: [], outcomes: [], coverage: { truncated: false },
+};
+const decision = await evaluateSnapshot(definition, snapshot, createRulesEngine(), { now: 0 });
+assert.equal(decision.type, 'recommend');
+assert.equal(decision.type === 'recommend' && decision.contentId, 'candidate-099');
+assert.equal(decision.assessments.length, 100);
+assert.deepEqual(validateDecision(decision, definition, snapshot, 0), decision);
+const tracker = createTracker({ definition, pageId: 'home' });
+assert.deepEqual(tracker.getSnapshot().observations, []);
+assert.equal(tracker.getState().consent, 'unknown');
+tracker.destroy();
+`);
+await writeFile(`${fixture}/scale-tsconfig.json`, JSON.stringify({ extends: './tsconfig.json', compilerOptions: {
+  noEmit: false, outDir: './compiled-scale', rootDir: '.',
+}, include: ['scale-consumer.ts'] }));
+execFileSync(process.execPath, [resolve('node_modules/typescript/bin/tsc'), '-p', `${fixture}/scale-tsconfig.json`], { stdio: 'inherit' });
+execFileSync(process.execPath, [`${fixture}/compiled-scale/scale-consumer.js`], { cwd: fixture, stdio: 'inherit' });
 // Each import runs in a fresh Node process with browser accessors that fail loudly.
 execFileSync(process.execPath, ['--input-type=module', '-e', `
 for (const name of ['window', 'document', 'localStorage', 'sessionStorage']) Object.defineProperty(globalThis, name, { get() { throw new Error('DOM touched on import: ' + name); } });
@@ -65,4 +101,4 @@ async function scan(directory) {
 await scan('examples/next-static/out');
 await scan('dist/browser');
 await scan('dist/site');
-console.log(JSON.stringify({ declarationConsumer: 'passed', importWithoutDOM: 'passed', staticFilesScanned: scanned }));
+console.log(JSON.stringify({ declarationConsumer: 'passed', compiled100CandidateConsumer: 'passed', importWithoutDOM: 'passed', staticFilesScanned: scanned }));

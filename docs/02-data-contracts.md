@@ -120,7 +120,7 @@ URL例は架空のデモ用。サーバーにブラウザからhrefを渡して�
 
 IDは1〜64文字、`^[a-z0-9][a-z0-9_-]*$` とし、`__proto__`、`prototype`、`constructor`等の危険なキーを拒否する。辞書参照はown propertyのみを対象にし、可能ならMapを使う。
 
-description/modelDescriptionは各1〜1,000文字、label/titleは各1〜120文字。初期上限はsignals 200件、topics 32件、contents 20件、pages 100件。全参照を検証し、未知トピック、未知contentId、未知relatedSignalId、重複した定義、無効な期間を初期化エラーにする。
+description/modelDescriptionは各1〜1,000文字、label/titleは各1〜120文字。上限はsignals 200件、topics 32件、contents 100件、pages 200件。定義JSON全体はUTF-8で2MiB以下とする。全参照を検証し、未知トピック、未知contentId、未知relatedSignalId、重複した定義、無効な期間を初期化エラーにする。
 
 hrefは同一サイトの `/` から始まる相対パス、または設定で許可したHTTPS originのみ。`//`、`javascript:`、`data:`、資格情報付きURLは拒否する。許可判定はURL parserによるorigin完全一致で行う。ブラウザもレンダリング直前に再検証する。
 

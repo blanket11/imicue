@@ -1,0 +1,5 @@
+.catalog-section { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; }
+.catalog-layout .debug-panel { position: sticky; top: 20px; }
+#catalog-list { padding-left: 1.5rem; font-size: .875rem; }
+#catalog-list li { margin-bottom: .5rem; }
+@media (max-width: 760px) { .catalog-layout .debug-panel { position: static; } }
