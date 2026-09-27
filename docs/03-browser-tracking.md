@@ -1,14 +1,14 @@
 # Browser SDK — 計測・蓄積・ライフサイクル
 
-## 1. 公開APIの設計
+## 1. TrackerのAPI
 
-次はM0〜M2のローカルSDKで使うAPI。パッケージは未公開で、RemoteEngineはM3の実装予定。実装の補足と検証範囲は [実装メモ](09-local-implementation.md) を参照。
+`createTracker()` は計測・保存・判定の開始と停止を管理する。Rulesはブラウザ内で動作し、`createRemoteEngine()` を指定すると判定サーバーへ接続できる。npmパッケージは未公開。[ローカルデモ](guides/local-demos.md)と[サーバー接続](guides/server-and-jev.md)で実際の使い方を確認できる。
 
 ```ts
 const tracker = createTracker({
   definition,
   pageId: 'home',
-  engine: createRulesEngine(), // RemoteEngineはM3で追加予定
+  engine: createRulesEngine(), // サーバー接続ではcreateRemoteEngine()を指定
   storage: 'memory',         // 明示指定した場合だけ'session'
 });
 
@@ -69,7 +69,7 @@ v0.1の対象は通常の同一documentのDOM。iframe、Shadow DOM、仮想ス�
 
 ## 4. 表示の定義
 
-初期値は次のとおり。すべて検証前の設計パラメーターであり、一般的に最適な値とは主張しない。
+既定値は次のとおり。条件どおりに計測することをテストしているが、すべてのサイトに最適な値とは主張しない。
 
 | 項目 | 初期値 |
 | --- | --- |

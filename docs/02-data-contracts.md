@@ -1,6 +1,6 @@
 # データ契約と意味辞書
 
-状態: v0.1設計仕様。以下のTypeScriptとHTMLは実装するAPIの設計例であり、現在利用できるnpm APIではない。
+開発版の辞書・観測・判定結果の契約を説明する。型の定義元は [`packages/core/src/types.ts`](../packages/core/src/types.ts)。以下の例はリポジトリ内のAPIで利用できる。npmパッケージは未公開。
 
 ## 1. 観測ID、意味、推定を分ける
 

@@ -1,8 +1,8 @@
-# Cloudflare Pagesでの公開準備
+# Cloudflare Pagesで紹介サイトを配信する
 
-2026-09-26。紹介サイトとAPI不要のRulesデモの配信先をCloudflare Pagesに決めた。公開する候補は `dist/site` の静的ファイルだけ。Cloudflareへの接続、デプロイ、DNS設定はまだ行っていない。
+[紹介サイト](https://imicue.push.tokyo/)はCloudflare Pagesで公開している。この文書はメンテナー向けに配信構成と更新時の確認事項をまとめたもの。公開するのは `dist/site` の静的ファイルだけで、Jev判定サーバーは含めない。
 
-## 今回追加したもの
+## 配信に使うファイルと検査
 
 - `site/public/_headers`: CSP、MIME型の誤認防止、フレーム内表示の禁止、Referrerの送信制限。
 - `site/404.html`: 存在しないURLの案内。トップページへ戻るリンクを表示する。
@@ -13,7 +13,7 @@ CSPでは同一オリジンのスクリプト・CSS・画像・フォントだ�
 
 Cloudflare Pagesは出力先の `_headers` を静的レスポンスへ適用する。トップレベルに `404.html` がない場合は、存在しないパスをトップページへ送るSPA用の動作になるため、今回は明示的な404を用意した。参照: [Headers](https://developers.cloudflare.com/pages/configuration/headers/)、[Serving Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/)。
 
-キャッシュはPagesの既定動作を使う。独自の長期キャッシュやCache Rulesは追加しない。公開環境でのキャッシュ更新・圧縮・HTTPS・ヘッダーの反映は、初回デプロイ後に確認する。
+キャッシュはPagesの既定動作を使う。独自の長期キャッシュやCache Rulesは追加しない。キャッシュ更新・圧縮・HTTPS・ヘッダーの反映は、変更後の公開環境でも確認する。ローカルの成功だけで配信設定の成功とは扱わない。
 
 ## ローカルで配布物を確認する
 
@@ -30,7 +30,7 @@ npm run preview:site
 
 ## PagesのGit連携に設定する値
 
-先にこの変更をPRでmainへ取り込む。初回のPagesプロジェクトはGit連携で作成し、次の値を設定する。
+サイト変更はPRでレビューしてmainへ取り込む。PagesのGit連携には次の値を使う。新しい配信先を作る場合は、そのリポジトリと運用に合わせて設定する。
 
 | 項目 | 値 |
 | --- | --- |
@@ -48,23 +48,25 @@ npm run preview:site
 
 JevのAPIキー、CloudflareのAPIトークン、アカウントID、独自ドメインをビルド環境変数やリポジトリへ追加する必要はない。Git連携の認証とカスタムドメインは管理画面で扱う。
 
-この構成ではPages Functionsを使わない。npmパッケージも公開しない。既存の静的配信の無料枠については [運用案](19-public-site-and-operations.md#最初の公開は静的サイト) を参照し、契約画面でも条件を確認する。
+この構成ではPages Functionsを使わず、npmパッケージの公開も行わない。配信の料金やビルド上限は、[公式料金](https://developers.cloudflare.com/pages/functions/pricing/)と[制限](https://developers.cloudflare.com/pages/platform/limits/)、利用するプランで確認する。
 
-## 初回公開時に行うこと
+## 配信先の作成・変更時に確認すること
 
 1. Cloudflareにログインし、Workers & PagesからPagesのGit連携を選ぶ。アカウント作成が必要な場合はオーナーが行う。GitHub連携の対象はこのリポジトリに限定する。
-2. 上表を設定する。保存・デプロイを実行すると、PagesのURLでインターネットに公開される。公開実行の承認を受けてから操作する。
-3. 生成されたURLで通常表示、4つのデモ判定、コピー、404、HTTPS、CSP違反がないことを確認する。ローカルの検証だけで成功扱いにしない。
+2. 上表を設定する。保存・デプロイを実行すると、PagesのURLでインターネットに公開される。公開範囲が決まってから操作する。
+3. 生成されたURLで通常表示、4つの閲覧例の判定、コピー、404、HTTPS、CSP違反がないことを確認する。ローカルの検証だけで成功扱いにしない。
 4. 自動デプロイの範囲を確認する。Git連携後はmainへのpushで本番配信が更新される。初期運用ではPreview branch deploymentsを無効にし、作業ブランチやPRを自動公開しない。別途プレビュー公開が必要になった時点で見直す。
-5. カスタムドメインをPages側に追加し、そこで表示された値でDNSのCNAMEを設定する。既存DNSサービスを維持できる。具体的な接続値や管理情報は公開文書に書かない。
+5. カスタムドメインをPages側に追加し、そこで表示された値でDNSのCNAMEを設定する。既存DNSサービスを維持できる。アカウント情報や私的な管理情報は公開文書に書かない。
 6. 独自ドメインでも確認し、直前のデプロイへ戻す方法を確認する。
 
 Git連携の権限と自動配信の動作: [GitHub integration](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/)、[Branch deployment controls](https://developers.cloudflare.com/pages/configuration/branch-build-controls/)。独自ドメインの手順: [Custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/)。
 
-## 検証範囲と残る確認
+## 配信後の確認と未検証の範囲
 
 ローカルでは公開用ヘッダーを付け、Chromium・Firefox・WebKitでデモ、キーボード操作、コピーの成功・拒否、狭い幅、JavaScript無効時の表示を検査する。追加の試験では、インラインスクリプトと判定通信がCSPで拒否されること、存在しないパスでHTTP 404を返して復帰できることを確認する。
 
-Cloudflare上のビルド、実際のヘッダールール解析、HTTPS、DNS、CDNキャッシュ、Safari製品版での紹介サイト、モバイル実機は未確認。本番Jevサーバーの共有利用制限と人による残りの推薦品質評価も、別の作業として残っている。
+公開URLでトップページと存在しないパスを開き、HTTPS、HTTPステータス、CSPなどのヘッダー、更新した内容が確認できることを調べる。キャッシュの反映やCloudflareのルール解析は、ローカルプレビューでは保証できない。
 
-今回の型検査・lint、サイトのビルドと出力検査、配布検査、3ブラウザ計15件のサイトE2Eは成功した。出力への不要な環境ファイル追加とヘッダー改変を検査が拒否することも確認し、試験後は元に戻した。Codex内ブラウザでも404からの復帰とRulesの判定を確認した。Coreなどの実装は変えておらず、既存の233件とデモE2E 84件は前回の結果を参照する。
+Safari製品版での紹介サイト、モバイル実機、本番Jevサーバーの共有利用制限、人による残りの推薦品質評価は未検証または未実装。既存のVanillaデモでのSafari試験と混同しない。
+
+2026-09-26に配信設定を追加した際は、型検査・lint、サイトのビルドと出力検査、配布検査、3ブラウザ計15件のサイトE2Eが成功した。出力への不要な環境ファイル追加とヘッダー改変を検査が拒否することも確認し、試験後は元に戻した。Codex内ブラウザでも404からの復帰とRulesの判定を確認した。この記録でCoreなどの実装は変えておらず、既存の233件とデモE2E 84件は当時の前回結果を参照した。変更後の結果は各PRの検証記録を確認する。

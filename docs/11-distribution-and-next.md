@@ -1,6 +1,8 @@
-# M4の配布ファイルとNext.js静的デモ
+# 配布ファイルとNext.js静的デモの検証記録
 
-2026-09-26。M3を `ef44942` にコミットし、`codex/m4-distribution-next` でM4を実装した。対象はESM・型定義・IIFEのローカル生成と、Next.js static exportの利用例。公開作業やJev実API試験は行っていない。
+> 2026-09-26の実装・検証記録です。本文の数値、バージョン、未実施事項は記録時点のものです。現在の利用手順は[配布ファイルとNext.js](guides/distribution.md)、後続の実測は[100候補の評価記録](21-candidate-scale.md)を参照してください。
+
+2026-09-26。判定サーバーのコミット `ef44942` から、配布ビルドとNext.jsデモを追加した。対象はESM・型定義・IIFEのローカル生成と、Next.js static exportの利用例。公開作業やJev実API試験は行っていない。
 
 ## 生成物を読み込んで検証する構成
 
@@ -66,7 +68,7 @@ IIFEを自己配信する場合は、生成した固定ファイルとLICENSEを
 
 SRI値は今回の生成物の値。コードを変えて再生成したときはmanifestから新しい値を転記する。固定バージョン名のファイルを公開後に上書きする運用は想定していない。
 
-初期化は外部の `imicue-init.js` に置き、`window.Imicue.createTracker()` を呼ぶ。許可とstartの接続は [READMEのSDK例](../README.md#sdkの最小例) と同じ。script取得とTrackerの作成自体は、観測開始とは別である。
+初期化は外部の `imicue-init.js` に置き、`window.Imicue.createTracker()` を呼ぶ。許可とstartの接続は [READMEのSDK例](guides/integration.md) と同じ。script取得とTrackerの作成自体は、観測開始とは別である。
 
 配布デモでは次のCSPを使い、ブラウザでも検証した。
 
@@ -84,7 +86,7 @@ macOS arm64、Node.js 24.14.0、npm 11.9.0を使用した。初回のChromium試
 | 検証 | 結果 |
 | --- | --- |
 | 型検査・lint | 成功 |
-| Vitest | 8ファイル、215件成功。M3までの214件とReact lifecycle統合試験 |
+| Vitest | 8ファイル、215件成功。サーバー実装までの214件とReact lifecycle統合試験 |
 | build | 3パッケージのESM/型定義、単体ESM/IIFE、Vanilla、Next.jsの静的出力を生成 |
 | 単体ESM | gzip 12,659 bytes。Core・Browser・Rules・RemoteEngineを含む |
 | IIFE | gzip 11,358 bytes。25KiB以内 |
@@ -99,13 +101,13 @@ Strict Modeは設定だけで合格にせず、実際のReactでsetup 2回・cle
 
 秘密値の検査では合成の `TYPESAFE_API_KEY=IMICUE_SYNTHETIC_SECRET_M4` をビルド環境に設定した。配布ファイルとNext.jsの公開用HTML・JS等48ファイルを走査し、この値、キー設定名、Jev SDK、プロバイダー接続URLが混入していないことを確認した。実キーを読み出して検査したものではない。
 
-## 未実施事項と次の作業
+## 当時の未実施事項と後続検証
 
 npm公開、実CDN、デプロイ、ドメイン設定、既存サイトへの導入、Issue・Project変更は行っていない。Jev実API、Edge環境、Safari製品版、iPhone/iPad実機、実端末のsleep、実モデルの品質・料金・遅延は未検証。Next.jsの開発サーバー自体も受け入れ試験には使っていない。
 
 Safariを対象外にしているわけではない。PlaywrightのWebKit試験は成功したが、[公式説明](https://playwright.dev/docs/browsers#webkit)にあるとおりSafari製品版とは異なる。ローカルのSafari 26.4でWebDriverセッションを試したところ、「リモートオートメーション」が無効で作成できなかった。システム設定は変更していない。FirefoxもPlaywright同梱ビルドでの結果であり、全OS・過去バージョンの保証ではない。
 
-次の作業単位はM5の公開準備。利用手順・制約・評価・貢献方法の整理に加え、Safari製品版での確認と、許可後の少量のJev実API試験を進める。公開操作と有料API試験は、引き続き別の明示的な指示を受けて行う。
+後続の[公開準備](12-release-preparation.md)、[実API比較](14-jev-evaluation.md)、[Safari製品版の検証](16-safari-verification.md)で確認を進めた。紹介サイトは現在公開済み。npm公開と本番Jevサーバーの運用は別の作業として残っている。
 
 ## ページ横断で保持する内容
 
@@ -129,4 +131,4 @@ Safariを対象外にしているわけではない。PlaywrightのWebKit試験�
 
 2026-09-26に確認した[Jev 1.13の公式料金](https://docs.typesafe.ai/models)は入力100万トークンあたり0.042米ドル、出力は無料。仮に1判定の合計入力が2,000トークンなら1万判定で0.84米ドルとなる。これは実測ではなく概算で、サーバー代・税・為替等は含めない。
 
-Jevを使って公開する前に、ローカルで実API試験を行う。モックでは認証、実モデルの応答、品質、料金、遅延は確認できない。まず合成データ1回・再試行なしで疎通を確かめ、その後に複数の観測パターンで品質を評価する。キーは利用者がローカルの `TYPESAFE_API_KEY` に設定し、値を表示・保存しない。実行コマンドは [README](../README.md#jev実api試験は許可後に別コマンドで行う)を参照する。
+Jevを使って公開する前に、ローカルで実API試験を行う。モックでは認証、実モデルの応答、品質、料金、遅延は確認できない。まず合成データ1回・再試行なしで疎通を確かめ、その後に複数の観測パターンで品質を評価する。キーは利用者がローカルの `TYPESAFE_API_KEY` に設定し、値を表示・保存しない。現在の実行コマンドは[サーバーとJevの接続](guides/server-and-jev.md)を参照する。
