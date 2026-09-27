@@ -65,6 +65,6 @@ test('M3: unavailable endpoint abstains without switching to local rules', async
   await expect(page.locator('#decision')).toContainText('engine_unavailable');
   await expect(page.locator('#recommendation-slot')).toBeEmpty();
   await expect(page.locator('#decision-status')).toContainText('通常のガイドは利用できます');
-  await page.getByRole('link', { name: '機能ガイド', exact: true }).first().click();
+  await page.getByRole('link', { name: '検索ガイド', exact: true }).first().click();
   await expect(page).toHaveURL(/\/guides\/features\/\?engine=remote/);
 });

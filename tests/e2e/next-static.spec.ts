@@ -10,7 +10,7 @@ test('P01: TOP → features → TOP retains evidence and excludes the viewed gui
   await start(page);
   await page.locator('#feature-action').click();
   await expect(page.locator('#decision')).toContainText('demo-features-guide');
-  await page.getByRole('link', { name: '機能ガイド', exact: true }).click();
+  await page.getByRole('link', { name: '検索ガイド', exact: true }).click();
   await page.locator('article').scrollIntoViewIfNeeded();
   await expect.poll(async () => (await snapshot(page)).observations.some(
     (row: { signalId: string; qualifiedViews: number }) => row.signalId === 'demo-features-guide-view' && row.qualifiedViews > 0,
@@ -43,7 +43,7 @@ test('P01/P03: static export hydrates, navigates without reload, and keeps one t
   expect((await snapshot(page)).observations.find((row: { signalId: string }) => row.signalId === 'demo-feature-used').actions).toBe(1);
   await page.evaluate(() => Object.assign(window, { navigationMarker: 'same-document' }));
   const before = (await snapshot(page)).pageViewId;
-  await page.getByRole('link', { name: '機能ガイド', exact: true }).click();
+  await page.getByRole('link', { name: '検索ガイド', exact: true }).click();
   await expect(page).toHaveURL(`${base}/guides/features/`);
   await expect(page.locator('#page-id')).toHaveText('現在のページ：features-guide');
   expect((await snapshot(page)).pageViewId).not.toBe(before);
@@ -87,7 +87,7 @@ test('P01/B08: navigation invalidates a remote response from the previous page',
   await page.locator('#consent').check();
   await page.evaluate(() => { document.getElementById('start')!.click(); document.getElementById('feature-action')!.click(); });
   await received;
-  await page.getByRole('link', { name: '機能ガイド', exact: true }).click();
+  await page.getByRole('link', { name: '検索ガイド', exact: true }).click();
   await expect(page.locator('#page-id')).toHaveText('現在のページ：features-guide');
   release();
   await expect(page.locator('#recommendation-slot')).toBeEmpty();
@@ -100,7 +100,7 @@ test('P01: exported guide links work without JavaScript', async ({ browser }) =>
   const context = await browser.newContext({ javaScriptEnabled: false });
   try {
     const page = await context.newPage(); await page.goto(base);
-    await page.getByRole('link', { name: '料金ガイド', exact: true }).click();
-    await expect(page.getByRole('heading', { name: '料金ガイド', exact: true })).toBeVisible();
+    await page.getByRole('link', { name: '利用プランガイド', exact: true }).click();
+    await expect(page.getByRole('heading', { name: '利用プランガイド', exact: true })).toBeVisible();
   } finally { await context.close(); }
 });

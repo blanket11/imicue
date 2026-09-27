@@ -164,7 +164,7 @@ test('the modal guard defers a new card and the ordinary guide remains available
   await expect(page.locator('#recommendation-slot')).toBeEmpty();
   await page.locator('#features a').click();
   await expect(page).toHaveURL('/guides/features/');
-  await expect(page.getByRole('heading', { name: '機能ガイド', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '読書メモを検索する', exact: true })).toBeVisible();
 });
 
 test('guides are static pages and completion is an explicit outcome', async ({ page }) => {
@@ -191,7 +191,7 @@ test('mobile layout has no horizontal overflow and the card cannot cover the pri
     expect(await card.evaluate((element) => getComputedStyle(element).position)).toBe('static');
   }
   await page.locator('#feature-action').click();
-  await expect(page.locator('#feature-result')).toContainText('サンプル契約書');
+  await expect(page.locator('#feature-result')).toContainText('海辺の灯台');
 });
 
 test('B10: 201 DOM targets are bounded and the measured start cost is reported', async ({ page }, testInfo) => {
@@ -244,6 +244,6 @@ test('ordinary navigation works with JavaScript disabled', async ({ browser }) =
   await page.goto('http://127.0.0.1:4173/');
   await page.locator('#pricing a').click();
   await expect(page).toHaveURL('http://127.0.0.1:4173/guides/pricing/');
-  await expect(page.getByRole('heading', { name: '料金ガイド', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '利用プランガイド', exact: true })).toBeVisible();
   await context.close();
 });

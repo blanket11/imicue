@@ -27,7 +27,7 @@ export function mount(api) {
     element('decision').textContent = '判定前'; refresh();
   });
   element('action').addEventListener('click', () => {
-    element('result').textContent = '検索例：サンプル契約書 A・サンプル契約書 B';
+    element('result').textContent = '検索例：「海辺の灯台」・「森の図書館」';
     tracker.track('demo-feature-used');
   });
   window.addEventListener('pagehide', () => tracker.destroy(), { once: true });

@@ -1,4 +1,6 @@
-# M0〜M2 ローカル版の実装メモ
+# Core・Browserの初期実装記録
+
+> 2026-09-26の実装・検証記録です。本文の数値、バージョン、未実施事項は記録時点のものです。現在の利用手順は[ドキュメント一覧](README.md)、後続の実測は[100候補の評価記録](21-candidate-scale.md)を参照してください。
 
 対象は基盤、Core、Browser、Vanilla JSデモです。Jev実API、判定サーバー、公開、デプロイ、既存サイトへの導入、Issue・Project変更は含みません。
 
@@ -8,7 +10,7 @@
 | --- | --- |
 | `packages/core/src` | 不変の辞書、型、snapshot検証、期間限定集計、Rules、共通ポリシー |
 | `packages/browser/src` | DOM計測、同意と開始・停止、任意のsession保存、購読、スケジューラー |
-| `examples/vanilla` | DemoContractのトップと3つのガイド、ローカル確認パネル、案内カード |
+| `examples/vanilla` | 読書ノートアプリのトップと3つのガイド、ローカル確認パネル、案内カード |
 | `packages/*/test` | 時計・DOM監視・判定エンジンを制御する単体テスト |
 | `tests/e2e` | 静的ビルドを配信するChromium試験 |
 | `scripts/check-bundle.mjs` | Browser/Core/Rulesの依存とgzipサイズの検査 |
@@ -16,8 +18,8 @@
 ## 細部の判断
 
 - Node 24系がLTSであることを確認し、手元の24.14.0とnpm 11.9.0を固定した。依存は単一のlockfileに固定。TypeScript 7は利用中のtypescript-eslintの対応範囲外のため、対応する6.0.3を選んだ。
-- M3で初めて必要になる空のserverパッケージは作っていない。CoreとBrowserの2つのprivate workspaceから開始した。
-- M2のbuildはVanillaデモの静的成果物を作る。SDKの配布用型定義、IIFE、Next.js例はM4に残す。サイズ検査用コードはメモリ内だけに生成する。
+- この時点では空のserverパッケージは作っていない。CoreとBrowserの2つのprivate workspaceから開始した。
+- 当時のbuildはVanillaデモの静的成果物を作る。SDKの配布用型定義、IIFE、Next.js例は後続作業に残した。サイズ検査用コードはメモリ内だけに生成する。
 - `ObservationStore` は単調時計を注入でき、内部記録を相対時刻で書き出す。Browserが保存時刻・最後の活動時刻と辞書バージョンを検証して復元する。定義の公開期間は暦日時なのでepoch時計で比較する。
 - `getSnapshot()` は確定済みの表示区間を返す。読出しだけでrevisionは増えない。表示中の時間は最大5秒ごと、離脱や停止時に確定する。
 - `evaluate()` は即時実行できないとき、最新状態の評価を1件だけ待機させ、`undefined` を返す。結果は `onDecision()` でも受け取れる。手動実行も15秒間隔と同時実行1件の制限を守る。
@@ -52,7 +54,7 @@
 
 ## 後続作業
 
-次はM3の固定HTTP契約、サーバー管理辞書、入力・容量・利用制限、Jev Adapterのモック試験です。実API確認は別途許可を受ける段階に残します。C02、S01〜S03のHTTP/課金制限、P01/P02のNext.js/IIFEは今回の試験対象外です。D04/D05は共通の型・出力ゲートを合成エンジンで検査し、実際のJevの挙動を確認したとは扱いません。
+この時点で残っていたのは、固定HTTP契約、サーバー管理辞書、入力・容量・利用制限、Jev Adapterのモック試験だった。実API確認は別の検証として残した。C02、S01〜S03のHTTP/課金制限、P01/P02のNext.js/IIFEは今回の試験対象外です。D04/D05は共通の型・出力ゲートを合成エンジンで検査し、実際のJevの挙動を確認したとは扱いません。
 
 ## 依存関係の確認資料
 

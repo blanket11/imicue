@@ -1,32 +1,32 @@
 // This one catalog is imported by the static example and its local server.
-const formats = ['解説ページ', '活用資料', '相談窓口', '事例資料', 'セミナー', '設定ガイド', 'チェックリスト'];
-const subjects = ['電子署名', '監査ログ', '請求書の発行', '権限の設定', 'データのバックアップ', '契約の承認', '保存期間', '外部連携', '多言語の設定', '支払い方法', '利用者の招待', '通知の設定', '契約書の作成', 'ファイル形式'];
+const formats = ['読み物', '記事', '確認リスト', 'よくある質問', '入門ガイド', '用語集', '動画'];
+const subjects = ['著者を調べる', '図書館の予約', '読書会の案内', '本の装丁', '文学賞の紹介', '書店を探す', '電子書籍の設定', '音声で本を聴く', '翻訳作品の紹介', '出版のしくみ', '古書の探し方', '絵本の選び方', '雑誌の定期購読', '本の保管方法'];
 const contents = Object.fromEntries(Array.from({ length: 98 }, (_, index) => {
   const subject = subjects[Math.floor(index / formats.length)];
   const format = formats[index % formats.length];
   const contentId = `catalog-${String(index).padStart(3, '0')}`;
   return [contentId, {
-    title: `${subject}の${format}`, description: `${subject}について扱う${format}。契約書の全文検索や、営業部門による更新漏れ対策の事例は扱わない。架空の案内先。`,
-    href: `/catalog/guide.html?content=${contentId}`, enabled: true, productId: 'demo-contract',
+    title: `${subject}：${format}`, description: `${subject}について紹介する${format}です。架空の案内先です。`,
+    href: `/catalog/guide.html?content=${contentId}`, enabled: true, productId: 'reading-notes',
   }];
 }));
 contents['catalog-098'] = {
-  title: '営業チームの契約更新事例',
-  description: '営業チームが担当者と更新予定を確認し、契約の更新漏れを防ぐための運用を紹介する架空の事例ページ。',
-  href: '/catalog/guide.html?content=catalog-098', enabled: true, productId: 'demo-contract',
+  title: '読みかけの本を整理する方法',
+  description: '読みたい本・読んでいる本・読み終えた本を分け、次に読む本を見つける方法を紹介する架空のガイド。',
+  href: '/catalog/guide.html?content=catalog-098', enabled: true, productId: 'reading-notes',
   topicIds: ['cases'], relatedSignalIds: ['catalog-cases-overview', 'catalog-cases-detail'],
 };
 contents['catalog-099'] = {
-  title: '契約書の全文検索ガイド',
-  description: '取り込んだ契約書の本文を語句で検索し、一致箇所を一覧で確認する機能を具体的に説明する架空のガイドページ。',
-  href: '/catalog/guide.html?content=catalog-099', enabled: true, productId: 'demo-contract',
+  title: '読書メモを検索するガイド',
+  description: '本の題名や読書メモに書いた語句で記録を探し、該当するメモを見返す方法を紹介する架空のガイド。',
+  href: '/catalog/guide.html?content=catalog-099', enabled: true, productId: 'reading-notes',
   topicIds: ['features'], relatedSignalIds: ['catalog-features-overview', 'catalog-features-detail'],
 };
 const signals = {
-  'catalog-features-overview': { kind: 'content', topicIds: ['features'], description: '契約書の本文を語句で検索して必要な条項を探す機能の概要。' },
-  'catalog-features-detail': { kind: 'content', topicIds: ['features'], description: '全文検索で一致した語句の前後を一覧に並べ、関連する契約書を確認する手順。' },
-  'catalog-cases-overview': { kind: 'content', topicIds: ['cases'], description: '営業チームが契約の更新漏れに困っていたという架空の導入事例。' },
-  'catalog-cases-detail': { kind: 'content', topicIds: ['cases'], description: '営業チームが担当者と更新予定を一緒に確認する運用へ変えた架空の事例。' },
+  'catalog-features-overview': { kind: 'content', topicIds: ['features'], description: '本の題名や著者名から、読書ノートに記録した本を探す機能の概要。' },
+  'catalog-features-detail': { kind: 'content', topicIds: ['features'], description: '検索結果から本を選び、その本に付けた読書メモを確認する手順。' },
+  'catalog-cases-overview': { kind: 'content', topicIds: ['cases'], description: '読みたい本、読んでいる本、読み終えた本を分けて記録する方法。' },
+  'catalog-cases-detail': { kind: 'content', topicIds: ['cases'], description: '読書の状態やメモを一覧で見返し、続きを読む本を決める手順。' },
 };
 for (const [contentId, content] of Object.entries(contents)) {
   signals[`${contentId}-view`] = { kind: 'content', contentId, description: content.description };
@@ -34,15 +34,15 @@ for (const [contentId, content] of Object.entries(contents)) {
 
 /** @type {import('@imicue/core').Definition} */
 export const catalogDefinition = {
-  schemaVersion: '0.1', siteId: 'demo-catalog', definitionVersion: 'catalog-17e03b1e14f30442',
+  schemaVersion: '0.1', siteId: 'demo-catalog', definitionVersion: 'catalog-358edb89a934e751',
   topics: {
-    features: { description: '契約書の全文検索機能と一覧表示の使い方' },
-    cases: { description: '営業チームで契約の更新漏れを防ぐ運用の事例' },
+    features: { description: '本の題名や読書メモを検索する機能' },
+    cases: { description: '読書記録を整理して続きを読む本を見つける方法' },
   },
   signals, contents,
   pages: {
-    'catalog-features': { productId: 'demo-contract' },
-    'catalog-cases': { productId: 'demo-contract' },
-    ...Object.fromEntries(Object.keys(contents).map((contentId) => [contentId, { productId: 'demo-contract', contentId }])),
+    'catalog-features': { productId: 'reading-notes' },
+    'catalog-cases': { productId: 'reading-notes' },
+    ...Object.fromEntries(Object.keys(contents).map((contentId) => [contentId, { productId: 'reading-notes', contentId }])),
   },
 };

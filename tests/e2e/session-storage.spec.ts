@@ -46,7 +46,7 @@ test('B07: session opt-in restores across full page loads only after consent and
   expect(decision!.assessments.some((row) => row.contentId === 'demo-features-guide')).toBe(false);
   expect(await page.evaluate(() => window.sessionProbe.getSnapshot().observations.length)).toBeGreaterThan(0);
   await page.evaluate(() => window.sessionProbe.setConsent('denied'));
-  expect(await page.evaluate(() => sessionStorage.getItem('imicue:demo-contract:demo-1'))).toBeNull();
+  expect(await page.evaluate(() => sessionStorage.getItem('imicue:reading-notes:demo-1'))).toBeNull();
   await page.reload(); await mount(page, 'home'); await resume(page);
   expect(await page.evaluate(() => window.sessionProbe.getSnapshot().observations)).toEqual([]);
 });

@@ -7,7 +7,7 @@ async function snapshot(page: Page): Promise<Snapshot> {
 async function begin(page: Page) {
   await page.locator('#consent').check(); await page.locator('#start').click();
 }
-const storageKey = 'imicue:demo-contract:demo-1';
+const storageKey = 'imicue:reading-notes:demo-1';
 
 test('session demo: TOP → guide → TOP preserves records after renewed consent, withdrawal removes them', async ({ page }) => {
   const posts: string[] = [];
@@ -20,7 +20,7 @@ test('session demo: TOP → guide → TOP preserves records after renewed consen
   expect((await snapshot(page)).observations).toEqual([]);
   expect(await page.evaluate((key) => sessionStorage.getItem(key), storageKey)).toBeNull();
   await begin(page); await page.locator('#feature-action').click();
-  await page.getByRole('link', { name: '機能ガイド', exact: true }).click();
+  await page.getByRole('link', { name: '検索ガイド', exact: true }).click();
   await expect(page).toHaveURL('/guides/features/?storage=session');
   await expect(page.locator('#consent')).not.toBeChecked();
   expect((await snapshot(page)).observations).toEqual([]);
@@ -51,7 +51,7 @@ test('session demo: TOP → guide → TOP preserves records after renewed consen
 test('session demo: browser Back restores the latest archive without restoring consent', async ({ page }) => {
   await page.goto('/?storage=session'); await begin(page);
   await page.locator('#feature-action').click();
-  await page.getByRole('link', { name: '機能ガイド', exact: true }).click();
+  await page.getByRole('link', { name: '検索ガイド', exact: true }).click();
   await begin(page); await page.locator('#complete-guide').click();
   await page.goBack();
   await expect(page).toHaveURL('/?storage=session');

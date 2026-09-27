@@ -1,6 +1,6 @@
 # 参考資料・設計判断・未検証事項
 
-確認日: 2026-09-26。外部サービスのAPI・モデル・制限は変化するため、実装時に再確認する。以下は公式資料・一次資料に基づく技術上の前提と、Imicue自身の設計判断を区別して記録したもの。
+初回確認日: 2026-09-26。追加の確認は該当箇所に日付を示す。外部サービスのAPI・モデル・制限は変化するため、依存の更新や新しい環境への導入時に再確認する。以下は公式資料・一次資料に基づく技術上の前提と、Imicue自身の設計判断を区別して記録したもの。
 
 ## S1
 
@@ -18,7 +18,7 @@ Imicueでは、各候補のdescriptionを対応する質問に明示し、辞書
 
 [Score](https://docs.typesafe.ai/primitives/score)
 
-Scoreは説明を持つ段階ごとの確率で重み付けした期待値を返す。4段階なら0〜3で、小数も含む。Imicue内の0〜1値は順位付け用に正規化したもので、人物の関心や購入の確率ではない。M3では公式仕様とSDKのScoreResponse型を再確認し、整数に限定していたM2の検証を修正した。
+Scoreは説明を持つ段階ごとの確率で重み付けした期待値を返す。4段階なら0〜3で、小数も含む。Imicue内の0〜1値は順位付け用に正規化したもので、人物の関心や購入の確率ではない。サーバー実装時に公式仕様とSDKのScoreResponse型を確認し、小数のスコアを受け入れる検証に修正した。
 
 ## S3
 
@@ -48,7 +48,7 @@ SDKは@typesafe-ai/sdk、環境変数はTYPESAFE_API_KEY。ブラウザ利用を
 
 ImicueはSDKをserver内に隔離する。既定のリトライ任せにせず、入力本文がログに出ないことを確認する。SDKの最小Node要件と、現在サポート中のNodeを選ぶ判断は別である。
 
-M3実装時の再確認（2026-09-26）: `@typesafe-ai/sdk@0.6.0` を固定し、同梱の型と公式資料で `score(instructions, criteria)`、`TypeSafeClient.systemOne` を確認した。`retry: { maxRetries: 0 }`、`logLevel: 'off'`、固定baseURLとモデル `jev-1.13.0` を明示している。[RetryPolicy](https://docs.typesafe.ai/sdk/javascript/api/interfaces/RetryPolicy) も参照。モックfetchで呼び出し回数とログ出力を検証したが、アカウントでのモデル利用可否と実API応答は未確認。
+サーバー実装時の確認（2026-09-26）: `@typesafe-ai/sdk@0.6.0` を固定し、同梱の型と公式資料で `score(instructions, criteria)`、`TypeSafeClient.systemOne` を確認した。`retry: { maxRetries: 0 }`、`logLevel: 'off'`、固定baseURLとモデル `jev-1.13.0` を明示している。[RetryPolicy](https://docs.typesafe.ai/sdk/javascript/api/interfaces/RetryPolicy) も参照。モックfetchで呼び出し回数とログ出力を検証した。その後の実API確認は[初回比較](14-jev-evaluation.md)と[100候補の評価](21-candidate-scale.md)に記録している。
 
 ## S6
 
@@ -60,7 +60,7 @@ M3実装時の再確認（2026-09-26）: `@typesafe-ai/sdk@0.6.0` を固定し�
 
 ImicueのJev接続は別のendpoint。ローカルRulesは静的ファイルだけで動く構成にする。
 
-M4実装時の再確認（2026-09-26）: Next.js 16.3.6、React/React DOM 19.3.0を固定した。`output: 'export'`、`trailingSlash: true` で生成したoutを静的サーバーから配信する。React Strict Modeのeffect再実行は開発時の検査なので、静的出力のE2Eとは別に実Reactを使う統合試験で確認する。[Next.jsのStrict Mode設定](https://nextjs.org/docs/app/api-reference/config/next-config-js/reactStrictMode)・[React StrictMode](https://react.dev/reference/react/StrictMode) を参照。
+配布・Next.js実装時の確認（2026-09-26）: Next.js 16.3.6、React/React DOM 19.3.0を固定した。`output: 'export'`、`trailingSlash: true` で生成したoutを静的サーバーから配信する。React Strict Modeのeffect再実行は開発時の検査なので、静的出力のE2Eとは別に実Reactを使う統合試験で確認する。[Next.jsのStrict Mode設定](https://nextjs.org/docs/app/api-reference/config/next-config-js/reactStrictMode)・[React StrictMode](https://react.dev/reference/react/StrictMode) を参照。
 
 配布は [Vite Library Mode](https://vite.dev/guide/build.html#library-mode) と [TypeScript declaration](https://www.typescriptlang.org/tsconfig/declaration.html) を参照した。通常のpackage importは生成済みESMと型定義を解決し、リポジトリ内の開発時だけ明示した条件でソースを参照する。[Node.js Conditional Exports](https://nodejs.org/api/packages.html#conditional-exports) に従う構成で、外部利用を模した型検査ではソースをコピーせずに確認した。
 
@@ -92,7 +92,7 @@ Imicueでは、辞書の参照、集計、候補の期限・製品チェック�
 
 入力・メソッド・容量・利用制限、CORS、応答の扱いなどを設計するための一次資料。CORSや公開siteIdを本人確認の代わりに使わない。
 
-Imicueの32KiB、16KiB、30回/分、100回/日といった数値は独自の初期制限であって、OWASPの指定値や本番適正値ではない。
+Imicueの受信32KiB、Jev要求64KiB、30回/分、100回/日といった数値は独自の制限であって、OWASPの指定値や本番適正値ではない。
 
 ## S10
 
@@ -100,7 +100,7 @@ Imicueの32KiB、16KiB、30回/分、100回/日といった数値は独自の初
 
 [Node.js Releases](https://nodejs.org/en/about/previous-releases)
 
-実装時にサポート状況を確認して実行環境を選ぶ。2026-09-26の確認では24系と22系がLTSとして掲載されている。Imicueの初期開発は24系を候補とするが、パッチバージョンと依存の対応は実装時に固定する。
+実装時にサポート状況を確認して実行環境を選ぶ。2026-09-26の確認では24系と22系がLTSとして掲載されている。リポジトリはNode.js 24.14.0とnpm 11.9.0に固定している。
 
 ## S11
 
@@ -122,7 +122,7 @@ Codex向けのリポジトリ指示と、作業範囲・テスト手順の整理
 | ADR-006 | memory既定、同意前は停止 | 初期状態で意図しない収集・保存・外部送信をしない |
 | ADR-007 | 推薦由来の行動を分ける | 自分の案内で生じた行動を自然な関心として自己増幅させない |
 | ADR-008 | 固定候補IDとabstainを返す | UI・URL・文章をAIに自由生成させず、利用サイトが実行を管理する |
-| ADR-009 | 初期公開準備はdocsのみ | 実装・Issue管理・サービス公開を別作業として進める |
+| ADR-009 | 初期準備では仕様文書を先に整備 | 実装・Issue管理・サービス公開を別作業として進めた。当時の順序を表す判断であり、現在は実装と紹介サイトも公開している |
 | ADR-010 | CDNは静的SDK配布、キーは別server | 埋め込み導入の容易さと秘密情報の隔離を両立する |
 | ADR-011 | 100候補を全件Scoreで評価し、容量で分割 | 意味による事前選抜の漏れを避け、全候補の結果検証を維持する。共通stateから候補の重複を除く |
 | ADR-012 | 分割計画のquotaと外部試行の同時数を分離 | 1判定内の複数API呼び出しでも、課金・並列数の上限を迂回させない |
@@ -137,15 +137,15 @@ Codex向けのリポジトリ指示と、作業範囲・テスト手順の整理
 
 UIを加えたときの回遊やCVへの影響は、このライブラリの技術的完成と分けて評価する。
 
-## v0.1を止めずに後で決めるもの
+## 今後の検討事項
 
-npmスコープ・パッケージ公開名、CDNの実URL、独自ドメイン、WordPressプラグイン、Cloud/Hosted版の運用・料金、長期的なガバナンスは後続の判断とする。今はローカルの動作確認を優先する。
+npmスコープ・パッケージ公開名、SDKを配るCDNの実URL、WordPressプラグイン、Cloud/Hosted版の運用・料金、長期的なガバナンスは未確定。[紹介サイト](https://imicue.push.tokyo/)は公開済みだが、npmパッケージと本番用のJev判定サービスは公開していない。
 
 Cloudflare Workers等のEdge環境、他フレームワーク専用SDK、iframe/Shadow DOMの自動計測、複数サイトを横断する識別はv0.1で対応済みと記載しない。
 
 ## 変更するときのルール
 
-2026-09-26のM0〜M2実装ではNode 24系のLTS状態と開発ツールの公式資料・依存条件を再確認した。採用バージョンと理由は [ローカル版の実装メモ](09-local-implementation.md#依存関係の確認資料) に記録している。JevとNext.jsの外部仕様の再検証は、それぞれM3とM4の実装時に行う。
+2026-09-26のローカル版実装ではNode 24系のLTS状態と開発ツールの公式資料・依存条件を確認した。採用バージョンと理由は [ローカル版の実装メモ](09-local-implementation.md#依存関係の確認資料) に記録している。JevとNext.jsの確認内容は本書のS5・S6に記録している。
 
 新しい一次資料で前提が変わった場合は、確認日、変わった事実、影響する仕様、テストを同じ変更で記録する。プロバイダーの宣伝上の数値をImicueの性能保証に置き換えない。
 

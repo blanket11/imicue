@@ -1,75 +1,81 @@
-# Imicue — 開発仕様書
+# Imicueの使い方と仕様
 
-**状態: v0.1 Draft / M0〜M4と100候補対応を実装、M5の資料・ローカル検証を整備、npmは未公開**
-最終更新・外部資料確認: 2026-09-27
+Imicueは、登録した閲覧・操作の記録と辞書を使い、次に案内する候補を選ぶライブラリです。表示UIは利用サイトで組み込みます。
 
-Imicueは、WebサイトやWebアプリの行動シグナルに辞書で意味を与え、ルールやAIによる判断につなげるヘッドレスなOSSライブラリです。ヘッドレスとは、表示UIをライブラリ本体から分離し、利用サイトが自由に結果を使えることを指します。
+初めて使う場合は、[ローカルデモの起動](../README.md#ローカルデモを動かす)と[確認する操作](guides/local-demos.md)から始めてください。組み込み時は利用ガイド、型や判定条件を調べるときはリファレンスを参照します。設計・検証の記録を順に通読する必要はありません。
 
-このフォルダは実装者とCodexへの引き継ぎ用です。01〜08はv0.1全体の設計を含みます。現在の実装範囲と検証結果は [ローカル版](09-local-implementation.md)、[M3](10-server-implementation.md)、[M4](11-distribution-and-next.md) の実装メモ、実行手順は [ルートREADME](../README.md) を参照してください。npmパッケージは未公開です。
+このドキュメントは開発版 `0.1.0-dev.0` のコードに対応します。ソースと[紹介サイト](https://imicue.push.tokyo/)は公開しています。npmパッケージと配布用CDNは未公開です。
 
-## 最初に読むもの
+## 目的から手順を選ぶ
 
-最新の変更は [100候補への拡張と評価](21-candidate-scale.md)にまとめています。公開設定は [Cloudflare Pagesでの公開準備](20-cloudflare-pages.md)、サイトの構成は [ローカル版と運用案](19-public-site-and-operations.md)を参照してください。変更前のJev判定は [単発操作の採点基準](18-jev-relevance-rubric.md)、[12ケースと確認表](17-recommendation-review.md)、[鮮度制限](15-freshness-and-live-browser.md)にあります。[Safari製品版の確認](16-safari-verification.md)も参照してください。
-
-まず [目的と構成](01-product-and-architecture.md)、次に [データ契約](02-data-contracts.md) を読み、担当領域の詳細と [受け入れテスト](06-implementation-and-tests.md) を確認してください。初回の実装依頼では01〜08を通して読みます。
-
-| ファイル | 内容 |
+| 目的 | 利用ガイド |
 | --- | --- |
-| [01-product-and-architecture.md](01-product-and-architecture.md) | 目的、v0.1の範囲、Core/Browser/Server、SSGの境界 |
-| [02-data-contracts.md](02-data-contracts.md) | シグナル辞書、意味の説明、観測・候補・出力の型、バージョン |
-| [03-browser-tracking.md](03-browser-tracking.md) | data属性、計測条件、重複防止、同意、保存、ページ遷移、応答の鮮度 |
-| [04-decision-engines.md](04-decision-engines.md) | Rulesの比較基準、Jev接続、採点基準、候補除外、見送り |
-| [05-security-and-privacy.md](05-security-and-privacy.md) | キー隔離、収集しない情報、HTTP契約、容量・課金制限 |
-| [06-implementation-and-tests.md](06-implementation-and-tests.md) | M0〜M5の実装順序と必須テスト、実API確認の分離 |
-| [07-codex-handoff.md](07-codex-handoff.md) | Codexにそのまま渡す依頼文と、後続段階の依頼文 |
-| [08-references-and-decisions.md](08-references-and-decisions.md) | 一次資料、設計判断、未検証事項、後で決めること |
+| 計測とRules判定、100件の候補、ページ横断を試す | [ローカルデモで動きを確かめる](guides/local-demos.md) |
+| 自分のページに観測する内容と案内先を登録する | [辞書と計測をページに組み込む](guides/integration.md) |
+| モックで通信を確認し、Jevへ接続する | [判定サーバーとJevに接続する](guides/server-and-jev.md) |
+| ESM、scriptタグ、Next.jsの例を使う | [配布ファイルとNext.js](guides/distribution.md) |
+| 紹介サイトを編集する | [紹介サイトの開発](19-public-site-and-operations.md) |
+| 静的サイトを公開する | [Cloudflare Pagesの設定](20-cloudflare-pages.md) |
 
-## 仕組みの要約
+Jevの実APIを使う手順ではAPI利用料が発生します。Rules、モック接続、通常のテストは実APIを呼びません。
+
+## リファレンス
+
+| 文書 | 調べられること |
+| --- | --- |
+| [目的と構成](01-product-and-architecture.md) | Imicueの役割、Core・Browser・Serverの分担 |
+| [データ契約](02-data-contracts.md) | 辞書、観測、案内先、判定結果の型とバージョン |
+| [ブラウザ計測](03-browser-tracking.md) | data属性、表示条件、同意、保存、ページ移動、応答の鮮度 |
+| [判定方式](04-decision-engines.md) | Rules、Jev、候補の除外、見送り条件 |
+| [セキュリティとプライバシー](05-security-and-privacy.md) | 収集範囲、キーの隔離、HTTP契約、容量と利用量の制限 |
+| [出典と設計判断](08-references-and-decisions.md) | 一次資料、設計上の選択、未検証の条件 |
+
+### 記録から案内までの流れ
 
 ```text
-<section data-imicue-signal="demo-pricing">
-        ↓
-ブラウザ: 表示・操作を期間限定で集計
-        ↓
-辞書: demo-pricingは何の製品の何についての内容かを説明
-        ↓
-Rules（ローカル） または 判定サーバー → Jev
-        ↓
-候補評価 + 推薦するcontentId / 見送り
-        ↓
-利用サイトが案内カード・インライン表示などに利用
+登録したIDを持つ表示・操作
+    ↓
+ブラウザで期間内の記録を集計（Snapshot）
+    ↓
+辞書の対応関係を使うRules / サーバーで辞書の説明を使うJev
+    ↓
+登録済みの候補ID、または見送り（Decision）
+    ↓
+利用サイトがカードやリンクとして表示
 ```
 
-HTMLに埋め込むのは登録済みIDです。辞書の参照はコードで行い、Jevに不透明なIDや巨大な辞書を解読させません。関心推定を必須の中間段階にはせず、次に案内する候補の関連性を直接評価できます。
+初期化だけでは観測・保存・判定通信を始めません。任意の入力文やDOM本文を集めず、許可後に登録したIDと数値を扱います。表示されたことを読了、料金を見たことを購入意思として断定しません。
 
-## 今回の実装着手点
+## 検証結果と制約
 
-M0〜M2、すなわち基盤・Core・Browser・Vanillaデモを実装しています。M3のHTTP境界、Jev Adapter、ブラウザの通信処理も追加しました。APIキーなしで計測・ルール判定・モックサーバー接続を確認できます。
+現在の100候補の実装と測定条件は [100候補への拡張と評価](21-candidate-scale.md)を参照してください。合成の評価ケースでは案内と見送りを確認していますが、期待案はAI作成で人の確認前です。実サイトでの推薦品質や効果を保証する結果ではありません。
 
-M4のESM・型定義・IIFEとNext.js static export例も実装し、ローカルの静的配信から検証しました。M5の資料・評価レポート・梱包検査も追加しました。公開前の残る確認は [公開準備と評価](12-release-preparation.md) を参照してください。Vanillaの[ページ横断デモ](13-session-demo.md)も追加しました。[試す手順](../README.md#ページ移動後の記録を試す)を参照してください。許可を受けてJev実APIの疎通と[12シナリオの比較](14-jev-evaluation.md)を実施しました。人による推薦品質の評価は残っています。
+PlaywrightのChromium・Firefox・WebKitで検証しています。Safari製品版の基本デモとページ横断の記録は [Safari検証](16-safari-verification.md)にあります。100候補のSafari製品版での追加試験、iPhone/iPad実機、長時間の運用・負荷、Edge環境は未検証または未完です。
 
-最初の依頼文は [Codexへの引き継ぎ](07-codex-handoff.md#2-最初の依頼文ローカルで動く最小版) にあります。別の環境へ渡す場合も、このリポジトリ内のdocsを読める状態にしてから依頼してください。
+本番のJev接続に必要な共有利用制限は、利用側で実装する必要があります。APIやデータ形式の安定性、対応環境、容量の条件を確認したうえで導入してください。受け入れ条件と再現用コマンドは [テストガイド](06-implementation-and-tests.md)にまとめています。
 
-## 変更してはいけない境界
+## コードや文書に貢献する
 
-表示されたことを読了と断定せず、料金を見たことを購入意思の事実として扱いません。スコアと確率とconfidenceを混同しません。
+[貢献ガイド](../CONTRIBUTING.md)から開発環境を準備し、[テストガイド](06-implementation-and-tests.md)で変更に応じた検査を選びます。作業の進め方は [変更作業のガイド](07-codex-handoff.md)を参照してください。
 
-初期状態では観測・保存・判定通信を始めません。APIキーをブラウザへ出さず、任意のユーザー入力やDOM本文を収集しません。
+不具合や説明の不足は [GitHub Issues](https://github.com/blanket11/imicue/issues)で相談できます。再現手順には合成データを使い、APIキーやアカウント情報を含めないでください。
 
-AIは承認済み候補の評価に使い、自由なURL・HTML・コードを返して実行させません。見送り・障害時もサイト本来の機能を残します。
+## 設計と検証の記録
 
-勤務先のコード・非公開設定・実データを使いません。実装依頼だけでnpm公開、デプロイ、有料API試験、既存サイトへの導入、Issue/Project変更を行いません。
+次は各時点の実装・評価の記録です。過去の件数や判定ポリシーは、そのときの条件を示します。現在の利用手順には、上の利用ガイドとリファレンスを使ってください。
 
-## 仕様の確実性と優先順位
+| 記録 | 内容 |
+| --- | --- |
+| [ローカル実装](09-local-implementation.md) | Core・Browser・Vanillaデモの初期検証 |
+| [判定サーバー](10-server-implementation.md) | HTTP境界、モック、Jev接続の初期検証 |
+| [配布形式とNext.js](11-distribution-and-next.md) | ESM・IIFE・静的出力の初期検証 |
+| [公開準備と評価](12-release-preparation.md) | 配布前の検査とRulesの評価条件 |
+| [ページ横断デモ](13-session-demo.md) | session保存、復元、撤回の検証 |
+| [Jevの比較](14-jev-evaluation.md) | 実APIによる12シナリオの比較 |
+| [観測の鮮度と実ブラウザ](15-freshness-and-live-browser.md) | 鮮度制限、実APIへのブラウザ接続 |
+| [Safari製品版](16-safari-verification.md) | 基本デモ、ページ横断、Jev接続 |
+| [推薦内容の確認表](17-recommendation-review.md) | 場面ごとの許容案と結果 |
+| [単発操作の採点基準](18-jev-relevance-rubric.md) | 内容が一致する操作の評価 |
+| [100候補の評価](21-candidate-scale.md) | 全件評価、容量による分割、閲覧デモ、実測結果 |
 
-構造・安全条件・データの意味は実装の基準です。一方、2秒、30分、採点の重み、閾値、容量、遅延、サイズなどは、再現可能な出発点を作るための未検証の初期値です。効果や最適性を実証した値ではありません。
-
-詳細な契約は02〜05、検証条件は06を参照します。要約と詳細に食い違いを見つけたら黙って片方を捨てず、理由を記録して整合させてください。特に05の安全条件を利便性のために緩めないでください。
-
-外部サービスの最新仕様が変わっていたら、08の資料を再確認し、影響する契約とテストを一緒に更新します。未検証の外部APIを呼べたことにしないでください。
-
-## 仕様書を追加した時点の範囲
-
-初回の仕様書追加はdocs配下のMarkdownのみを対象としました。今回のM0〜M2実装ではローカルコードと手順を追加し、Apache-2.0 LICENSE、Issue、GitHub Project、公開設定は変更していません。
-
-[Repository](https://github.com/blanket11/imicue) / [Development Project](https://github.com/users/blanket11/projects/1/views/1) / [License](../LICENSE)
+ライセンスは [Apache-2.0](../LICENSE) です。更新日: 2026-09-27。

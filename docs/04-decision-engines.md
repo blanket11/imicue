@@ -19,7 +19,7 @@ Snapshotを検証
 
 ## 2. Adapterの境界
 
-概念上のインターフェースは以下。正式な型名は実装で調整できるが、責務・出力の意味は維持する。
+候補を採点するAdapterは次の契約を持つ。完全な型は [`packages/core/src/types.ts`](../packages/core/src/types.ts) を参照する。
 
 ```ts
 interface DecisionEngine {
@@ -29,7 +29,7 @@ interface DecisionEngine {
     input: ResolvedEvaluationInput,
     options: { signal: AbortSignal }
   ): Promise<{
-    assessments: CandidateAssessment[];
+    assessments: readonly CandidateAssessment[];
     model?: string;
   }>;
 }
@@ -55,7 +55,7 @@ coverage.truncated=trueは `capacity_limit`。入力が欠けた状態で自信�
 
 ## 4. RulesEngineの初期アルゴリズム
 
-目的は、無料で試せる比較対象と、同じ入力から同じ結果を返す基準を作ること。自然文の意味理解は行わない。
+RulesはAPIキーを使わず、同じ入力から同じ結果を返す。自然文を解釈する代わりに、辞書のID対応と観測値から採点する。
 
 source=directの各観測sについて次を計算する。
 
@@ -81,7 +81,7 @@ score(c) = max_s(evidence(s) * affinity(s, c))
 
 推薦の初期閾値は最高scoreが0.35以上、2位との差が0.10以上。候補が1件なら差の条件は不要。閾値未満はbelow_threshold、僅差や同点はambiguous。候補順はcontentIdで安定化するが、同点を辞書順だけで勝者にしない。
 
-上記の係数は `rules-v1` としてバージョン管理する、未検証の初期値。ユーザーの心理やCV率を表すものではなく、変更時は合成データで再比較する。
+上記の係数は `rules-v1` としてバージョン管理する暫定値。計算結果は回帰テストで検証しているが、実サイトでの最適性は未検証。ユーザーの心理やCV率を表すものではなく、変更時は合成データで再比較する。
 
 ## 5. JevEngine
 
@@ -116,11 +116,11 @@ score(c) = max_s(evidence(s) * affinity(s, c))
 
 ### SDKと接続
 
-公式JavaScript SDKは `@typesafe-ai/sdk`。確認時点の入口はTypeSafeClientとsystemOne。実装時には公式SDKの現在の型・モデル一覧を再確認して依存バージョンをlockfileへ固定する。過去の会話に出た仮のAPIを実在するとみなさない。[SDK資料 S5](08-references-and-decisions.md#s5)
+公式JavaScript SDKの `@typesafe-ai/sdk@0.6.0` をlockfileに固定し、TypeSafeClientのsystemOneを使う。更新時は公式の型・モデル一覧との互換性を確認する。[SDK資料 S5](08-references-and-decisions.md#s5)
 
-APIキーはサーバー環境変数TYPESAFE_API_KEY。モデルはサーバー設定で明示する。2026-09-26確認時の資料にはjev-1.13.0が掲載されているが、実装時に利用可能性を確認する。評価に使うモデルは可変エイリアスではなくバージョンを固定し、応答に含まれる実際のmodelも記録する。
+APIキーはサーバー環境変数TYPESAFE_API_KEYに設定する。現在の既定モデルは `jev-1.13.0`。モデルはサーバー側で固定し、応答に含まれるmodelとの一致も検査する。合成データによる実APIの結果は[100候補の評価記録](21-candidate-scale.md)を参照する。
 
-SDKのデフォルト再試行に任せない。v0.1はプロバイダーへの自動再試行なし。SDKの現行RetryPolicyで無効にする正しい設定を型とテストで確認する。timeoutは初期2,000ms、HTTP transportの全体上限は3,000ms。中断しても既に処理済みの課金が取り消される保証はない。
+プロバイダーへの自動再試行は行わない。SDKには `retry: { maxRetries: 0 }` を設定する。timeoutは初期2,000ms、HTTP transportの全体上限は3,000ms。中断しても既に処理済みの課金が取り消される保証はない。
 
 秘密キー、入力本文、SDKのdebugログをブラウザや通常ログに出さない。モデル接続先のbase URLを公開リクエストから指定させない。
 
@@ -158,6 +158,6 @@ maxAgeMsの初期値は30,000ms。ただし同意撤回、ページ変更、新�
 
 同じ合成Snapshotと同じ候補集合に対し、Rules、ラベル中心のJev、説明付き辞書のJevを比較する。日本語/英語の比較はさらに別軸として行う。
 
-正解は単一の「人の本心」ではなく、レビュー済みの許容contentId集合またはabstainとする。推薦一致率だけでなく、案内すべきでないケースの誤案内、見送り率、遅延、入力サイズ、利用量を記録する。
+評価には、人がレビューした許容contentId集合またはabstainを使う。「人の本心」が正解として得られたとは扱わない。推薦一致率だけでなく、案内すべきでないケースの誤案内、見送り率、遅延、入力サイズ、利用量を記録する。
 
 promptを調整する用のデータと、最終比較用のholdoutを分ける。説明を増やしてconfidenceが上がっただけでは精度改善と結論しない。本番のCV効果は別の実験課題で、v0.1のオフライン評価では証明しない。
