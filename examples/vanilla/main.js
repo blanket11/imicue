@@ -193,14 +193,14 @@ element('revoke').addEventListener('click', () => {
 element('reset').addEventListener('click', () => { tracker.reset(); clearDecision(); });
 element('evaluate').addEventListener('click', () => { void tracker.evaluate(); });
 element('feature-action')?.addEventListener('click', () => {
-  element('feature-result').textContent = '検索例：サンプル契約書 A・サンプル契約書 B';
+  element('feature-result').textContent = '検索例：「海辺の灯台」・「森の図書館」';
   tracker.track('demo-feature-used', { source: 'direct' });
 });
 element('pricing-action')?.addEventListener('click', () => {
-  element('pricing-result').textContent = '確認項目：利用人数・契約書の数・必要な機能';
+  element('pricing-result').textContent = '確認項目：保存できる読書記録の数・端末間同期・メモの出力';
 });
 element('cases-action')?.addEventListener('click', () => {
-  element('cases-result').textContent = '利用例：更新予定の確認・チームへの書類共有';
+  element('cases-result').textContent = '読書記録：読みかけの本・読み終えた本・次に読む本';
 });
 element('example-form')?.addEventListener('submit', (event) => {
   event.preventDefault();

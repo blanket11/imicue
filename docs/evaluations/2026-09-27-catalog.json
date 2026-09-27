@@ -4525,8 +4525,8 @@
           ]
         },
         {
-          "id": "contracts-features-100-shuffle-558732464",
-          "familyId": "contracts",
+          "id": "synthetic-family-18-features-100-shuffle-558732464",
+          "familyId": "synthetic-family-18",
           "situation": "features",
           "order": "shuffle",
           "method": "all-score",
@@ -4556,8 +4556,8 @@
           ]
         },
         {
-          "id": "contracts-cases-100-shuffle-558732464",
-          "familyId": "contracts",
+          "id": "synthetic-family-18-cases-100-shuffle-558732464",
+          "familyId": "synthetic-family-18",
           "situation": "cases",
           "order": "shuffle",
           "method": "all-score",
@@ -4587,8 +4587,8 @@
           ]
         },
         {
-          "id": "contracts-paraphrase-100-shuffle-558732464",
-          "familyId": "contracts",
+          "id": "synthetic-family-18-paraphrase-100-shuffle-558732464",
+          "familyId": "synthetic-family-18",
           "situation": "paraphrase",
           "order": "shuffle",
           "method": "all-score",
@@ -4618,8 +4618,8 @@
           ]
         },
         {
-          "id": "contracts-none-100-shuffle-558732464",
-          "familyId": "contracts",
+          "id": "synthetic-family-18-none-100-shuffle-558732464",
+          "familyId": "synthetic-family-18",
           "situation": "none",
           "order": "shuffle",
           "method": "all-score",
@@ -4647,8 +4647,8 @@
           ]
         },
         {
-          "id": "contracts-ambiguous-100-shuffle-558732464",
-          "familyId": "contracts",
+          "id": "synthetic-family-18-ambiguous-100-shuffle-558732464",
+          "familyId": "synthetic-family-18",
           "situation": "ambiguous",
           "order": "shuffle",
           "method": "all-score",

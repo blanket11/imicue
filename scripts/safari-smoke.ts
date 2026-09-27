@@ -9,7 +9,7 @@ import { measuredTransport } from './lib/jev-evaluation.js';
 const origin = 'http://127.0.0.1:5183';
 const driverOrigin = 'http://127.0.0.1:5199';
 const endpoint = 'http://127.0.0.1:5193/v1/decide';
-const storageKey = 'imicue:demo-contract:demo-1';
+const storageKey = 'imicue:reading-notes:demo-1';
 const live = process.env.RUN_SAFARI_JEV === '1';
 const mode = live ? 'jev' : 'mock';
 const artifacts = `test-results/safari-${mode}`;

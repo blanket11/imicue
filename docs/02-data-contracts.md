@@ -73,7 +73,7 @@ interface Definition {
 ```ts
 const definition = {
   schemaVersion: '0.1',
-  siteId: 'demo-contract',
+  siteId: 'reading-notes',
   definitionVersion: 'demo-1',
   topics: {
     pricing: { description: '利用料金や見積もりに関する情報' },
@@ -81,33 +81,33 @@ const definition = {
   signals: {
     'demo-pricing': {
       kind: 'content',
-      productId: 'demo-contract',
+      productId: 'reading-notes',
       topicIds: ['pricing'],
-      description: '架空製品DemoContractの料金体系と見積もり方法を説明するセクション',
-      modelDescription: 'A section explaining DemoContract pricing and how to request a quote.',
+      description: '読書ノートの保存数や端末間同期など、架空の利用プランを比べるセクション',
+      modelDescription: 'A section comparing fictional reading-log plans, including saved entries and device sync.',
     },
     'demo-feature-used': {
       kind: 'action',
-      productId: 'demo-contract',
+      productId: 'reading-notes',
       description: '架空製品の検索機能を利用した操作。検索語そのものは記録しない',
     },
   },
   contents: {
     'demo-pricing-guide': {
       title: '料金の考え方を見る',
-      description: 'DemoContractの費用構成についてさらに詳しく説明する架空のガイド',
-      modelDescription: 'A detailed guide to the cost structure of DemoContract.',
+      description: '読書ノートの架空の利用プランで確認する項目を説明するガイド',
+      modelDescription: 'A detailed guide to comparing fictional reading-log plans.',
       href: '/guides/pricing/',
-      productId: 'demo-contract',
+      productId: 'reading-notes',
       topicIds: ['pricing'],
       relatedSignalIds: ['demo-pricing'],
       enabled: true,
     },
   },
   pages: {
-    home: { productId: 'demo-contract' },
+    home: { productId: 'reading-notes' },
     'pricing-guide': {
-      productId: 'demo-contract',
+      productId: 'reading-notes',
       contentId: 'demo-pricing-guide',
     },
   },

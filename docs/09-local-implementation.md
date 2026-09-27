@@ -10,7 +10,7 @@
 | --- | --- |
 | `packages/core/src` | 不変の辞書、型、snapshot検証、期間限定集計、Rules、共通ポリシー |
 | `packages/browser/src` | DOM計測、同意と開始・停止、任意のsession保存、購読、スケジューラー |
-| `examples/vanilla` | DemoContractのトップと3つのガイド、ローカル確認パネル、案内カード |
+| `examples/vanilla` | 読書ノートアプリのトップと3つのガイド、ローカル確認パネル、案内カード |
 | `packages/*/test` | 時計・DOM監視・判定エンジンを制御する単体テスト |
 | `tests/e2e` | 静的ビルドを配信するChromium試験 |
 | `scripts/check-bundle.mjs` | Browser/Core/Rulesの依存とgzipサイズの検査 |

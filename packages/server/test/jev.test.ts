@@ -20,9 +20,9 @@ describe('C02 — real SDK with synthetic fetch, no external API', () => {
       expect(String(url)).toMatch(/^https:\/\/api\.typesafe\.ai\//);
       const sent = JSON.parse(String(init?.body));
       expect(sent.model).toBe(JEV_MODEL);
-      expect(sent.questions['feature-guide'].instructions.candidate.description).toBe('DemoContractの機能の詳しい解説');
+      expect(sent.questions['feature-guide'].instructions.candidate.description).toBe('読書ノートの検索機能を説明するガイド');
       expect(sent.questions['feature-guide'].criteria).toHaveLength(4);
-      expect(sent.state.observations[0].description).toBe('DemoContractの機能紹介');
+      expect(sent.state.observations[0].description).toBe('読書ノートの検索機能の紹介');
       expect(JSON.stringify(sent)).not.toContain('href');
       return Response.json(response());
     });

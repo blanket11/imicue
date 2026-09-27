@@ -109,8 +109,8 @@ export function TrackerSession({ pageId, children }: { pageId: string; children:
 export function SearchExample() {
   const actions = useImicueActions();
   const [opened, setOpened] = useState(false);
-  return <><button id="feature-action" onClick={() => { setOpened(true); actions.track('demo-feature-used'); }}>検索例を開く</button>
-    <p id="feature-result" role="status">{opened ? '検索例：サンプル契約書 A・サンプル契約書 B' : ''}</p></>;
+  return <><button id="feature-action" onClick={() => { setOpened(true); actions.track('demo-feature-used'); }}>読書メモの検索例を開く</button>
+    <p id="feature-result" role="status">{opened ? '検索例：「海辺の灯台」・「森の図書館」' : ''}</p></>;
 }
 
 export function CompleteGuide() {

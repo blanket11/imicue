@@ -13,11 +13,11 @@ test('browsing examples update records, meaning and Rules results without collec
   });
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('サイト内の閲覧から');
-  await expect(page.getByLabel('検索機能の説明を見る', { exact: true })).toBeChecked();
-  await expect(page.locator('#result h4')).toHaveText('契約書の全文検索ガイド');
+  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeChecked();
+  await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
   for (const [label, topic, expected] of [
-    ['検索機能の説明を見る', '検索', '契約書の全文検索ガイド'],
-    ['契約更新の事例を見る', '契約更新', '営業チームの契約更新事例'],
+    ['本の検索機能を見る', '本の検索機能', '読書メモを検索するガイド'],
+    ['読書記録の使い方を見る', '読みかけ', '読みかけの本を整理する方法'],
   ] as const) {
     await page.getByLabel(label, { exact: true }).check();
     await expect(page.locator('#observations')).toContainText(topic);
@@ -27,9 +27,9 @@ test('browsing examples update records, meaning and Rules results without collec
   }
   await page.getByLabel('両方を同じくらい見る', { exact: true }).check();
   await expect(page.locator('#observations')).toContainText('検索');
-  await expect(page.locator('#observations')).toContainText('契約更新');
-  await expect(page.locator('#mapping')).toContainText('契約書の全文検索ガイド');
-  await expect(page.locator('#mapping')).toContainText('営業チームの契約更新事例');
+  await expect(page.locator('#observations')).toContainText('読みかけ');
+  await expect(page.locator('#mapping')).toContainText('読書メモを検索するガイド');
+  await expect(page.locator('#mapping')).toContainText('読みかけの本を整理する方法');
   await expect(page.locator('#result')).toContainText('見送ります');
   await expect(page.locator('#result')).toContainText('同点');
   await page.locator('#reason summary').click();
@@ -37,13 +37,13 @@ test('browsing examples update records, meaning and Rules results without collec
   await page.getByLabel('閲覧記録がない', { exact: true }).check();
   await expect(page.locator('#result')).toContainText('見送ります');
   await expect(page.locator('#result')).toContainText('記録がない');
-  await expect(page.locator('#mapping')).not.toContainText('営業チームの契約更新事例');
+  await expect(page.locator('#mapping')).not.toContainText('読みかけの本を整理する方法');
   await page.getByRole('button', { name: '最初の閲覧例に戻す' }).click();
-  await expect(page.getByLabel('検索機能の説明を見る', { exact: true })).toBeChecked();
-  await expect(page.locator('#result h4')).toHaveText('契約書の全文検索ガイド');
-  await expect(page.locator('#observations')).toContainText('検索');
-  await expect(page.locator('#observations')).not.toContainText('契約更新');
-  await expect(page.locator('#mapping')).toContainText('契約書の全文検索ガイド');
+  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeChecked();
+  await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
+  await expect(page.locator('#observations')).toContainText('本の検索機能');
+  await expect(page.locator('#observations')).not.toContainText('読みかけ');
+  await expect(page.locator('#mapping')).toContainText('読書メモを検索するガイド');
   await expect(page.locator('#reason')).not.toHaveAttribute('open');
   expect(errors).toEqual([]);
   await expect(page.locator('html')).not.toHaveAttribute('data-csp-violation');
@@ -52,7 +52,7 @@ test('browsing examples update records, meaning and Rules results without collec
 
 test('rapid selection changes keep the final records, meaning and result together', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByLabel('検索機能の説明を見る', { exact: true })).toBeEnabled();
+  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeEnabled();
   // Dispatch within one browser turn so earlier asynchronous evaluations can finish after a newer selection.
   await page.locator('#scenario-options').evaluate((options) => {
     for (const value of ['cases', 'empty', 'features', 'both', 'cases']) {
@@ -61,12 +61,12 @@ test('rapid selection changes keep the final records, meaning and result togethe
       input.dispatchEvent(new Event('change', { bubbles: true }));
     }
   });
-  await expect(page.getByLabel('契約更新の事例を見る', { exact: true })).toBeChecked();
-  await expect(page.locator('#observations')).toContainText('契約更新');
-  await expect(page.locator('#observations')).not.toContainText('検索');
-  await expect(page.locator('#mapping')).toContainText('営業チームの契約更新事例');
-  await expect(page.locator('#mapping')).not.toContainText('契約書の全文検索ガイド');
-  await expect(page.locator('#result h4')).toHaveText('営業チームの契約更新事例');
+  await expect(page.getByLabel('読書記録の使い方を見る', { exact: true })).toBeChecked();
+  await expect(page.locator('#observations')).toContainText('読みかけ');
+  await expect(page.locator('#observations')).not.toContainText('本の検索機能');
+  await expect(page.locator('#mapping')).toContainText('読みかけの本を整理する方法');
+  await expect(page.locator('#mapping')).not.toContainText('読書メモを検索するガイド');
+  await expect(page.locator('#result h4')).toHaveText('読みかけの本を整理する方法');
 });
 
 test('keyboard controls, copy success and refusal, and narrow layouts', async ({ page, browserName }) => {
@@ -74,11 +74,11 @@ test('keyboard controls, copy success and refusal, and narrow layouts', async ({
   // macOS WebKit uses Option+Tab to include links in keyboard navigation.
   await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
   await expect(page.getByRole('link', { name: '本文へ移動' })).toBeFocused();
-  await page.getByLabel('検索機能の説明を見る', { exact: true }).focus();
+  await page.getByLabel('本の検索機能を見る', { exact: true }).focus();
   await page.keyboard.press('Space');
-  await expect(page.locator('#result h4')).toHaveText('契約書の全文検索ガイド');
+  await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
   await page.keyboard.press('ArrowDown');
-  await expect(page.locator('#result h4')).toHaveText('営業チームの契約更新事例');
+  await expect(page.locator('#result h4')).toHaveText('読みかけの本を整理する方法');
   await page.evaluate(() => {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value: string) => {
       if (!value.includes('npm ci\nnpm run dev')) throw new Error('invalid_command');
@@ -106,7 +106,7 @@ test('static content and documentation remain usable without JavaScript', async 
   await expect(page.locator('noscript .notice')).toBeVisible();
   await expect(page.locator('noscript .notice')).toContainText('JavaScriptを有効にしてください', { useInnerText: true });
   await expect(page.getByRole('link', { name: '詳しい導入手順' })).toHaveAttribute('href', /^https:\/\/github.com\/blanket11\/imicue/);
-  await expect(page.getByLabel('検索機能の説明を見る', { exact: true })).toBeDisabled();
+  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeDisabled();
   await context.close();
 });
 
@@ -152,5 +152,5 @@ test('missing and private paths return the 404 page with working assets and home
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link', { name: 'トップページへ戻る', exact: true }).click();
   await expect(page).toHaveURL('http://127.0.0.1:4187/');
-  await expect(page.getByLabel('検索機能の説明を見る', { exact: true })).toBeEnabled();
+  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeEnabled();
 });

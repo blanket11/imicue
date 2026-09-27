@@ -84,7 +84,7 @@ const standalone = await import(`../dist/browser/${manifest.files.es.filename}`)
 assert.deepEqual(Object.keys(standalone).sort(), ['createRemoteEngine', 'createRulesEngine', 'createTracker', 'version']);
 assert.equal(standalone.version, manifest.version);
 for (const route of ['index.html', 'guides/features/index.html', 'guides/pricing/index.html', 'guides/cases/index.html']) {
-  assert.match(await readFile(`examples/next-static/out/${route}`, 'utf8'), /DemoContract/);
+  assert.match(await readFile(`examples/next-static/out/${route}`, 'utf8'), /読書ノート/);
 }
 let scanned = 0;
 async function scan(directory) {

@@ -1,6 +1,6 @@
 import { validateDefinition, validateSnapshot, type Definition, type ResolvedEvaluationInput, type Snapshot } from '@imicue/core';
 
-export const CATALOG_FIXTURE_VERSION = 'catalog-v1';
+export const CATALOG_FIXTURE_VERSION = 'catalog-v2';
 export const CATALOG_FIXTURE_TIME = Date.parse('2026-09-27T00:00:00Z');
 export type CatalogSuite = 'pilot' | 'dev' | 'holdout' | 'stability';
 export type CatalogSituation = 'features' | 'cases' | 'paraphrase' | 'none' | 'ambiguous' | 'long';
@@ -26,7 +26,7 @@ export const catalogFamilies: readonly CatalogFamily[] = [
   family('training', '社員研修の受講履歴を記録する', '従業員がどの講習を終えたか残す', 'holdout'),
   family('equipment', '貸出機材の返却予定日を管理する', '借り出された装置がいつ戻るか確認する', 'holdout'),
   family('surveys', 'アンケートの回答を設問ごとに集計する', '質問票に寄せられた答えを問い別にまとめる', 'holdout'),
-  family('contracts', '契約書の更新期限を管理する', '取り決めを延長する手続きの締め切りを把握する', 'holdout'),
+  family('reading-habits', '読書中の本に進捗を記録する', '読み進めたページ数や感想を本ごとに残す', 'holdout'),
   family('maintenance', '設備点検の予定と実施履歴を残す', '装置の検査をいつ行い何を確認したか記録する', 'holdout'),
   family('attendance', '従業員の出退勤時刻を記録する', '職場で働き始めた時刻と終えた時刻を残す', 'holdout'),
   family('menus', '食堂メニューのアレルギー情報を表示する', '提供する料理に含まれる特定原材料を知らせる', 'holdout'),

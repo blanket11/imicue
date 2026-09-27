@@ -6,40 +6,40 @@ Imicueを組み込むには、観測する表示・操作と案内先を辞書�
 
 ## 観測する内容と案内先を登録する
 
-`definition.js` に固定の辞書を置きます。次は架空の契約書検索ページです。`signals` は観測する表示・操作、`contents` は案内先、`pages` は計測するページを表します。
+`definition.js` に固定の辞書を置きます。次は架空の読書ノートアプリです。`signals` は観測する表示・操作、`contents` は案内先、`pages` は計測するページを表します。
 
 ```js
 export const definition = {
   schemaVersion: '0.1',
-  siteId: 'contract-example',
+  siteId: 'reading-notes-example',
   definitionVersion: 'example-1',
   topics: {},
   signals: {
     'search-overview': {
       kind: 'content',
-      label: '契約書検索の紹介',
-      description: '契約書の本文から語句を探す機能を説明するセクション',
-      productId: 'contract-example',
+      label: '読書メモ検索の紹介',
+      description: '本の題名やメモの語句から記録を探す機能を説明するセクション',
+      productId: 'reading-notes-example',
     },
     'search-example-opened': {
       kind: 'action',
       label: '検索例を開く操作',
-      description: '本文から条項を探す固定の検索例を開く操作。入力文は記録しない',
-      productId: 'contract-example',
+      description: '読書メモを探す固定の検索例を開く操作。検索語は記録しない',
+      productId: 'reading-notes-example',
     },
   },
   contents: {
     'search-guide': {
-      title: '契約書の全文検索ガイド',
-      description: '契約書の本文から語句を探し、必要な条項を確認する手順',
+      title: '読書メモを検索するガイド',
+      description: '本の題名やメモの語句から記録を探し、内容を見返す手順',
       href: '/guides/search/',
       enabled: true,
-      productId: 'contract-example',
+      productId: 'reading-notes-example',
       relatedSignalIds: ['search-overview', 'search-example-opened'],
     },
   },
   pages: {
-    home: { productId: 'contract-example' },
+    home: { productId: 'reading-notes-example' },
   },
 };
 ```
@@ -52,10 +52,10 @@ Rulesは `relatedSignalIds` やtopicの対応関係を使います。Jevはサ�
 
 ```html
 <section data-imicue-signal="search-overview">
-  <h2>契約書の本文から探す</h2>
-  <p>ファイル名を覚えていなくても、本文中の語句から条項を探せます。</p>
+  <h2>読書メモから本を探す</h2>
+  <p>題名やメモに書いた語句から、記録した本を探せます。</p>
   <button id="open-example" type="button">検索例を開く</button>
-  <p id="search-example" hidden>検索語「契約期間」に対応する条項の表示例です。</p>
+  <p id="search-example" hidden>「海辺の灯台」に付けた「灯台守」のメモを表示する例です。</p>
 </section>
 
 <div data-imicue-ignore>

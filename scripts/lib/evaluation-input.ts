@@ -3,22 +3,22 @@ import type { ResolvedEvaluationInput } from '@imicue/core';
 export type InputVariant = 'dictionary-ja' | 'dictionary-en' | 'labels';
 // Synthetic fixture translations only. Production dictionaries are never rewritten.
 const english: Record<string, string> = {
-  features: 'An introduction to the features of the fictional product DemoContract.',
-  pricing: 'An introduction to the pricing of DemoContract.',
-  cases: 'An introduction to use cases for DemoContract.',
-  'feature-guide': 'The body of the DemoContract feature guide.',
+  features: 'An introduction to searching books and reading notes in a fictional reading-log app.',
+  pricing: 'An introduction to fictional plans for saving reading records.',
+  cases: 'An introduction to organizing books and reading records.',
+  'feature-guide': 'The body of a reading-note search guide.',
   action: 'An explicit interaction with a registered feature.',
   foreign: 'An introduction to the features of a different fictional product.',
 };
 const englishCandidates: Record<string, string> = {
-  'feature-guide': 'A detailed explanation of DemoContract features.',
-  'pricing-guide': 'A detailed explanation of DemoContract pricing.',
-  'case-guide': 'A detailed explanation of DemoContract use cases.',
+  'feature-guide': 'A detailed explanation of searching reading notes.',
+  'pricing-guide': 'A detailed explanation of fictional reading-log plans.',
+  'case-guide': 'A detailed explanation of organizing reading records.',
 };
 const englishTopics: Record<string, string> = {
-  features: 'Features of the fictional product DemoContract.',
-  pricing: 'Pricing of the fictional product DemoContract.',
-  cases: 'Use cases for the fictional product DemoContract.',
+  features: 'Search features of a fictional reading-log app.',
+  pricing: 'Fictional plans for saving reading records.',
+  cases: 'Ways to organize books and reading records.',
 };
 function translated(table: Record<string, string>, id: string): string {
   if (!Object.hasOwn(table, id)) throw new Error('missing_fixture_translation');

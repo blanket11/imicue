@@ -45,7 +45,7 @@ IIFEは `window.Imicue` に `createTracker`・`createRulesEngine`・`createRemot
 npm run preview:next
 ```
 
-[Next.js静的デモ](http://127.0.0.1:5184/)で計測を許可・開始し、「検索例を開く」を操作します。候補のリンクは「候補のガイドを表示」を押すと現れます。
+[Next.js静的デモ](http://127.0.0.1:5184/)で計測を許可・開始し、「読書メモの検索例を開く」を操作します。候補のリンクは「候補のガイドを表示」を押すと現れます。
 
 上部のガイド間を移動するとpageIdとpageViewIdが変わり、同じTrackerの記録と許可を維持します。再読み込みではリセットします。この例の保存先はメモリです。
 

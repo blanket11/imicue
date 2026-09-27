@@ -4,8 +4,8 @@ import { definition, makeSnapshot } from '../../site/scenarios.js';
 
 describe('public site browsing examples use the actual Rules engine', () => {
   it.each([
-    ['features', '契約書の全文検索ガイド'],
-    ['cases', '営業チームの契約更新事例'],
+    ['features', '読書メモを検索するガイド'],
+    ['cases', '読みかけの本を整理する方法'],
   ] as const)('recommends the matching candidate from %s browsing without clicks or actions', async (scenario, title) => {
     const snapshot = makeSnapshot(scenario);
     expect(snapshot.observations).toHaveLength(2);

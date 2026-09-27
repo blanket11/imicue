@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
 
 for (const scenario of [
-  { topic: 'features', contentId: 'catalog-099', title: '契約書の全文検索ガイド', remote: false },
-  { topic: 'cases', contentId: 'catalog-098', title: '営業チームの契約更新事例', remote: false },
-  { topic: 'features', contentId: 'catalog-099', title: '契約書の全文検索ガイド', remote: true },
-  { topic: 'features', contentId: 'catalog-099', title: '契約書の全文検索ガイド', remote: false, mobile: true },
+  { topic: 'features', contentId: 'catalog-099', title: '読書メモを検索するガイド', remote: false },
+  { topic: 'cases', contentId: 'catalog-098', title: '読みかけの本を整理する方法', remote: false },
+  { topic: 'features', contentId: 'catalog-099', title: '読書メモを検索するガイド', remote: true },
+  { topic: 'features', contentId: 'catalog-099', title: '読書メモを検索するガイド', remote: false, mobile: true },
 ]) {
   test(`100 candidates: ${scenario.topic}, ${scenario.remote ? 'remote mock' : 'Rules'}, ${scenario.mobile ? 'mobile' : 'desktop'}, browsing without actions`, async ({ page }) => {
     if (scenario.mobile) await page.setViewportSize({ width: 375, height: 812 });
@@ -55,5 +55,5 @@ test('100-candidate catalog stays usable at a mobile width', async ({ page }) =>
   await page.getByText('100件の登録内容を見る', { exact: true }).click();
   await expect(page.locator('#catalog-list a')).toHaveCount(100);
   await page.locator('#catalog-list a').last().click();
-  await expect(page.locator('h1')).toHaveText('契約書の全文検索ガイド');
+  await expect(page.locator('h1')).toHaveText('読書メモを検索するガイド');
 });

@@ -66,8 +66,8 @@ describe('bounded live-evaluation harness (mock transport only)', () => {
     expect(modified.page).toBe(input.page);
     expect(modified.observations[0]).toMatchObject({ signalId: 'features', qualifiedViews: 2, visibleMs: 30_000, lastSeenAgoMs: 0 });
     expect(modified.candidates).toHaveLength(1);
-    expect(modified.candidates[0]).toMatchObject({ contentId: 'feature-guide', productId: 'demo-contract', topicIds: ['features'] });
-    expect(modified.observations[0]!.definition.modelDescription).toBe(variant === 'labels' ? 'features' : 'An introduction to the features of the fictional product DemoContract.');
+    expect(modified.candidates[0]).toMatchObject({ contentId: 'feature-guide', productId: 'reading-notes', topicIds: ['features'] });
+    expect(modified.observations[0]!.definition.modelDescription).toBe(variant === 'labels' ? 'features' : 'An introduction to searching books and reading notes in a fictional reading-log app.');
     expect(input.observations[0]!.definition.modelDescription).toBeUndefined();
   });
 

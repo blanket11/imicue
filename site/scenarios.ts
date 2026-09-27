@@ -4,19 +4,19 @@ import { validateDefinition, type SignalObservation, type Snapshot } from '@imic
 export const definition = validateDefinition({
   schemaVersion: '0.1', siteId: 'public-playground', definitionVersion: 'playground-2',
   topics: {
-    features: { description: '契約書の全文検索機能' },
-    cases: { description: '営業チームの契約更新の運用' },
+    features: { description: '本の情報や読書メモを検索する機能' },
+    cases: { description: '読みかけの本と読書記録を整理する方法' },
   },
   signals: {
-    'features-overview': { kind: 'content', description: '契約書の本文から必要な条項を探す、全文検索機能の概要。', topicIds: ['features'] },
-    'features-detail': { kind: 'content', description: '検索した語句の前後を一覧で確認する手順。', topicIds: ['features'] },
-    'cases-overview': { kind: 'content', description: '営業チームで契約の更新漏れが起きていた事例。', topicIds: ['cases'] },
-    'cases-detail': { kind: 'content', description: '担当者と更新予定を一緒に確認する運用に変えた事例。', topicIds: ['cases'] },
+    'features-overview': { kind: 'content', description: '本の題名や著者名から本を探す機能の概要。', topicIds: ['features'] },
+    'features-detail': { kind: 'content', description: '検索結果から本の情報と読書メモを確認する手順。', topicIds: ['features'] },
+    'cases-overview': { kind: 'content', description: '読みかけと読み終えた本を分けて記録する方法。', topicIds: ['cases'] },
+    'cases-detail': { kind: 'content', description: '読書の状態とメモを一覧で整理する手順。', topicIds: ['cases'] },
   },
   contents: {
-    'feature-guide': { title: '契約書の全文検索ガイド', description: '本文の検索から、一致した箇所の確認まで。全文検索の使い方を紹介するガイド。', href: '/guides/features/',
+    'feature-guide': { title: '読書メモを検索するガイド', description: '本の題名やメモの語句から記録を探し、内容を見返す方法を紹介するガイド。', href: '/guides/features/',
       productId: 'sample', topicIds: ['features'], relatedSignalIds: ['features-overview', 'features-detail'], enabled: true },
-    'case-guide': { title: '営業チームの契約更新事例', description: '担当者と更新予定を確認し、契約の更新漏れを防ぐ運用を紹介する事例。', href: '/guides/cases/',
+    'case-guide': { title: '読みかけの本を整理する方法', description: '読みかけ・読み終えた本を記録し、読書の続きを見つけやすくする方法を紹介するガイド。', href: '/guides/cases/',
       productId: 'sample', topicIds: ['cases'], relatedSignalIds: ['cases-overview', 'cases-detail'], enabled: true },
   },
   pages: { home: { productId: 'sample' } },
@@ -24,8 +24,8 @@ export const definition = validateDefinition({
 
 export type Scenario = 'features' | 'cases' | 'both' | 'empty';
 export const observationLabels: Record<string, string> = {
-  'features-overview': '全文検索の概要', 'features-detail': '検索結果の確認手順',
-  'cases-overview': '営業チームの課題', 'cases-detail': '契約更新の運用例',
+  'features-overview': '本の検索機能の概要', 'features-detail': '検索結果とメモの確認手順',
+  'cases-overview': '読書記録の整理方法', 'cases-detail': '読みかけの本のまとめ方',
 };
 
 export function makeSnapshot(scenario: Scenario): Snapshot {
