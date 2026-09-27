@@ -124,10 +124,16 @@ Codex向けのリポジトリ指示と、作業範囲・テスト手順の整理
 | ADR-008 | 固定候補IDとabstainを返す | UI・URL・文章をAIに自由生成させず、利用サイトが実行を管理する |
 | ADR-009 | 初期公開準備はdocsのみ | 実装・Issue管理・サービス公開を別作業として進める |
 | ADR-010 | CDNは静的SDK配布、キーは別server | 埋め込み導入の容易さと秘密情報の隔離を両立する |
+| ADR-011 | 100候補を全件Scoreで評価し、容量で分割 | 意味による事前選抜の漏れを避け、全候補の結果検証を維持する。共通stateから候補の重複を除く |
+| ADR-012 | 分割計画のquotaと外部試行の同時数を分離 | 1判定内の複数API呼び出しでも、課金・並列数の上限を迂回させない |
+
+2026-09-27に [Models](https://docs.typesafe.ai/models)、[API](https://docs.typesafe.ai/api)、[Score](https://docs.typesafe.ai/primitives/score)、[Choice](https://docs.typesafe.ai/primitives/choice) とSDK 0.6.0を再確認した。jev-1.13.0の公式入力制限は全質問とstateで64k tokens、stateと最長質問で32k tokens。Choice最大255択、Scoreは2〜10段階。Imicueのbyte上限とは区別する。質問数の独立した数値上限・送出前の公式token計数手段は、確認した資料では確認できなかった。
+
+[182件のSkill選択例](https://docs.typesafe.ai/cookbooks/skill_suggestion)や[再順位付け例](https://docs.typesafe.ai/cookbooks/rerank_typesafe)は設計比較の参考にした。別用途の結果をImicueの日本語100候補の性能保証へ転用しない。方式比較と実測の条件は [評価記録](21-candidate-scale.md) に残す。
 
 ## 実装して比較する必要があるもの
 
-辞書説明による推薦品質の改善、日本語と英語の差、閾値・重み・表示時間の適切さ、長いsectionでの計測の使い勝手、Rulesに対するJevの上積み、実際の遅延・入力量・課金、ブラウザ負荷とbundleサイズは未検証である。
+合成データでの推薦・遅延・入力量・料金推計と配布物サイズは [100候補の評価記録](21-candidate-scale.md) に残した。人による推薦品質の確認、日本語と英語の差、閾値・重み・表示時間の適切さ、長いsectionでの使い勝手、Rulesに対するJevの効果、実環境での継続的な負荷は引き続き検証が必要である。
 
 UIを加えたときの回遊やCVへの影響は、このライブラリの技術的完成と分けて評価する。
 

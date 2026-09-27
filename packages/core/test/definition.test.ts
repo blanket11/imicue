@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { isAllowedHref, validateDefinition } from '../src/index.js';
-import { definition } from './fixtures.js';
+import { isAllowedHref, MAX_DEFINITION_BYTES, validateDefinition } from '../src/index.js';
+import { definition, scaleDefinition } from './fixtures.js';
 
 describe('C01: definition validation', () => {
   it('copies and deeply freezes the definition', () => {
@@ -69,14 +69,27 @@ describe('C01: definition validation', () => {
     expect(() => validateDefinition({ ...source, contents: { ...source.contents, 'feature-guide': { ...source.contents['feature-guide'], availableFrom: '2026-09-26T00:00:00Z', availableUntil: '2026-09-27T00:00:00.123Z' } } })).not.toThrow();
   });
 
-  it('warns above 8 candidates and rejects configuration above 20', () => {
+  it.each([9, 21, 100])('accepts %i candidates without the obsolete capacity warning', (count) => {
     const warning = vi.fn();
-    const source = definition();
-    const contents = Object.fromEntries(Array.from({ length: 9 }, (_, index) => [`candidate-${index}`, source.contents['feature-guide']!]));
-    // The referenced content must exist even if it is disabled.
-    contents['feature-guide'] = source.contents['feature-guide']!;
-    validateDefinition({ ...source, contents }, { onWarning: warning });
-    expect(warning).toHaveBeenCalledExactlyOnceWith('candidate_capacity');
-    expect(() => validateDefinition({ ...source, contents: Object.fromEntries(Array.from({ length: 21 }, (_, index) => [`candidate-${index}`, source.contents['feature-guide']])) })).toThrow();
+    expect(Object.keys(validateDefinition(scaleDefinition(count), { onWarning: warning }).contents)).toHaveLength(count);
+    expect(warning).not.toHaveBeenCalled();
+  });
+
+  it('allows 100 destination pages plus home, bounds pages at 200 and contents at 100', () => {
+    const source = scaleDefinition();
+    const pages = Object.fromEntries(Object.keys(source.contents).map((contentId) => [contentId, { contentId }]));
+    expect(Object.keys(validateDefinition({ ...source, pages: { ...pages, home: {} } }).pages)).toHaveLength(101);
+    const manyPages = Object.fromEntries(Array.from({ length: 200 }, (_, index) => [`page-${index}`, {}]));
+    expect(() => validateDefinition({ ...source, pages: manyPages })).not.toThrow();
+    expect(() => validateDefinition({ ...source, pages: { ...manyPages, extra: {} } })).toThrow('pages');
+    expect(() => validateDefinition(scaleDefinition(101))).toThrow('contents');
+  });
+
+  it('bounds the serialized definition independently of candidate count', () => {
+    const source = scaleDefinition(1);
+    const [contentId, content] = Object.entries(source.contents)[0]!;
+    expect(() => validateDefinition({ ...source, contents: {
+      [contentId]: { ...content, href: `/${'x'.repeat(MAX_DEFINITION_BYTES)}` },
+    } })).toThrow('definition.capacity');
   });
 });

@@ -25,6 +25,78 @@ for (const format of ['es', 'iife']) {
     expect(JSON.parse((await page.locator('#snapshot').textContent())!).observations).toEqual([]);
     expect(decisions).toEqual([]); expect(errors).toEqual([]);
   });
+
+  test(`P02: generated ${format} evaluates all 100 candidates from views and honors withdrawal`, async ({ page }) => {
+    const errors: string[] = []; const posts: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('request', (request) => { if (request.method() === 'POST') posts.push(request.url()); });
+    await page.clock.install();
+    await page.goto(`${base}/${format}/`);
+    const before = await page.evaluate(async ({ format, url }) => {
+      const api: typeof import('../../packages/browser/src/index.js') & { createRulesEngine: typeof import('../../packages/core/src/index.js').createRulesEngine }
+        = format === 'iife' ? (window as unknown as { Imicue: typeof api }).Imicue : await import(url);
+      const root = document.createElement('main');
+      root.style.cssText = 'position:fixed;inset:0;padding:0;margin:0;background:white;';
+      for (const signalId of ['overview', 'features']) {
+        const section = document.createElement('section');
+        section.dataset.imicueSignal = signalId;
+        section.style.cssText = 'height:200px;width:100%;padding:0;margin:0;';
+        section.textContent = signalId;
+        root.append(section);
+      }
+      document.body.replaceChildren(root);
+      const definition = {
+        schemaVersion: '0.1', siteId: 'distribution-scale', definitionVersion: 'scale-v1',
+        signals: { overview: { kind: 'content', description: 'Synthetic overview' }, features: { kind: 'content', description: 'Synthetic feature details' } },
+        contents: Object.fromEntries(Array.from({ length: 100 }, (_, index) => [`candidate-${String(index).padStart(3, '0')}`, {
+          title: `Synthetic guide ${index}`, description: `Synthetic guide ${index}`, href: `/guide/${index}/`, enabled: true,
+          relatedSignalIds: index === 99 ? ['features'] : [],
+        }])),
+        pages: { home: {} },
+      };
+      const tracker = api.createTracker({ definition, pageId: 'home', root, engine: api.createRulesEngine() });
+      const harness: { tracker: typeof tracker; decision?: import('../../packages/core/src/index.js').Decision } = { tracker };
+      Object.assign(window, { distributionScale: harness });
+      tracker.onDecision((decision) => { harness.decision = decision; });
+      tracker.start();
+      const beforeConsent = tracker.getState().started;
+      tracker.setConsent('granted');
+      return { beforeConsent, afterConsent: tracker.getState().started, observations: tracker.getSnapshot().observations };
+    }, { format, url: `${base}/${manifest.files.es.filename}` });
+    expect(before).toEqual({ beforeConsent: false, afterConsent: false, observations: [] });
+    await page.evaluate(() => (window as unknown as { distributionScale: { tracker: import('../../packages/browser/src/index.js').Tracker } }).distributionScale.tracker.start());
+    await page.waitForTimeout(100);
+    await page.clock.runFor(3_000);
+    const initial = await page.evaluate(() => {
+      const harness = (window as unknown as { distributionScale: { tracker: import('../../packages/browser/src/index.js').Tracker; decision?: import('../../packages/core/src/index.js').Decision } }).distributionScale;
+      return { snapshot: harness.tracker.getSnapshot(), decision: harness.decision };
+    });
+    expect(initial.snapshot.observations).toHaveLength(2);
+    expect(initial.snapshot.observations.every((row) => row.qualifiedViews === 1 && row.clicks === 0 && row.actions === 0)).toBe(true);
+    expect(initial.decision).toMatchObject({ type: 'abstain', reason: 'below_threshold' });
+    // The first 17s evaluation has only 15s committed visibility; after decay its score is below 0.35.
+    // Reach the 32s evaluation with 30s committed visibility without changing the evidence policy.
+    await page.clock.runFor(30_000);
+    const completed = await page.evaluate(() => {
+      const harness = (window as unknown as { distributionScale: { tracker: import('../../packages/browser/src/index.js').Tracker; decision: import('../../packages/core/src/index.js').Decision } }).distributionScale;
+      const decision = harness.decision;
+      const displayBefore = harness.tracker.canDisplay(decision);
+      harness.tracker.setConsent('denied');
+      const state = harness.tracker.getState();
+      const observations = harness.tracker.getSnapshot().observations;
+      const displayAfter = harness.tracker.canDisplay(decision);
+      harness.tracker.destroy();
+      return { decision, displayBefore, displayAfter, state, observations };
+    });
+    expect(completed.decision).toMatchObject({ type: 'recommend', contentId: 'candidate-099', engine: { name: 'rules' } });
+    expect(completed.decision.assessments).toHaveLength(100);
+    expect(completed.displayBefore).toBe(true);
+    expect(completed.displayAfter).toBe(false);
+    expect(completed.state).toMatchObject({ consent: 'denied', started: false });
+    expect(completed.observations).toEqual([]);
+    expect(posts).toEqual([]);
+    expect(errors).toEqual([]);
+  });
 }
 
 test('P02: duplicate IIFE scripts preserve the API and duplicate starts produce a diagnostic', async ({ page }) => {

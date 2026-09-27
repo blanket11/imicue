@@ -1,0 +1,6590 @@
+{
+  "checkedOn": "2026-09-27",
+  "model": "jev-1.13.0",
+  "sdk": "0.6.0",
+  "policyVersion": "jev-rubric-v4",
+  "finalPromptHash": "4ac52343985ccb8cb1102b7f09c73ece77114c9ed9e0dadb6f0dde06d73cae96",
+  "hashNote": "Prompt hash metadata was added after holdout; the final hash is attached here retrospectively from the unchanged final template. Earlier prompt hash is not recorded.",
+  "labels": "AI-authored; human review pending. Repeated family variants are dependent, not independent human ground truth.",
+  "budget": {
+    "maximumAttempts": 600,
+    "actualAttempts": 596,
+    "inputTokens": 7328759,
+    "estimatedInputUsd": 0.30780787799999987,
+    "non200Attempts": 0
+  },
+  "runs": [
+    {
+      "sourceReport": "catalog-pilot-both-2026-09-27T10-53-15-984Z.json",
+      "stage": "before-information-role-clarification",
+      "promptHash": null,
+      "runAt": "2026-09-27T10:53:26.339Z",
+      "suite": "pilot",
+      "fixtureHash": "4fe14863bbca6e8d06131a4bb17c8762a2dd7fbf31223831ffa99bba2cc4179a",
+      "humanReview": "pending_ai_authored",
+      "holdoutStatus": "not_holdout",
+      "previousSuiteRuns": 0,
+      "completedEvaluations": 24,
+      "plannedEvaluations": 24,
+      "summary": [
+        {
+          "method": "all-score",
+          "completed": 12,
+          "failures": 0,
+          "allCandidatesAssessed": 12,
+          "qualityRows": 10,
+          "longRows": 2,
+          "precision": {
+            "numerator": 5,
+            "denominator": 5,
+            "value": 1
+          },
+          "coverage": {
+            "numerator": 5,
+            "denominator": 10,
+            "value": 0.5
+          },
+          "acceptableRecommendationHit": {
+            "numerator": 5,
+            "denominator": 6,
+            "value": 0.8333333333333334
+          },
+          "requiredAbstention": {
+            "numerator": 4,
+            "denominator": 4,
+            "value": 1
+          },
+          "unwantedRecommendation": {
+            "numerator": 0,
+            "denominator": 4,
+            "value": 0
+          },
+          "shortlistHit": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderExactAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderAcceptableAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "latencyMs": {
+            "p50": 451.17,
+            "p95": 943.79
+          },
+          "requests": 44,
+          "requestBytes": 2304150,
+          "inputTokens": 621912,
+          "outputTokens": 19376,
+          "estimatedInputCostUsd": 0.026120304000000004
+        },
+        {
+          "method": "choice-top3",
+          "completed": 12,
+          "failures": 2,
+          "allCandidatesAssessed": 0,
+          "qualityRows": 10,
+          "longRows": 2,
+          "precision": {
+            "numerator": 6,
+            "denominator": 6,
+            "value": 1
+          },
+          "coverage": {
+            "numerator": 6,
+            "denominator": 10,
+            "value": 0.6
+          },
+          "acceptableRecommendationHit": {
+            "numerator": 6,
+            "denominator": 6,
+            "value": 1
+          },
+          "requiredAbstention": {
+            "numerator": 4,
+            "denominator": 4,
+            "value": 1
+          },
+          "unwantedRecommendation": {
+            "numerator": 0,
+            "denominator": 4,
+            "value": 0
+          },
+          "shortlistHit": {
+            "numerator": 6,
+            "denominator": 6,
+            "value": 1
+          },
+          "orderExactAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderAcceptableAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "latencyMs": {
+            "p50": 383.72,
+            "p95": 447.14
+          },
+          "requests": 18,
+          "requestBytes": 261145,
+          "inputTokens": 100957,
+          "outputTokens": 10680,
+          "estimatedInputCostUsd": 0.004240194
+        }
+      ],
+      "results": [
+        {
+          "id": "sharing-features-100-original-17",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 692.45,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c098",
+              "score": 0.68,
+              "providerConfidence": 0.95
+            }
+          ]
+        },
+        {
+          "id": "sharing-features-100-original-17",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 371.89,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c000",
+              "score": 0.6633333333333333,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-original-17",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [
+            "c098"
+          ],
+          "failed": false,
+          "proposedMatch": false,
+          "elapsedMs": 468.8,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c099",
+              "score": 0.94,
+              "providerConfidence": 0.82
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-original-17",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "c098",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c098"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 447.14,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c000",
+              "score": 0.68,
+              "providerConfidence": 0.86
+            }
+          ]
+        },
+        {
+          "id": "sharing-paraphrase-100-original-17",
+          "familyId": "sharing",
+          "situation": "paraphrase",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 438.22,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c098",
+              "score": 0.7200000000000001,
+              "providerConfidence": 0.83
+            }
+          ]
+        },
+        {
+          "id": "sharing-paraphrase-100-original-17",
+          "familyId": "sharing",
+          "situation": "paraphrase",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 383.72,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c001",
+              "score": 0.7066666666666667,
+              "providerConfidence": 0.86
+            }
+          ]
+        },
+        {
+          "id": "sharing-none-100-original-17",
+          "familyId": "sharing",
+          "situation": "none",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 433.83,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c041",
+              "score": 0.4266666666666667,
+              "providerConfidence": 0.55
+            },
+            {
+              "contentId": "c040",
+              "score": 0.4166666666666667,
+              "providerConfidence": 0.57
+            }
+          ]
+        },
+        {
+          "id": "sharing-none-100-original-17",
+          "familyId": "sharing",
+          "situation": "none",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 0,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 198.45,
+          "apiAttempts": 1,
+          "topTwo": []
+        },
+        {
+          "id": "sharing-ambiguous-100-original-17",
+          "familyId": "sharing",
+          "situation": "ambiguous",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 435.6,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c099",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-ambiguous-100-original-17",
+          "familyId": "sharing",
+          "situation": "ambiguous",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 395.26,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c099",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-long-100-original-17",
+          "familyId": "sharing",
+          "situation": "long",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 943.79,
+          "apiAttempts": 7,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c098",
+              "score": 0.68,
+              "providerConfidence": 0.95
+            }
+          ]
+        },
+        {
+          "id": "sharing-long-100-original-17",
+          "familyId": "sharing",
+          "situation": "long",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 0,
+          "eligibleCount": 100,
+          "actual": "capacity_limit",
+          "canonicalActual": "capacity_limit",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": true,
+          "proposedMatch": false,
+          "elapsedMs": 0.43,
+          "apiAttempts": 0,
+          "topTwo": []
+        },
+        {
+          "id": "ocr-features-100-original-17",
+          "familyId": "ocr",
+          "situation": "features",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 465.9,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c098",
+              "score": 0.68,
+              "providerConfidence": 0.95
+            }
+          ]
+        },
+        {
+          "id": "ocr-features-100-original-17",
+          "familyId": "ocr",
+          "situation": "features",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 389.51,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c001",
+              "score": 0.20666666666666667,
+              "providerConfidence": 0.53
+            }
+          ]
+        },
+        {
+          "id": "ocr-cases-100-original-17",
+          "familyId": "ocr",
+          "situation": "cases",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c098",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c098"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 455.48,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c099",
+              "score": 0.87,
+              "providerConfidence": 0.61
+            }
+          ]
+        },
+        {
+          "id": "ocr-cases-100-original-17",
+          "familyId": "ocr",
+          "situation": "cases",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "c098",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c098"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 405.34,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c001",
+              "score": 0.14333333333333334,
+              "providerConfidence": 0.57
+            }
+          ]
+        },
+        {
+          "id": "ocr-paraphrase-100-original-17",
+          "familyId": "ocr",
+          "situation": "paraphrase",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 451.17,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c098",
+              "score": 0.6933333333333334,
+              "providerConfidence": 0.9
+            }
+          ]
+        },
+        {
+          "id": "ocr-paraphrase-100-original-17",
+          "familyId": "ocr",
+          "situation": "paraphrase",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 408.81,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c098",
+              "score": 0.7000000000000001,
+              "providerConfidence": 0.89
+            }
+          ]
+        },
+        {
+          "id": "ocr-none-100-original-17",
+          "familyId": "ocr",
+          "situation": "none",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 442.97,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c040",
+              "score": 0.42333333333333334,
+              "providerConfidence": 0.56
+            },
+            {
+              "contentId": "c041",
+              "score": 0.41333333333333333,
+              "providerConfidence": 0.59
+            }
+          ]
+        },
+        {
+          "id": "ocr-none-100-original-17",
+          "familyId": "ocr",
+          "situation": "none",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 0,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 225.45,
+          "apiAttempts": 1,
+          "topTwo": []
+        },
+        {
+          "id": "ocr-ambiguous-100-original-17",
+          "familyId": "ocr",
+          "situation": "ambiguous",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 436.55,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c099",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "ocr-ambiguous-100-original-17",
+          "familyId": "ocr",
+          "situation": "ambiguous",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 3,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 414.6,
+          "apiAttempts": 2,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c099",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "ocr-long-100-original-17",
+          "familyId": "ocr",
+          "situation": "long",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 886.97,
+          "apiAttempts": 7,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c098",
+              "score": 0.6766666666666666,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "ocr-long-100-original-17",
+          "familyId": "ocr",
+          "situation": "long",
+          "order": "original",
+          "method": "choice-top3",
+          "scope": "shortlist-only",
+          "assessedCount": 0,
+          "eligibleCount": 100,
+          "actual": "capacity_limit",
+          "canonicalActual": "capacity_limit",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": true,
+          "proposedMatch": false,
+          "elapsedMs": 0.42,
+          "apiAttempts": 0,
+          "topTwo": []
+        }
+      ]
+    },
+    {
+      "sourceReport": "catalog-dev-all-score-2026-09-27T10-53-44-341Z.json",
+      "stage": "before-information-role-clarification",
+      "promptHash": null,
+      "runAt": "2026-09-27T10:54:00.116Z",
+      "suite": "dev",
+      "fixtureHash": "bf43739ec3c3ee3af5dd1af29275ada393f9f62f32b3025ba0ddc59fadf770b9",
+      "humanReview": "pending_ai_authored",
+      "holdoutStatus": "not_holdout",
+      "previousSuiteRuns": 0,
+      "completedEvaluations": 30,
+      "plannedEvaluations": 30,
+      "summary": [
+        {
+          "method": "all-score",
+          "completed": 30,
+          "failures": 0,
+          "allCandidatesAssessed": 30,
+          "qualityRows": 30,
+          "longRows": 0,
+          "precision": {
+            "numerator": 14,
+            "denominator": 14,
+            "value": 1
+          },
+          "coverage": {
+            "numerator": 14,
+            "denominator": 30,
+            "value": 0.4666666666666667
+          },
+          "acceptableRecommendationHit": {
+            "numerator": 14,
+            "denominator": 18,
+            "value": 0.7777777777777778
+          },
+          "requiredAbstention": {
+            "numerator": 12,
+            "denominator": 12,
+            "value": 1
+          },
+          "unwantedRecommendation": {
+            "numerator": 0,
+            "denominator": 12,
+            "value": 0
+          },
+          "shortlistHit": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderExactAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderAcceptableAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "latencyMs": {
+            "p50": 483.56,
+            "p95": 743.92
+          },
+          "requests": 90,
+          "requestBytes": 4341888,
+          "inputTokens": 1075430,
+          "outputTokens": 48360,
+          "estimatedInputCostUsd": 0.04516806000000001
+        }
+      ],
+      "results": [
+        {
+          "id": "sharing-features-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c038",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c038"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 609.13,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c038",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c044",
+              "score": 0.6833333333333332,
+              "providerConfidence": 0.94
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [
+            "c044"
+          ],
+          "failed": false,
+          "proposedMatch": false,
+          "elapsedMs": 410.79,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c044",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c038",
+              "score": 0.9433333333333334,
+              "providerConfidence": 0.83
+            }
+          ]
+        },
+        {
+          "id": "sharing-paraphrase-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c038",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c038"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 435.54,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c038",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c044",
+              "score": 0.7266666666666667,
+              "providerConfidence": 0.81
+            }
+          ]
+        },
+        {
+          "id": "sharing-none-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 484.97,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c069",
+              "score": 0.4366666666666667,
+              "providerConfidence": 0.52
+            },
+            {
+              "contentId": "c029",
+              "score": 0.42,
+              "providerConfidence": 0.55
+            }
+          ]
+        },
+        {
+          "id": "sharing-ambiguous-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 470.26,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c038",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c044",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "ocr-features-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c004",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c004"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 487.67,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c004",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c074",
+              "score": 0.6833333333333332,
+              "providerConfidence": 0.94
+            }
+          ]
+        },
+        {
+          "id": "ocr-cases-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c074",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c074"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 474.24,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c074",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c004",
+              "score": 0.8866666666666667,
+              "providerConfidence": 0.66
+            }
+          ]
+        },
+        {
+          "id": "ocr-paraphrase-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c004",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c004"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 539.28,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c004",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c074",
+              "score": 0.6966666666666667,
+              "providerConfidence": 0.89
+            }
+          ]
+        },
+        {
+          "id": "ocr-none-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 508.34,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c051",
+              "score": 0.42333333333333334,
+              "providerConfidence": 0.56
+            },
+            {
+              "contentId": "c079",
+              "score": 0.41333333333333333,
+              "providerConfidence": 0.58
+            }
+          ]
+        },
+        {
+          "id": "ocr-ambiguous-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 463.43,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c004",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c074",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "tasks-features-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c056",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c056"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 515.01,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c056",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c098",
+              "score": 0.69,
+              "providerConfidence": 0.92
+            }
+          ]
+        },
+        {
+          "id": "tasks-cases-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [
+            "c098"
+          ],
+          "failed": false,
+          "proposedMatch": false,
+          "elapsedMs": 461.24,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c056",
+              "score": 0.9533333333333333,
+              "providerConfidence": 0.86
+            }
+          ]
+        },
+        {
+          "id": "tasks-paraphrase-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c056",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c056"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 620.89,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c056",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c098",
+              "score": 0.7433333333333333,
+              "providerConfidence": 0.77
+            }
+          ]
+        },
+        {
+          "id": "tasks-none-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 464.89,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c071",
+              "score": 0.43333333333333335,
+              "providerConfidence": 0.54
+            },
+            {
+              "contentId": "c046",
+              "score": 0.42333333333333334,
+              "providerConfidence": 0.53
+            }
+          ]
+        },
+        {
+          "id": "tasks-ambiguous-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 490.77,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c056",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c098",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "reports-features-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c001",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c001"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 514.39,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c001",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c064",
+              "score": 0.69,
+              "providerConfidence": 0.92
+            }
+          ]
+        },
+        {
+          "id": "reports-cases-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [
+            "c064"
+          ],
+          "failed": false,
+          "proposedMatch": false,
+          "elapsedMs": 462.96,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c064",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c001",
+              "score": 0.9266666666666666,
+              "providerConfidence": 0.78
+            }
+          ]
+        },
+        {
+          "id": "reports-paraphrase-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c001",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c001"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 743.92,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c001",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c064",
+              "score": 0.73,
+              "providerConfidence": 0.8
+            }
+          ]
+        },
+        {
+          "id": "reports-none-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 939.12,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c060",
+              "score": 0.4266666666666667,
+              "providerConfidence": 0.56
+            },
+            {
+              "contentId": "c021",
+              "score": 0.41333333333333333,
+              "providerConfidence": 0.58
+            }
+          ]
+        },
+        {
+          "id": "reports-ambiguous-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 585,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c001",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c064",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "customers-features-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c051",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c051"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 483.56,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c051",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c006",
+              "score": 0.69,
+              "providerConfidence": 0.92
+            }
+          ]
+        },
+        {
+          "id": "customers-cases-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c006",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c006"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 485.14,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c006",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c051",
+              "score": 0.8666666666666667,
+              "providerConfidence": 0.6
+            }
+          ]
+        },
+        {
+          "id": "customers-paraphrase-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c051",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c051"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 451.89,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c051",
+              "score": 0.9766666666666667,
+              "providerConfidence": 0.93
+            },
+            {
+              "contentId": "c006",
+              "score": 0.69,
+              "providerConfidence": 0.88
+            }
+          ]
+        },
+        {
+          "id": "customers-none-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 471.87,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c090",
+              "score": 0.41,
+              "providerConfidence": 0.59
+            },
+            {
+              "contentId": "c000",
+              "score": 0.4066666666666667,
+              "providerConfidence": 0.61
+            }
+          ]
+        },
+        {
+          "id": "customers-ambiguous-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 535.03,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c006",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c051",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "inventory-features-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c014",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c014"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 478.93,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c014",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c027",
+              "score": 0.6866666666666666,
+              "providerConfidence": 0.93
+            }
+          ]
+        },
+        {
+          "id": "inventory-cases-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [
+            "c027"
+          ],
+          "failed": false,
+          "proposedMatch": false,
+          "elapsedMs": 466.96,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c027",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c014",
+              "score": 0.9366666666666666,
+              "providerConfidence": 0.81
+            }
+          ]
+        },
+        {
+          "id": "inventory-paraphrase-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c014",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c014"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 500.11,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c014",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c027",
+              "score": 0.7266666666666667,
+              "providerConfidence": 0.81
+            }
+          ]
+        },
+        {
+          "id": "inventory-none-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 464.86,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c054",
+              "score": 0.42333333333333334,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c031",
+              "score": 0.4166666666666667,
+              "providerConfidence": 0.57
+            }
+          ]
+        },
+        {
+          "id": "inventory-ambiguous-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 445.5,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c014",
+              "score": 1,
+              "providerConfidence": 1
+            },
+            {
+              "contentId": "c027",
+              "score": 1,
+              "providerConfidence": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceReport": "catalog-dev-all-score-2026-09-27T10-55-48-000Z.json",
+      "stage": "final",
+      "promptHash": "4ac52343985ccb8cb1102b7f09c73ece77114c9ed9e0dadb6f0dde06d73cae96",
+      "runAt": "2026-09-27T10:56:02.515Z",
+      "suite": "dev",
+      "fixtureHash": "bf43739ec3c3ee3af5dd1af29275ada393f9f62f32b3025ba0ddc59fadf770b9",
+      "humanReview": "pending_ai_authored",
+      "holdoutStatus": "not_holdout",
+      "previousSuiteRuns": 1,
+      "completedEvaluations": 30,
+      "plannedEvaluations": 30,
+      "summary": [
+        {
+          "method": "all-score",
+          "completed": 30,
+          "failures": 0,
+          "allCandidatesAssessed": 30,
+          "qualityRows": 30,
+          "longRows": 0,
+          "precision": {
+            "numerator": 18,
+            "denominator": 18,
+            "value": 1
+          },
+          "coverage": {
+            "numerator": 18,
+            "denominator": 30,
+            "value": 0.6
+          },
+          "acceptableRecommendationHit": {
+            "numerator": 18,
+            "denominator": 18,
+            "value": 1
+          },
+          "requiredAbstention": {
+            "numerator": 12,
+            "denominator": 12,
+            "value": 1
+          },
+          "unwantedRecommendation": {
+            "numerator": 0,
+            "denominator": 12,
+            "value": 0
+          },
+          "shortlistHit": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderExactAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderAcceptableAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "latencyMs": {
+            "p50": 461,
+            "p95": 545.54
+          },
+          "requests": 90,
+          "requestBytes": 4686888,
+          "inputTokens": 1126430,
+          "outputTokens": 48360,
+          "estimatedInputCostUsd": 0.04731006000000001
+        }
+      ],
+      "results": [
+        {
+          "id": "sharing-features-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c038",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c038"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 671.67,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c038",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c044",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c044",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c044"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 490.45,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c044",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c038",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "sharing-paraphrase-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c038",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c038"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 502.86,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c038",
+              "score": 0.9833333333333334,
+              "providerConfidence": 0.95
+            },
+            {
+              "contentId": "c084",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "sharing-none-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 482.24,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.43,
+              "providerConfidence": 0.56
+            },
+            {
+              "contentId": "c097",
+              "score": 0.4266666666666667,
+              "providerConfidence": 0.59
+            }
+          ]
+        },
+        {
+          "id": "sharing-ambiguous-100-shuffle-1617226667",
+          "familyId": "sharing",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 448.7,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c038",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c044",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "ocr-features-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c004",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c004"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 463.66,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c004",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c074",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "ocr-cases-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c074",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c074"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 479.53,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c074",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c004",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "ocr-paraphrase-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c004",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c004"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 454.18,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c004",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c074",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "ocr-none-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 481.79,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c051",
+              "score": 0.42,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c016",
+              "score": 0.41,
+              "providerConfidence": 0.58
+            }
+          ]
+        },
+        {
+          "id": "ocr-ambiguous-100-shuffle-616301",
+          "familyId": "ocr",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 459.07,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c004",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c074",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "tasks-features-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c056",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c056"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 452.99,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c056",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c098",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "tasks-cases-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c098",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c098"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 525.63,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c056",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "tasks-paraphrase-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c056",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c056"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 430.77,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c056",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c098",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "tasks-none-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 496.8,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c071",
+              "score": 0.44,
+              "providerConfidence": 0.54
+            },
+            {
+              "contentId": "c066",
+              "score": 0.4166666666666667,
+              "providerConfidence": 0.58
+            }
+          ]
+        },
+        {
+          "id": "tasks-ambiguous-100-shuffle-596827677",
+          "familyId": "tasks",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 480.05,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c056",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c098",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "reports-features-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c001",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c001"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 470.17,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c001",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c064",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "reports-cases-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c064",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c064"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 451.29,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c064",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c001",
+              "score": 0.68,
+              "providerConfidence": 0.95
+            }
+          ]
+        },
+        {
+          "id": "reports-paraphrase-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c001",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c001"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 429.06,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c001",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c021",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "reports-none-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 444.82,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c060",
+              "score": 0.4166666666666667,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c033",
+              "score": 0.41333333333333333,
+              "providerConfidence": 0.6
+            }
+          ]
+        },
+        {
+          "id": "reports-ambiguous-100-shuffle-657607822",
+          "familyId": "reports",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 476.69,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c001",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c064",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "customers-features-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c051",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c051"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 442.24,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c051",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c006",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "customers-cases-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c006",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c006"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 471.97,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c006",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c051",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "customers-paraphrase-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c051",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c051"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 428.66,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c051",
+              "score": 0.9566666666666667,
+              "providerConfidence": 0.87
+            },
+            {
+              "contentId": "c006",
+              "score": 0.6566666666666666,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "customers-none-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 457.48,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c061",
+              "score": 0.41,
+              "providerConfidence": 0.59
+            },
+            {
+              "contentId": "c076",
+              "score": 0.4033333333333333,
+              "providerConfidence": 0.62
+            }
+          ]
+        },
+        {
+          "id": "customers-ambiguous-100-shuffle-2565799780",
+          "familyId": "customers",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 545.54,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c006",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c051",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "inventory-features-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c014",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c014"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 461,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c014",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c027",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "inventory-cases-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c027",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c027"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 421.34,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c027",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c014",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "inventory-paraphrase-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c014",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c014"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 447.86,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c014",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c027",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "inventory-none-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 438.13,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c031",
+              "score": 0.41333333333333333,
+              "providerConfidence": 0.6
+            },
+            {
+              "contentId": "c038",
+              "score": 0.41,
+              "providerConfidence": 0.61
+            }
+          ]
+        },
+        {
+          "id": "inventory-ambiguous-100-shuffle-3228605547",
+          "familyId": "inventory",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 486.64,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c014",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c027",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceReport": "catalog-holdout-all-score-2026-09-27T10-57-49-174Z.json",
+      "stage": "final",
+      "promptHash": "4ac52343985ccb8cb1102b7f09c73ece77114c9ed9e0dadb6f0dde06d73cae96",
+      "runAt": "2026-09-27T10:58:41.380Z",
+      "suite": "holdout",
+      "fixtureHash": "c50d76cac882eae85a91919d824bd18b79dff6518ce7bed4117a28f4383d1293",
+      "humanReview": "pending_ai_authored",
+      "holdoutStatus": "first_live_use",
+      "previousSuiteRuns": 0,
+      "completedEvaluations": 100,
+      "plannedEvaluations": 100,
+      "summary": [
+        {
+          "method": "all-score",
+          "completed": 100,
+          "failures": 0,
+          "allCandidatesAssessed": 100,
+          "qualityRows": 100,
+          "longRows": 0,
+          "precision": {
+            "numerator": 60,
+            "denominator": 60,
+            "value": 1
+          },
+          "coverage": {
+            "numerator": 60,
+            "denominator": 100,
+            "value": 0.6
+          },
+          "acceptableRecommendationHit": {
+            "numerator": 60,
+            "denominator": 60,
+            "value": 1
+          },
+          "requiredAbstention": {
+            "numerator": 40,
+            "denominator": 40,
+            "value": 1
+          },
+          "unwantedRecommendation": {
+            "numerator": 0,
+            "denominator": 40,
+            "value": 0
+          },
+          "shortlistHit": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderExactAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderAcceptableAgreement": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "latencyMs": {
+            "p50": 489.43,
+            "p95": 589.34
+          },
+          "requests": 300,
+          "requestBytes": 15544764,
+          "responseBytes": 9552279,
+          "responseBytesKnownRequests": 300,
+          "inputTokens": 3725958,
+          "outputTokens": 161200,
+          "estimatedInputCostUsd": 0.156490236
+        }
+      ],
+      "results": [
+        {
+          "id": "captions-features-100-shuffle-3582919262",
+          "familyId": "captions",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c049",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c049"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 674.89,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c049",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c040",
+              "score": 0.6633333333333333,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "captions-cases-100-shuffle-3582919262",
+          "familyId": "captions",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c040",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c040"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 515.82,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c040",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c049",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "captions-paraphrase-100-shuffle-3582919262",
+          "familyId": "captions",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c049",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c049"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 560.02,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c049",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c040",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "captions-none-100-shuffle-3582919262",
+          "familyId": "captions",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 473.92,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c068",
+              "score": 0.38666666666666666,
+              "providerConfidence": 0.55
+            },
+            {
+              "contentId": "c058",
+              "score": 0.3833333333333333,
+              "providerConfidence": 0.57
+            }
+          ]
+        },
+        {
+          "id": "captions-ambiguous-100-shuffle-3582919262",
+          "familyId": "captions",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 489.57,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c040",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c049",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "bookings-features-100-shuffle-1343316555",
+          "familyId": "bookings",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c018",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c018"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 489.79,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c018",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c083",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "bookings-cases-100-shuffle-1343316555",
+          "familyId": "bookings",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c083",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c083"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 599.33,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c083",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c018",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "bookings-paraphrase-100-shuffle-1343316555",
+          "familyId": "bookings",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c018",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c018"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 511.15,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c018",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c083",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "bookings-none-100-shuffle-1343316555",
+          "familyId": "bookings",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 515.21,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c087",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c047",
+              "score": 0.37666666666666665,
+              "providerConfidence": 0.57
+            }
+          ]
+        },
+        {
+          "id": "bookings-ambiguous-100-shuffle-1343316555",
+          "familyId": "bookings",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 756.36,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c018",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c083",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "temperature-features-100-shuffle-2516107459",
+          "familyId": "temperature",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c090",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c090"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 569.52,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c090",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c029",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "temperature-cases-100-shuffle-2516107459",
+          "familyId": "temperature",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c029",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c029"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 566.9,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c029",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c090",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "temperature-paraphrase-100-shuffle-2516107459",
+          "familyId": "temperature",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c090",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c090"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 701.8,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c090",
+              "score": 0.9633333333333334,
+              "providerConfidence": 0.89
+            },
+            {
+              "contentId": "c029",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "temperature-none-100-shuffle-2516107459",
+          "familyId": "temperature",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 589.34,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c002",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c020",
+              "score": 0.38666666666666666,
+              "providerConfidence": 0.55
+            }
+          ]
+        },
+        {
+          "id": "temperature-ambiguous-100-shuffle-2516107459",
+          "familyId": "temperature",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 474.45,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c029",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c090",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "keys-features-100-shuffle-18988421",
+          "familyId": "keys",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c084",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c084"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 555.67,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c084",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c007",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "keys-cases-100-shuffle-18988421",
+          "familyId": "keys",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c007",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c007"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 465.94,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c007",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c084",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "keys-paraphrase-100-shuffle-18988421",
+          "familyId": "keys",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c084",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c084"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 517,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c084",
+              "score": 0.9333333333333332,
+              "providerConfidence": 0.8
+            },
+            {
+              "contentId": "c007",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "keys-none-100-shuffle-18988421",
+          "familyId": "keys",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 447.36,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c027",
+              "score": 0.3833333333333333,
+              "providerConfidence": 0.51
+            },
+            {
+              "contentId": "c061",
+              "score": 0.37666666666666665,
+              "providerConfidence": 0.58
+            }
+          ]
+        },
+        {
+          "id": "keys-ambiguous-100-shuffle-18988421",
+          "familyId": "keys",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 417.6,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c007",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c084",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "routes-features-100-shuffle-1277527707",
+          "familyId": "routes",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c034",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c034"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 450.63,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c034",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c016",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "routes-cases-100-shuffle-1277527707",
+          "familyId": "routes",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c016",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c016"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 480.54,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c016",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c034",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "routes-paraphrase-100-shuffle-1277527707",
+          "familyId": "routes",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c034",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c034"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 469.86,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c034",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c016",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "routes-none-100-shuffle-1277527707",
+          "familyId": "routes",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 525.62,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c000",
+              "score": 0.39999999999999997,
+              "providerConfidence": 0.57
+            },
+            {
+              "contentId": "c097",
+              "score": 0.39999999999999997,
+              "providerConfidence": 0.56
+            }
+          ]
+        },
+        {
+          "id": "routes-ambiguous-100-shuffle-1277527707",
+          "familyId": "routes",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 524.81,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c016",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c034",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "receipts-features-100-shuffle-2824287308",
+          "familyId": "receipts",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c059",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c059"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 481.12,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c059",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c012",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "receipts-cases-100-shuffle-2824287308",
+          "familyId": "receipts",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c012",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c012"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 467.09,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c012",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c059",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "receipts-paraphrase-100-shuffle-2824287308",
+          "familyId": "receipts",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c059",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c059"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 550.12,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c059",
+              "score": 0.96,
+              "providerConfidence": 0.88
+            },
+            {
+              "contentId": "c012",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "receipts-none-100-shuffle-2824287308",
+          "familyId": "receipts",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 563.82,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c033",
+              "score": 0.38666666666666666,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c080",
+              "score": 0.37999999999999995,
+              "providerConfidence": 0.58
+            }
+          ]
+        },
+        {
+          "id": "receipts-ambiguous-100-shuffle-2824287308",
+          "familyId": "receipts",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 541.94,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c012",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c059",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "subtitles-features-100-shuffle-1503312490",
+          "familyId": "subtitles",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c021",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c021"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 508.74,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c021",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c083",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "subtitles-cases-100-shuffle-1503312490",
+          "familyId": "subtitles",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c083",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c083"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 473.44,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c083",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c021",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "subtitles-paraphrase-100-shuffle-1503312490",
+          "familyId": "subtitles",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c021",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c021"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 457.89,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c021",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c083",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "subtitles-none-100-shuffle-1503312490",
+          "familyId": "subtitles",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 478.95,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c039",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.56
+            },
+            {
+              "contentId": "c065",
+              "score": 0.3833333333333333,
+              "providerConfidence": 0.55
+            }
+          ]
+        },
+        {
+          "id": "subtitles-ambiguous-100-shuffle-1503312490",
+          "familyId": "subtitles",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 453.54,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c021",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c083",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "seats-features-100-shuffle-596006301",
+          "familyId": "seats",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c080",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c080"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 545.23,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c080",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c035",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "seats-cases-100-shuffle-596006301",
+          "familyId": "seats",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c035",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c035"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 812.69,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c035",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c080",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "seats-paraphrase-100-shuffle-596006301",
+          "familyId": "seats",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c080",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c080"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 450.94,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c080",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c035",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "seats-none-100-shuffle-596006301",
+          "familyId": "seats",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 453.47,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c063",
+              "score": 0.4066666666666667,
+              "providerConfidence": 0.51
+            },
+            {
+              "contentId": "c030",
+              "score": 0.37666666666666665,
+              "providerConfidence": 0.6
+            }
+          ]
+        },
+        {
+          "id": "seats-ambiguous-100-shuffle-596006301",
+          "familyId": "seats",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 442.6,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c035",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c080",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "training-features-100-shuffle-614164459",
+          "familyId": "training",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c082",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c082"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 491.12,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c082",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c067",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "training-cases-100-shuffle-614164459",
+          "familyId": "training",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c067",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c067"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 488.36,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c067",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c082",
+              "score": 0.6766666666666666,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "training-paraphrase-100-shuffle-614164459",
+          "familyId": "training",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c082",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c082"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 561.78,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c082",
+              "score": 0.98,
+              "providerConfidence": 0.94
+            },
+            {
+              "contentId": "c067",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "training-none-100-shuffle-614164459",
+          "familyId": "training",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 499.2,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c000",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.57
+            },
+            {
+              "contentId": "c050",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.59
+            }
+          ]
+        },
+        {
+          "id": "training-ambiguous-100-shuffle-614164459",
+          "familyId": "training",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 485.15,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c067",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c082",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "equipment-features-100-shuffle-2030594205",
+          "familyId": "equipment",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c092",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c092"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 468.75,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c092",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c086",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "equipment-cases-100-shuffle-2030594205",
+          "familyId": "equipment",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c086",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c086"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 565.4,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c086",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c092",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "equipment-paraphrase-100-shuffle-2030594205",
+          "familyId": "equipment",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c092",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c092"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 494.84,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c092",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c086",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "equipment-none-100-shuffle-2030594205",
+          "familyId": "equipment",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 473.45,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c010",
+              "score": 0.39666666666666667,
+              "providerConfidence": 0.57
+            },
+            {
+              "contentId": "c008",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.56
+            }
+          ]
+        },
+        {
+          "id": "equipment-ambiguous-100-shuffle-2030594205",
+          "familyId": "equipment",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 560.38,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c086",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c092",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "surveys-features-100-shuffle-2005221160",
+          "familyId": "surveys",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c035",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c035"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 547.51,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c035",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c002",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "surveys-cases-100-shuffle-2005221160",
+          "familyId": "surveys",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c002",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c002"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 437.2,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c002",
+              "score": 0.9833333333333334,
+              "providerConfidence": 0.95
+            },
+            {
+              "contentId": "c035",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "surveys-paraphrase-100-shuffle-2005221160",
+          "familyId": "surveys",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c035",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c035"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 481.98,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c035",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c002",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "surveys-none-100-shuffle-2005221160",
+          "familyId": "surveys",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 588.83,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c007",
+              "score": 0.4033333333333333,
+              "providerConfidence": 0.53
+            },
+            {
+              "contentId": "c060",
+              "score": 0.3833333333333333,
+              "providerConfidence": 0.6
+            }
+          ]
+        },
+        {
+          "id": "surveys-ambiguous-100-shuffle-2005221160",
+          "familyId": "surveys",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 542.46,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c002",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c035",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "contracts-features-100-shuffle-558732464",
+          "familyId": "contracts",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c075",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c075"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 503.32,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c075",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c043",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "contracts-cases-100-shuffle-558732464",
+          "familyId": "contracts",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c043",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c043"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 480.59,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c043",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c075",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "contracts-paraphrase-100-shuffle-558732464",
+          "familyId": "contracts",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c075",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c075"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 466.06,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c075",
+              "score": 0.9700000000000001,
+              "providerConfidence": 0.91
+            },
+            {
+              "contentId": "c043",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "contracts-none-100-shuffle-558732464",
+          "familyId": "contracts",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 533.17,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c005",
+              "score": 0.3833333333333333,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c031",
+              "score": 0.37666666666666665,
+              "providerConfidence": 0.59
+            }
+          ]
+        },
+        {
+          "id": "contracts-ambiguous-100-shuffle-558732464",
+          "familyId": "contracts",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 442.72,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c043",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c075",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "maintenance-features-100-shuffle-2512055906",
+          "familyId": "maintenance",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c085",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c085"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 521.03,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c085",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c096",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "maintenance-cases-100-shuffle-2512055906",
+          "familyId": "maintenance",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c096",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c096"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 467.86,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c096",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c085",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "maintenance-paraphrase-100-shuffle-2512055906",
+          "familyId": "maintenance",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c085",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c085"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 475.31,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c085",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c096",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "maintenance-none-100-shuffle-2512055906",
+          "familyId": "maintenance",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 465.48,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c020",
+              "score": 0.4166666666666667,
+              "providerConfidence": 0.5
+            },
+            {
+              "contentId": "c008",
+              "score": 0.39999999999999997,
+              "providerConfidence": 0.56
+            }
+          ]
+        },
+        {
+          "id": "maintenance-ambiguous-100-shuffle-2512055906",
+          "familyId": "maintenance",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 539.79,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c085",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c096",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "attendance-features-100-shuffle-1413988794",
+          "familyId": "attendance",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c053",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c053"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 564.39,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c053",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c032",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "attendance-cases-100-shuffle-1413988794",
+          "familyId": "attendance",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c032",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c032"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 538.41,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c032",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c053",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "attendance-paraphrase-100-shuffle-1413988794",
+          "familyId": "attendance",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c053",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c053"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 485.15,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c053",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c032",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "attendance-none-100-shuffle-1413988794",
+          "familyId": "attendance",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 457.49,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c080",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.57
+            },
+            {
+              "contentId": "c084",
+              "score": 0.38666666666666666,
+              "providerConfidence": 0.56
+            }
+          ]
+        },
+        {
+          "id": "attendance-ambiguous-100-shuffle-1413988794",
+          "familyId": "attendance",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 481.24,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c032",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c053",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "menus-features-100-shuffle-590477699",
+          "familyId": "menus",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c062",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c062"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 528.69,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c062",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c040",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "menus-cases-100-shuffle-590477699",
+          "familyId": "menus",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c040",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c040"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 506.49,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c040",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c062",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "menus-paraphrase-100-shuffle-590477699",
+          "familyId": "menus",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c062",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c062"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 478.95,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c062",
+              "score": 0.9833333333333334,
+              "providerConfidence": 0.95
+            },
+            {
+              "contentId": "c040",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "menus-none-100-shuffle-590477699",
+          "familyId": "menus",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 474.03,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c038",
+              "score": 0.37999999999999995,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c072",
+              "score": 0.37666666666666665,
+              "providerConfidence": 0.55
+            }
+          ]
+        },
+        {
+          "id": "menus-ambiguous-100-shuffle-590477699",
+          "familyId": "menus",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 466.4,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c040",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c062",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "parking-features-100-shuffle-3064770183",
+          "familyId": "parking",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c034",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c034"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 489.43,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c034",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c020",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "parking-cases-100-shuffle-3064770183",
+          "familyId": "parking",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c020",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c020"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 555.06,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c020",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c034",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "parking-paraphrase-100-shuffle-3064770183",
+          "familyId": "parking",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c034",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c034"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 525.16,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c034",
+              "score": 0.9766666666666667,
+              "providerConfidence": 0.93
+            },
+            {
+              "contentId": "c020",
+              "score": 0.6633333333333333,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "parking-none-100-shuffle-3064770183",
+          "familyId": "parking",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 454.39,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c050",
+              "score": 0.39999999999999997,
+              "providerConfidence": 0.58
+            },
+            {
+              "contentId": "c016",
+              "score": 0.3933333333333333,
+              "providerConfidence": 0.59
+            }
+          ]
+        },
+        {
+          "id": "parking-ambiguous-100-shuffle-3064770183",
+          "familyId": "parking",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 479.58,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c020",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c034",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "waste-features-100-shuffle-599598505",
+          "familyId": "waste",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c052",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c052"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 505.97,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c052",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c084",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "waste-cases-100-shuffle-599598505",
+          "familyId": "waste",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c084",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c084"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 504.77,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c084",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c052",
+              "score": 0.6766666666666666,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "waste-paraphrase-100-shuffle-599598505",
+          "familyId": "waste",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c052",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c052"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 473.11,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c052",
+              "score": 0.98,
+              "providerConfidence": 0.94
+            },
+            {
+              "contentId": "c084",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "waste-none-100-shuffle-599598505",
+          "familyId": "waste",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 560.01,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c088",
+              "score": 0.38666666666666666,
+              "providerConfidence": 0.56
+            },
+            {
+              "contentId": "c020",
+              "score": 0.3833333333333333,
+              "providerConfidence": 0.58
+            }
+          ]
+        },
+        {
+          "id": "waste-ambiguous-100-shuffle-599598505",
+          "familyId": "waste",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 460.23,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c052",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c084",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            }
+          ]
+        },
+        {
+          "id": "accessibility-features-100-shuffle-4077266141",
+          "familyId": "accessibility",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c064",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c064"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 439.34,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c064",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c021",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "accessibility-cases-100-shuffle-4077266141",
+          "familyId": "accessibility",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c021",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c021"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 517.35,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c021",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c064",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "accessibility-paraphrase-100-shuffle-4077266141",
+          "familyId": "accessibility",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c064",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c064"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 521.3,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c064",
+              "score": 0.9766666666666667,
+              "providerConfidence": 0.93
+            },
+            {
+              "contentId": "c021",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "accessibility-none-100-shuffle-4077266141",
+          "familyId": "accessibility",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 509.41,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c000",
+              "score": 0.4033333333333333,
+              "providerConfidence": 0.56
+            },
+            {
+              "contentId": "c022",
+              "score": 0.38999999999999996,
+              "providerConfidence": 0.55
+            }
+          ]
+        },
+        {
+          "id": "accessibility-ambiguous-100-shuffle-4077266141",
+          "familyId": "accessibility",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 460.72,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c021",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c064",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "backups-features-100-shuffle-3510779328",
+          "familyId": "backups",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c067",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c067"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 427.17,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c067",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c024",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "backups-cases-100-shuffle-3510779328",
+          "familyId": "backups",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c024",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c024"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 439.69,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c024",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c067",
+              "score": 0.6766666666666666,
+              "providerConfidence": 0.96
+            }
+          ]
+        },
+        {
+          "id": "backups-paraphrase-100-shuffle-3510779328",
+          "familyId": "backups",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c067",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c067"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 444.08,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c067",
+              "score": 0.9733333333333333,
+              "providerConfidence": 0.92
+            },
+            {
+              "contentId": "c024",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "backups-none-100-shuffle-3510779328",
+          "familyId": "backups",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 510.02,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c063",
+              "score": 0.38666666666666666,
+              "providerConfidence": 0.59
+            },
+            {
+              "contentId": "c074",
+              "score": 0.37333333333333335,
+              "providerConfidence": 0.61
+            }
+          ]
+        },
+        {
+          "id": "backups-ambiguous-100-shuffle-3510779328",
+          "familyId": "backups",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 433.45,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c024",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c067",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "recruiting-features-100-shuffle-3005464245",
+          "familyId": "recruiting",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c048",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c048"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 584.89,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c048",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c082",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "recruiting-cases-100-shuffle-3005464245",
+          "familyId": "recruiting",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c082",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c082"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 460.44,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c082",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c048",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "recruiting-paraphrase-100-shuffle-3005464245",
+          "familyId": "recruiting",
+          "situation": "paraphrase",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c048",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c048"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 482.21,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c048",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c082",
+              "score": 0.6666666666666666,
+              "providerConfidence": 0.99
+            }
+          ]
+        },
+        {
+          "id": "recruiting-none-100-shuffle-3005464245",
+          "familyId": "recruiting",
+          "situation": "none",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 452.27,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c074",
+              "score": 0.38999999999999996,
+              "providerConfidence": 0.61
+            },
+            {
+              "contentId": "c046",
+              "score": 0.37999999999999995,
+              "providerConfidence": 0.57
+            }
+          ]
+        },
+        {
+          "id": "recruiting-ambiguous-100-shuffle-3005464245",
+          "familyId": "recruiting",
+          "situation": "ambiguous",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "abstain",
+          "canonicalActual": "abstain",
+          "expectedRecommendationIds": [],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 488.74,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c048",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c082",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceReport": "catalog-stability-all-score-2026-09-27T10-59-24-753Z.json",
+      "stage": "final",
+      "promptHash": "4ac52343985ccb8cb1102b7f09c73ece77114c9ed9e0dadb6f0dde06d73cae96",
+      "runAt": "2026-09-27T10:59:30.409Z",
+      "suite": "stability",
+      "fixtureHash": "68b072078764509284e3efb45475014caaa9b84a4b25e657b3c389fd4f695f17",
+      "humanReview": "pending_ai_authored",
+      "holdoutStatus": "not_holdout",
+      "previousSuiteRuns": 0,
+      "completedEvaluations": 10,
+      "plannedEvaluations": 10,
+      "summary": [
+        {
+          "method": "all-score",
+          "completed": 10,
+          "failures": 0,
+          "allCandidatesAssessed": 10,
+          "qualityRows": 10,
+          "longRows": 0,
+          "precision": {
+            "numerator": 10,
+            "denominator": 10,
+            "value": 1
+          },
+          "coverage": {
+            "numerator": 10,
+            "denominator": 10,
+            "value": 1
+          },
+          "acceptableRecommendationHit": {
+            "numerator": 10,
+            "denominator": 10,
+            "value": 1
+          },
+          "requiredAbstention": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "unwantedRecommendation": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "shortlistHit": {
+            "numerator": 0,
+            "denominator": 0,
+            "value": null
+          },
+          "orderExactAgreement": {
+            "numerator": 8,
+            "denominator": 8,
+            "value": 1
+          },
+          "orderAcceptableAgreement": {
+            "numerator": 8,
+            "denominator": 8,
+            "value": 1
+          },
+          "latencyMs": {
+            "p50": 536.89,
+            "p95": 741.84
+          },
+          "requests": 30,
+          "requestBytes": 1562925,
+          "responseBytes": 955255,
+          "responseBytesKnownRequests": 30,
+          "inputTokens": 375710,
+          "outputTokens": 16120,
+          "estimatedInputCostUsd": 0.01577982
+        }
+      ],
+      "results": [
+        {
+          "id": "sharing-features-100-original-17",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c099",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c099"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 741.84,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c099",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c098",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-features-100-reverse-17",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "reverse",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c000",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c000"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 587.6,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c000",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c001",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-features-100-shuffle-17",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c048",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c048"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 556.83,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c048",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c060",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-features-100-shuffle-42",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c073",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c073"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 536.89,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c073",
+              "score": 0.9933333333333333,
+              "providerConfidence": 0.98
+            },
+            {
+              "contentId": "c061",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-features-100-shuffle-101",
+          "familyId": "sharing",
+          "situation": "features",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c048",
+          "canonicalActual": "c099",
+          "expectedRecommendationIds": [
+            "c048"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 494.91,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c048",
+              "score": 0.9966666666666667,
+              "providerConfidence": 0.99
+            },
+            {
+              "contentId": "c040",
+              "score": 0.6666666666666666,
+              "providerConfidence": 1
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-original-17",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "original",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c098",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c098"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 543.6,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c098",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c099",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-reverse-17",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "reverse",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c001",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c001"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 574.12,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c001",
+              "score": 0.9833333333333334,
+              "providerConfidence": 0.95
+            },
+            {
+              "contentId": "c000",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-shuffle-17",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c060",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c060"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 480.69,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c060",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c048",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-shuffle-42",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c061",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c061"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 514.06,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c061",
+              "score": 0.9900000000000001,
+              "providerConfidence": 0.97
+            },
+            {
+              "contentId": "c073",
+              "score": 0.6699999999999999,
+              "providerConfidence": 0.98
+            }
+          ]
+        },
+        {
+          "id": "sharing-cases-100-shuffle-101",
+          "familyId": "sharing",
+          "situation": "cases",
+          "order": "shuffle",
+          "method": "all-score",
+          "scope": "all-candidates",
+          "assessedCount": 100,
+          "eligibleCount": 100,
+          "actual": "c040",
+          "canonicalActual": "c098",
+          "expectedRecommendationIds": [
+            "c040"
+          ],
+          "failed": false,
+          "proposedMatch": true,
+          "elapsedMs": 517.77,
+          "apiAttempts": 3,
+          "topTwo": [
+            {
+              "contentId": "c040",
+              "score": 0.9866666666666667,
+              "providerConfidence": 0.96
+            },
+            {
+              "contentId": "c048",
+              "score": 0.6733333333333333,
+              "providerConfidence": 0.98
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "browser": {
+    "definitionVersion": "catalog-17e03b1e14f30442",
+    "catalogSize": 100,
+    "realTimeBrowsing": true,
+    "timingMeaning": {
+      "clock": "Node performance.now; elapsed from the Playwright event for the first decision POST.",
+      "httpHeadersMs": "Until Playwright reports the HTTP response headers.",
+      "httpResponseMs": "Until the harness has received the complete decision response body.",
+      "browserAcceptedMs": "Until the harness observes the same snapshotId in the browser decision DOM. Includes Playwright IPC and polling delay; not an exact application callback timestamp.",
+      "byteCounts": "Actual UTF-8 snapshot POST body and decision response body bytes; excludes HTTP headers. Raw bodies are not retained."
+    },
+    "summary": {
+      "attemptedBrowsers": 3,
+      "passedBrowsers": 3,
+      "accepted": {
+        "numerator": 3,
+        "denominator": 3
+      },
+      "cardShown": {
+        "numerator": 3,
+        "denominator": 3
+      },
+      "semanticMatch": {
+        "numerator": 3,
+        "denominator": 3
+      }
+    },
+    "results": [
+      {
+        "browser": "chromium",
+        "topic": "features",
+        "status": "passed",
+        "httpPosts": 1,
+        "preConsentPosts": 0,
+        "preStartPosts": 0,
+        "httpStatus": 200,
+        "unexpectedTraffic": false,
+        "browserCredential": false,
+        "browserServerSdk": false,
+        "pageErrors": 0,
+        "snapshotBytes": 801,
+        "decisionBytes": 14693,
+        "httpResponseMs": 794.4,
+        "browserAcceptedMs": 798.44,
+        "accepted": true,
+        "cardShown": true,
+        "withdrawn": true,
+        "staleDiagnostic": false,
+        "decision": {
+          "valid": true,
+          "complete": true,
+          "zeroClickBrowsing": true,
+          "assessedCount": 100,
+          "views": 2,
+          "clicks": 0,
+          "actions": 0,
+          "type": "recommend",
+          "result": "catalog-099",
+          "semanticMatch": true,
+          "expectedContentId": "catalog-099",
+          "policyVersion": "jev-rubric-v4"
+        },
+        "apiAttempts": 3
+      },
+      {
+        "browser": "firefox",
+        "topic": "cases",
+        "status": "passed",
+        "httpPosts": 1,
+        "preConsentPosts": 0,
+        "preStartPosts": 0,
+        "httpStatus": 200,
+        "unexpectedTraffic": false,
+        "browserCredential": false,
+        "browserServerSdk": false,
+        "pageErrors": 0,
+        "snapshotBytes": 786,
+        "decisionBytes": 14656,
+        "httpResponseMs": 573.89,
+        "browserAcceptedMs": 584.03,
+        "accepted": true,
+        "cardShown": true,
+        "withdrawn": true,
+        "staleDiagnostic": false,
+        "decision": {
+          "valid": true,
+          "complete": true,
+          "zeroClickBrowsing": true,
+          "assessedCount": 100,
+          "views": 2,
+          "clicks": 0,
+          "actions": 0,
+          "type": "recommend",
+          "result": "catalog-098",
+          "semanticMatch": true,
+          "expectedContentId": "catalog-098",
+          "policyVersion": "jev-rubric-v4"
+        },
+        "apiAttempts": 3
+      },
+      {
+        "browser": "webkit",
+        "topic": "features",
+        "status": "passed",
+        "httpPosts": 1,
+        "preConsentPosts": 0,
+        "preStartPosts": 0,
+        "httpStatus": 200,
+        "unexpectedTraffic": false,
+        "browserCredential": false,
+        "browserServerSdk": false,
+        "pageErrors": 0,
+        "snapshotBytes": 801,
+        "decisionBytes": 14622,
+        "httpResponseMs": 655.32,
+        "browserAcceptedMs": 658.72,
+        "accepted": true,
+        "cardShown": true,
+        "withdrawn": true,
+        "staleDiagnostic": false,
+        "decision": {
+          "valid": true,
+          "complete": true,
+          "zeroClickBrowsing": true,
+          "assessedCount": 100,
+          "views": 2,
+          "clicks": 0,
+          "actions": 0,
+          "type": "recommend",
+          "result": "catalog-099",
+          "semanticMatch": true,
+          "expectedContentId": "catalog-099",
+          "policyVersion": "jev-rubric-v4"
+        },
+        "apiAttempts": 3
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "runAt": "2026-09-27T11:02:54.386Z",
+      "suite": "capacity",
+      "scope": "synthetic-resource-measurement-not-semantic-quality",
+      "fixtureHash": "84b5bcaa33837287c24208df8710ae8ae06ebc472225498114227617da4fd290",
+      "promptHash": "4ac52343985ccb8cb1102b7f09c73ece77114c9ed9e0dadb6f0dde06d73cae96",
+      "rows": [
+        {
+          "id": "description-200",
+          "descriptionChars": 200,
+          "candidates": 100,
+          "definitionBytes": 70439,
+          "snapshotBytes": 670,
+          "resolvedInputBytes": 71945,
+          "requests": 4,
+          "requestBytes": [
+            64509,
+            64749,
+            64749,
+            2925
+          ]
+        },
+        {
+          "id": "description-1000",
+          "descriptionChars": 1000,
+          "candidates": 100,
+          "definitionBytes": 310440,
+          "snapshotBytes": 671,
+          "resolvedInputBytes": 311946,
+          "requests": 8,
+          "requestBytes": [
+            61593,
+            61473,
+            61617,
+            61641,
+            61641,
+            61641,
+            61641,
+            9657
+          ]
+        }
+      ],
+      "summary": {
+        "requests": 12,
+        "inputTokens": 185500,
+        "outputTokens": 3248,
+        "requestBytes": 637836,
+        "responseBytes": 191566,
+        "estimatedInputCostUsd": 0.007791,
+        "failures": 0
+      },
+      "results": [
+        {
+          "id": "description-200",
+          "assessedCount": 100,
+          "completedAllCandidates": true,
+          "technicalFailure": null,
+          "actual": null,
+          "proposedMatch": null,
+          "elapsedMs": 828.57,
+          "snapshotBytes": 670,
+          "decisionBodyBytes": 13781,
+          "apiAttempts": 4,
+          "inputTokens": 51436
+        },
+        {
+          "id": "description-1000",
+          "assessedCount": 100,
+          "completedAllCandidates": true,
+          "technicalFailure": null,
+          "actual": null,
+          "proposedMatch": null,
+          "elapsedMs": 1044.78,
+          "snapshotBytes": 671,
+          "decisionBodyBytes": 13861,
+          "apiAttempts": 8,
+          "inputTokens": 134064
+        }
+      ]
+    },
+    {
+      "runAt": "2026-09-27T11:03:11.286Z",
+      "suite": "legacy",
+      "scope": "legacy-regression-not-holdout",
+      "fixtureHash": "e5d77c961c93026a8722715cf7ab3eee6fe261498f60195316ffa8b6c0b34935",
+      "promptHash": "4ac52343985ccb8cb1102b7f09c73ece77114c9ed9e0dadb6f0dde06d73cae96",
+      "rows": [
+        {
+          "id": "Q01",
+          "descriptionChars": null,
+          "candidates": 2,
+          "definitionBytes": 1045,
+          "snapshotBytes": 366,
+          "resolvedInputBytes": 1482,
+          "requests": 1,
+          "requestBytes": [
+            3515
+          ]
+        },
+        {
+          "id": "Q02",
+          "descriptionChars": null,
+          "candidates": 3,
+          "definitionBytes": 1172,
+          "snapshotBytes": 366,
+          "resolvedInputBytes": 1621,
+          "requests": 1,
+          "requestBytes": [
+            4984
+          ]
+        },
+        {
+          "id": "Q12",
+          "descriptionChars": null,
+          "candidates": 6,
+          "definitionBytes": 1925,
+          "snapshotBytes": 366,
+          "resolvedInputBytes": 2410,
+          "requests": 1,
+          "requestBytes": [
+            9607
+          ]
+        }
+      ],
+      "summary": {
+        "requests": 3,
+        "inputTokens": 5262,
+        "outputTokens": 166,
+        "requestBytes": 18106,
+        "responseBytes": 10700,
+        "estimatedInputCostUsd": 0.00022100400000000001,
+        "failures": 0
+      },
+      "results": [
+        {
+          "id": "Q01",
+          "assessedCount": 2,
+          "completedAllCandidates": true,
+          "technicalFailure": null,
+          "actual": "c1",
+          "proposedMatch": true,
+          "elapsedMs": 408.11,
+          "snapshotBytes": 366,
+          "decisionBodyBytes": 608,
+          "apiAttempts": 1,
+          "inputTokens": 1162
+        },
+        {
+          "id": "Q02",
+          "assessedCount": 3,
+          "completedAllCandidates": true,
+          "technicalFailure": null,
+          "actual": "c1",
+          "proposedMatch": true,
+          "elapsedMs": 216.33,
+          "snapshotBytes": 366,
+          "decisionBodyBytes": 746,
+          "apiAttempts": 1,
+          "inputTokens": 1502
+        },
+        {
+          "id": "Q12",
+          "assessedCount": 6,
+          "completedAllCandidates": true,
+          "technicalFailure": null,
+          "actual": "c1",
+          "proposedMatch": true,
+          "elapsedMs": 192.38,
+          "snapshotBytes": 366,
+          "decisionBodyBytes": 1122,
+          "apiAttempts": 1,
+          "inputTokens": 2598
+        }
+      ]
+    }
+  ]
+}

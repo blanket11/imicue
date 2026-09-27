@@ -22,6 +22,9 @@ let browserVersion = '';
 let driver: ReturnType<typeof spawn> | undefined;
 let server: ReturnType<typeof createNodeServer> | undefined;
 let recommendation: unknown;
+let catalogRecommendation: unknown;
+let catalogSnapshot: unknown;
+let failureViewport: unknown;
 
 async function command<T = unknown>(method: string, path: string, body?: unknown): Promise<T> {
   const response = await fetch(`${driverOrigin}${path}`, { method,
@@ -45,7 +48,9 @@ async function waitFor(script: string, timeout = 12_000): Promise<void> {
 }
 async function go(path: string): Promise<void> {
   await sessionCommand('POST', '/url', { url: `${origin}${path}` });
-  await waitFor('return !!document.querySelector("#start") && !!document.querySelector("#storage-mode-link");');
+  await waitFor(path.startsWith('/catalog/')
+    ? 'return !!document.querySelector("#catalog-start") && document.querySelector("#catalog-snapshot").textContent.startsWith("{");'
+    : 'return !!document.querySelector("#start") && !!document.querySelector("#storage-mode-link");');
   assert.equal(new URL(await sessionCommand<string>('GET', '/url')).origin, origin);
 }
 async function click(selector: string): Promise<void> {
@@ -98,12 +103,14 @@ try {
 
   stage = 'consent-and-view';
   await go('/');
+  stage = 'consent-and-view-before-consent';
   await click('#feature-action');
   assert.equal(await execute(emptyObservations), true);
   await click('#consent');
   await click('#feature-action');
   assert.equal(await execute(emptyObservations), true);
   await click('#start');
+  stage = 'consent-and-view-exposure';
   await execute('document.querySelector("#features").scrollIntoView();');
   await waitFor('return JSON.parse(document.querySelector("#snapshot").textContent).observations.some(row => row.signalId === "demo-features" && row.qualifiedViews >= 1 && row.visibleMs >= 3000);');
   await click('#stop');
@@ -181,25 +188,76 @@ try {
   assert.equal(await execute(emptyObservations), true);
   checks.push(`${mode} HTTP decision, recommendation card and withdrawal`);
 
+  stage = 'catalog-rules-views';
+  const apiRequestsBeforeCatalog = measured.requests.length;
+  // This case always uses local Rules, including when the preceding smoke test uses real Jev.
+  await go('/catalog/?topic=features');
+  assert.equal(await execute('return document.querySelectorAll("#catalog-list li").length;'), 100);
+  const catalogEmpty = 'return JSON.parse(document.querySelector("#catalog-snapshot").textContent).observations.length === 0;';
+  assert.equal(await execute(catalogEmpty), true);
+  await click('#catalog-consent');
+  assert.equal(await execute(catalogEmpty), true);
+  await click('#catalog-start');
+  await waitFor('return document.querySelector("#catalog-status").textContent === "計測中";');
+  // Center each section so the other section does not also reach the exposure threshold.
+  await execute('document.querySelector("#catalog-overview").scrollIntoView({ block: "center" });');
+  await waitFor('return JSON.parse(document.querySelector("#catalog-snapshot").textContent).observations.some(row => row.signalId === "catalog-features-overview" && row.qualifiedViews === 1 && row.visibleMs >= 3000);');
+  assert.equal(await execute('return JSON.parse(document.querySelector("#catalog-snapshot").textContent).observations.reduce((sum, row) => sum + row.qualifiedViews, 0);'), 1);
+  assert.equal(await execute('return document.querySelector("#catalog-recommendation").childElementCount;'), 0);
+  await execute('document.querySelector("#catalog-detail").scrollIntoView({ block: "center" });');
+  // Observe the detail for at least 30 seconds and allow the normal 15-second evaluation schedule.
+  await waitFor(`
+    const snapshot = JSON.parse(document.querySelector('#catalog-snapshot').textContent);
+    const text = document.querySelector('#catalog-decision').textContent;
+    if (text === '判定前') return false;
+    const decision = JSON.parse(text);
+    return snapshot.observations.some(row => row.signalId === 'catalog-features-detail' && row.qualifiedViews >= 1 && row.visibleMs >= 30000)
+      && decision.type === 'recommend' && decision.contentId === 'catalog-099' && decision.assessments.length === 100;
+  `, 45_000);
+  catalogRecommendation = await execute('return JSON.parse(document.querySelector("#catalog-decision").textContent);');
+  catalogSnapshot = await execute('return JSON.parse(document.querySelector("#catalog-snapshot").textContent);');
+  assert.equal((catalogRecommendation as { engine: { name: string } }).engine.name, 'rules');
+  const catalogObservations = (catalogSnapshot as { observations: { signalId: string; qualifiedViews: number; clicks: number; actions: number }[] }).observations;
+  assert.deepEqual(catalogObservations.map((row) => row.signalId).sort(), ['catalog-features-detail', 'catalog-features-overview']);
+  assert.ok(catalogObservations.every((row) => row.qualifiedViews >= 1 && row.clicks === 0 && row.actions === 0));
+  await waitFor('return document.querySelector("#catalog-recommendation a")?.getAttribute("href") === "/catalog/guide.html?content=catalog-099";');
+  assert.equal(await execute('return performance.getEntriesByName(arguments[0]).length;', endpoint), 0);
+  assert.equal(measured.requests.length, apiRequestsBeforeCatalog);
+  await screenshot('catalog-rules-100');
+  await click('#catalog-revoke');
+  await waitFor('return document.querySelector("#catalog-status").textContent === "未許可・計測停止中" && !document.querySelector("#catalog-recommendation a");');
+  assert.equal(await execute(catalogEmpty), true);
+  checks.push('100-candidate Rules, two viewed sections without clicks/actions, final registered guide, withdrawal');
+
   stage = 'viewport-stress';
   for (const width of [1280, 640]) {
     await sessionCommand('POST', '/window/rect', { width, height: 900 });
-    for (const path of ['/', '/guides/features/']) {
+    for (const path of ['/', '/guides/features/', '/catalog/']) {
       await go(path);
       const bounds = await execute<{ width: number; height: number; scrollWidth: number; clientWidth: number }>('return {width: innerWidth, height: innerHeight, scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth};');
-      const name = `layout-${width}-${path === '/' ? 'home' : 'guide'}`;
+      const name = `layout-${width}-${path === '/' ? 'home' : path === '/catalog/' ? 'catalog' : 'guide'}`;
       await screenshot(name);
       layouts.push({ route: path, requestedWidth: width, ...bounds, touch: false, evidence: `${artifacts}/${name}.png` });
       assert.ok(bounds.scrollWidth <= bounds.clientWidth + 1);
     }
   }
-  checks.push('no horizontal overflow on TOP and guide at two desktop window widths');
+  checks.push('no horizontal overflow on TOP, guide and 100-candidate catalog at two desktop window widths');
   stage = 'complete';
   console.log(`Safari ${browserVersion}: PASS (${checks.length} scoped checks, ${measured.requests.length} real API requests)`);
 } catch {
   console.error(`Safari verification failed at: ${stage}`);
   process.exitCode = 1;
-  if (sessionId) await screenshot('failure').catch(() => undefined);
+  if (sessionId) {
+    // Geometry and visibility only: never persist page text, storage, or raw driver errors.
+    failureViewport = await execute(`
+      const target = document.querySelector('#features, #catalog-overview');
+      const bounds = target?.getBoundingClientRect();
+      return { visibility: document.visibilityState, focused: document.hasFocus(), width: innerWidth,
+        height: innerHeight, scrollY, scrollHeight: document.documentElement.scrollHeight,
+        target: bounds ? { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height } : null };
+    `).catch(() => undefined);
+    await screenshot('failure').catch(() => undefined);
+  }
 } finally {
   if (sessionId) await command('DELETE', `/session/${sessionId}`).catch(() => undefined);
   driver?.kill('SIGTERM');
@@ -215,6 +273,6 @@ try {
         { probe: 'console-network', reason: 'WebDriver transport has no full console/network event collection in this harness' },
         { probe: 'failure-injection/layout-shift/web-vitals', reason: 'no interception/throttling in this native driver harness' },
         { probe: 'axe-scan/target-size/focus-walk/theme-locale-matrix', reason: 'outside this scoped Safari functional smoke test' },
-      ] }, mode, stage, checks, layouts, recommendation, requests: measured.requests,
+      ] }, mode, stage, checks, layouts, failureViewport, recommendation, catalogRecommendation, catalogSnapshot, requests: measured.requests,
   }, null, 2)}\n`);
 }

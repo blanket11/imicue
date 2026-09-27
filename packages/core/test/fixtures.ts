@@ -27,6 +27,22 @@ export function definition(): Definition {
   };
 }
 
+/** Fully synthetic scale fixture; only the final registered candidate matches features. */
+export function scaleDefinition(count = 100, maxIds = false): Definition {
+  const source = definition();
+  return {
+    ...source,
+    signals: { features: source.signals.features!, cases: source.signals.cases! },
+    contents: Object.fromEntries(Array.from({ length: count }, (_, index) => {
+      const contentId = `candidate-${String(index).padStart(3, '0')}`.padEnd(maxIds ? 64 : 13, 'x');
+      const topic = index === count - 1 ? 'features' : 'cases';
+      return [contentId, { title: `Synthetic guide ${index}`, description: `Synthetic ${topic} guide ${index}`,
+        href: `/guides/${index}/`, enabled: true, topicIds: [topic], relatedSignalIds: [topic] }];
+    })),
+    pages: { home: {} },
+  };
+}
+
 export function observation(signalId = 'features', overrides: Partial<SignalObservation> = {}): SignalObservation {
   return { signalId, source: 'direct', qualifiedViews: 2, visibleMs: 30_000, clicks: 0, actions: 0, lastSeenAgoMs: 0, ...overrides };
 }

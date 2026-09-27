@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>閲覧から100件の案内を選ぶ | Imicue デモ</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/catalog/styles.css"></head>
+<body>
+<header><a class="brand" href="/">Imicue ローカルデモ</a><nav aria-label="デモの切り替え"><a href="/catalog/?topic=features">機能を調べる</a><a href="/catalog/?topic=cases">事例を調べる</a><a href="/">少数候補のデモ</a></nav></header>
+<div class="layout catalog-layout"><main>
+  <div class="introduction"><p class="eyebrow">100 CONTENTS / BROWSING DEMO</p><h1>閲覧した内容から、<br>次の案内を選ぶ。</h1><p>架空製品DemoContractの100件の案内先を使います。計測を開始して、下の2つの説明を順に表示してください。説明内のクリックや入力は必要ありません。</p><p class="muted">各説明が半分以上見える状態を2秒以上保つと、有効な閲覧として記録します。案内を確認するには、2つ目の説明を30秒ほど表示してみてください。判定は15秒以上の間隔で行います。表示は読了や購入意思を意味しません。</p></div>
+  <section id="catalog-overview" class="content-section catalog-section"><p class="eyebrow">01 / OVERVIEW</p><h2></h2><p></p></section>
+  <section id="catalog-detail" class="content-section catalog-section"><p class="eyebrow">02 / DETAIL</p><h2></h2><p></p></section>
+  <section class="content-section" data-imicue-ignore><h2>同じ100件で、別の閲覧も試す</h2><p>「機能を調べる」と「事例を調べる」では、閲覧する説明が変わります。新しいページで再び許可して開始してください。</p><p>このデモの標準設定はRulesです。辞書に登録した対応関係から選びます。Jevの意味判断の品質を示すものではありません。</p><details><summary>100件の登録内容を見る</summary><ol id="catalog-list"></ol></details></section>
+</main><aside class="debug-panel" data-imicue-ignore><section class="panel">
+  <h2>計測と案内</h2><label class="consent"><input id="catalog-consent" type="checkbox">このページの表示の計測を許可する</label>
+  <div class="controls"><button id="catalog-start" type="button" disabled>計測を開始</button><button id="catalog-revoke" type="button">同意を撤回</button></div>
+  <p id="catalog-status" role="status">未許可・計測停止中</p><p id="catalog-mode" class="muted">記録はこのページ内だけで使います。判定データを外部へ送信しません。</p>
+  <p id="catalog-observation-count">有効な閲覧 0回・クリック 0回・操作 0回</p>
+  <p id="catalog-decision-status" role="status">2回以上の有効な閲覧を待っています。</p>
+  <div id="catalog-recommendation" data-imicue-source="recommendation"></div>
+  <details><summary>判定の詳細</summary><pre id="catalog-decision">判定前</pre></details>
+  <details><summary>現在の集計</summary><pre id="catalog-snapshot"></pre></details>
+  <details><summary>診断</summary><pre id="catalog-diagnostics">診断なし</pre></details>
+</section></aside></div>
+<footer>APIキー不要のRulesデモ。登録順の末尾にある機能ガイドや、その直前の事例ページも選択対象です。</footer>
+<script type="module" src="/catalog/main.js"></script>
+</body></html>

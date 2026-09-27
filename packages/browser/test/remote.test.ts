@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createRulesEngine, evaluateSnapshot } from '@imicue/core';
-import { definition, snapshot, NOW } from '../../core/test/fixtures.js';
+import { createRulesEngine, evaluateSnapshot, validateDefinition, type DecisionEngine } from '@imicue/core';
+import { definition, scaleDefinition, snapshot, NOW } from '../../core/test/fixtures.js';
 import { createRemoteEngine, type RemoteOptions } from '../src/remote.js';
 
 const options = { definition: definition(), signal: new AbortController().signal, now: NOW };
@@ -18,6 +18,47 @@ describe('B08/C02 — remote transport with mocked HTTP', () => {
     });
     expect(await remote(fetch).evaluate(snapshot(), options)).toEqual(expected);
     expect(fetch).toHaveBeenCalledOnce();
+  });
+
+  it.each([false, true])('accepts all 100 rubric results within the unchanged 32 KiB boundary (padded=%s)', async (padded) => {
+    const source = validateDefinition({ ...scaleDefinition(100, true), definitionVersion: '定'.repeat(120) });
+    const input = snapshot({ definitionVersion: source.definitionVersion, snapshotId: 's'.repeat(128), pageViewId: 'p'.repeat(128) });
+    const scorer: DecisionEngine = { name: 'jev', version: '版'.repeat(120), async evaluate(resolved) {
+      return { model: '型'.repeat(120), assessments: resolved.candidates.map((candidate) => {
+        const raw = candidate.relatedSignalIds?.includes('features') ? 2.9999999999999996 : 0.0000030000000000000005;
+        return { contentId: candidate.contentId, score: raw / 3, scoreKind: 'rubric' as const,
+          rawScore: { value: raw, min: 0, max: 3 }, providerConfidence: 0.9999999999999999 };
+      }) };
+    } };
+    const expected = await evaluateSnapshot(source, input, scorer, { now: NOW, id: () => 'd'.repeat(128) });
+    expect(expected).toMatchObject({ type: 'recommend', policyVersion: 'jev-rubric-v4' });
+    expect(expected.assessments).toHaveLength(100);
+    const json = JSON.stringify(expected);
+    const bytes = new TextEncoder().encode(json).byteLength;
+    expect(bytes).toBeLessThan(32 * 1024);
+    const body = padded ? json + ' '.repeat(32 * 1024 - bytes) : json;
+    const fetch = vi.fn<typeof globalThis.fetch>(async (_url, init) => {
+      expect(JSON.parse(String(init?.body))).toEqual(input);
+      expect(init?.body).not.toContain('Synthetic guide');
+      return new Response(body, { headers: { 'content-type': 'application/json' } });
+    });
+    expect(await remote(fetch).evaluate(input, { ...options, definition: source })).toEqual(expected);
+    expect(fetch).toHaveBeenCalledOnce();
+    if (padded) {
+      expect(await remote(async () => new Response(body + ' ', { headers: { 'content-type': 'application/json' } }))
+        .evaluate(input, { ...options, definition: source })).toMatchObject({ reason: 'invalid_result' });
+    }
+  });
+
+  it.each(['missing', 'duplicate', 'policy'] as const)('rejects a %s response from a 100-candidate server', async (kind) => {
+    const source = validateDefinition(scaleDefinition());
+    const expected = await evaluateSnapshot(source, snapshot(), createRulesEngine(), { now: NOW });
+    const assessments = [...expected.assessments];
+    if (kind === 'missing') assessments.pop();
+    if (kind === 'duplicate') assessments[1] = assessments[0]!;
+    const response = { ...expected, assessments, ...(kind === 'policy' ? { policyVersion: 'old-policy' } : {}) };
+    expect(await remote(async () => Response.json(response)).evaluate(snapshot(), { ...options, definition: source }))
+      .toMatchObject({ type: 'abstain', reason: 'invalid_result' });
   });
   it('avoids all network work for insufficient observations and capacity limits', async () => {
     const fetch = vi.fn<typeof globalThis.fetch>();

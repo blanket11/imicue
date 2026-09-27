@@ -68,9 +68,9 @@ describe('C02 — real SDK with synthetic fetch, no external API', () => {
     expect(JSON.stringify(result)).not.toContain('synthetic-secret');
     expect(fetch).toHaveBeenCalledOnce();
   });
-  it('rejects expanded provider input above 16 KiB before invoking the SDK', async () => {
+  it('rejects a state plus one question above 24 KiB before invoking the SDK', async () => {
     const input: ResolvedEvaluationInput = { snapshot: snapshot(), page: {}, observations: [], candidates: [
-      { contentId: 'feature-guide', ...definition().contents['feature-guide']!, description: 'あ'.repeat(6000) },
+      { contentId: 'feature-guide', ...definition().contents['feature-guide']!, description: 'あ'.repeat(9000) },
     ] };
     expect(() => buildJevRequest(input, JEV_MODEL)).toThrow('capacity_limit');
     const fetch = vi.fn<typeof globalThis.fetch>();

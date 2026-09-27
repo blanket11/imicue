@@ -2,7 +2,7 @@ import { request as httpRequest } from 'node:http';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createRulesEngine, type DecisionEngine } from '@imicue/core';
 import { definition, snapshot, NOW } from '../../core/test/fixtures.js';
-import { createDecisionHandler, createMemoryLimiter, createNodeServer, type HandlerOptions } from '../src/index.js';
+import { createDecisionHandler, createMemoryLimiter, createMemoryProviderLimiter, createJevEngine, createNodeServer, JEV_MODEL, type HandlerOptions } from '../src/index.js';
 
 const origin = 'http://127.0.0.1:5183';
 const request = (body: unknown = snapshot(), headers: HeadersInit = {}) => new Request('http://localhost/v1/decide', {
@@ -98,6 +98,28 @@ describe('S01/S02 — fixed HTTP boundary', () => {
     expect(() => setup({ mode: 'production' })).toThrow('shared_limiter_required');
     vi.stubEnv('NODE_ENV', 'production');
     expect(() => setup()).toThrow('shared_limiter_required');
+  });
+  it('requires shared provider accounting even when production decision accounting is shared', () => {
+    const decisionLimiter = { ...createMemoryLimiter(), shared: true };
+    const engine = createJevEngine({ model: JEV_MODEL, apiKey: 'synthetic' });
+    expect(() => setup({ mode: 'production', limiter: decisionLimiter, engine })).toThrow('shared_provider_limiter_required');
+    expect(() => setup({ mode: 'production', limiter: decisionLimiter, engine: { ...engine } })).toThrow('shared_provider_limiter_required');
+    const testSharedProvider = { ...createMemoryProviderLimiter(), shared: true };
+    const guarded = createJevEngine({ model: JEV_MODEL, apiKey: 'synthetic', mode: 'production', providerLimiter: testSharedProvider });
+    expect(() => setup({ mode: 'production', origins: ['https://example.com'], limiter: decisionLimiter, engine: guarded })).not.toThrow();
+  });
+  it('returns 429 for provider quota rejection without a network request', async () => {
+    const providerLimiter = createMemoryProviderLimiter({ perMinute: 1, perDay: 1 });
+    const exhausted = await providerLimiter.reservePlan(1);
+    if (!exhausted.ok) throw new Error('fixture');
+    const attempt = await exhausted.plan.acquireAttempt();
+    if (attempt.ok) attempt.release(); exhausted.plan.release();
+    const fetch = vi.fn<typeof globalThis.fetch>();
+    const engine = createJevEngine({ model: JEV_MODEL, apiKey: 'synthetic', providerLimiter, fetch });
+    const response = await setup({ engine })(request());
+    expect(response.status).toBe(429);
+    expect(response.headers.has('Retry-After')).toBe(true);
+    expect(fetch).not.toHaveBeenCalled();
   });
   it.each(['http://example.com', 'https://example.com/path', 'https://example.com/'])('rejects unsafe origin config %s', (entry) => {
     expect(() => setup({ origins: [entry] })).toThrow('invalid_origin');

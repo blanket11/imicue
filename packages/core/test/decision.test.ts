@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { canRecommend, createRulesEngine, evaluateSnapshot, validateDefinition, validateSnapshot } from '../src/index.js';
+import { canRecommend, createRulesEngine, evaluateSnapshot, validateDecision, validateDefinition, validateSnapshot } from '../src/index.js';
 import type { CandidateAssessment, DecisionEngine, Definition, Snapshot } from '../src/index.js';
-import { definition, NOW, observation, scenarios, snapshot } from './fixtures.js';
+import { definition, NOW, observation, scaleDefinition, scenarios, snapshot } from './fixtures.js';
 
 const options = { now: NOW, id: () => 'decision-1' };
 const evaluate = (input = snapshot(), source = definition(), engine = createRulesEngine()) => evaluateSnapshot(validateDefinition(source), input, engine, options);
@@ -86,12 +86,31 @@ describe('C04 / D01-D04: deterministic rules and shared policy', () => {
     expect(await evaluate(snapshot({ outcomes: [{ contentId: 'case-guide', kind: 'clicked', ageMs: 0 }] }))).toMatchObject({ type: 'recommend' });
   });
 
-  it('returns capacity_limit without invoking the engine for truncation or 9 eligible candidates', async () => {
+  it('returns capacity_limit without invoking the engine for truncated observations', async () => {
     const engine = { ...createRulesEngine(), evaluate: vi.fn() };
     expect(await evaluate(snapshot({ coverage: { truncated: true } }), definition(), engine)).toMatchObject({ reason: 'capacity_limit' });
-    const source = definition();
-    const contents = { ...source.contents, ...Object.fromEntries(Array.from({ length: 6 }, (_, index) => [`extra-${index}`, source.contents['feature-guide']!])) };
-    expect(await evaluate(snapshot(), { ...source, contents }, engine)).toMatchObject({ reason: 'capacity_limit' });
+    expect(engine.evaluate).not.toHaveBeenCalled();
+  });
+
+  it.each([9, 21, 100])('evaluates all %i candidates with views only and can choose the last registration', async (count) => {
+    const source = scaleDefinition(count);
+    const lastId = Object.keys(source.contents).at(-1)!;
+    const engine = { ...createRulesEngine(), evaluate: vi.fn(createRulesEngine().evaluate) };
+    const input = snapshot({ observations: [observation('features', { qualifiedViews: 1 }), observation('cases', { qualifiedViews: 1, visibleMs: 0 })] });
+    const result = await evaluate(input, source, engine);
+    expect(result).toMatchObject({ type: 'recommend', contentId: lastId, policyVersion: 'rules-v1' });
+    expect(result.assessments).toHaveLength(count);
+    expect(engine.evaluate).toHaveBeenCalledOnce();
+    const reversed = { ...source, contents: Object.fromEntries(Object.entries(source.contents).reverse()) };
+    expect((await evaluate(input, reversed)).assessments).toEqual(result.assessments);
+    expect(validateDecision(result, validateDefinition(source), input, NOW)).toEqual(result);
+  });
+
+  it('keeps the minimum evidence gate when 100 candidates are available', async () => {
+    const source = scaleDefinition();
+    const engine = { ...createRulesEngine(), evaluate: vi.fn() };
+    expect(await evaluate(snapshot({ observations: [observation('features', { qualifiedViews: 1, visibleMs: 1_800_000 })] }), source, engine))
+      .toMatchObject({ reason: 'insufficient_evidence' });
     expect(engine.evaluate).not.toHaveBeenCalled();
   });
 

@@ -10,12 +10,12 @@ function mockEngine() {
   return { name: 'jev' as const, version: 'mock-freshness', evaluate } satisfies DecisionEngine;
 }
 
-describe('Jev evidence freshness (policy v3)', () => {
+describe('Jev evidence freshness (policy v4)', () => {
   it.each([300_001, 600_000, 1_800_000])('skips inference for observations %i ms old, even with explicit actions', async (age) => {
     const engine = mockEngine();
     const input = snapshot({ observations: [observation('features', { clicks: 1, lastSeenAgoMs: age })] });
     expect(await evaluateSnapshot(definition(), input, engine, { now: NOW })).toMatchObject({
-      type: 'abstain', reason: 'insufficient_evidence', policyVersion: 'jev-rubric-v3', assessments: [],
+      type: 'abstain', reason: 'insufficient_evidence', policyVersion: 'jev-rubric-v4', assessments: [],
     });
     expect(engine.evaluate).not.toHaveBeenCalled();
   });
@@ -55,7 +55,7 @@ describe('Jev evidence freshness (policy v3)', () => {
     expect(engine.evaluate.mock.calls[0]![0].candidates.map((row) => row.contentId)).not.toContain('feature-guide');
   });
 
-  it.each(['jev-rubric-v1', 'jev-rubric-v2'])('rejects a %s response and a forged recommendation without fresh evidence', async (policyVersion) => {
+  it.each(['jev-rubric-v1', 'jev-rubric-v2', 'jev-rubric-v3'])('rejects a %s response and a forged recommendation without fresh evidence', async (policyVersion) => {
     const result = await evaluateSnapshot(definition(), snapshot(), mockEngine(), { now: NOW });
     expect(() => validateDecision({ ...result, policyVersion }, definition(), snapshot(), NOW)).toThrow('invalid_result');
     const stale = snapshot({ observations: [observation('features', { lastSeenAgoMs: 600_000 })] });
