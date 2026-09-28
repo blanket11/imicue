@@ -6,7 +6,7 @@ import { CatalogBudget, catalogMeasuredTransport, type CatalogRequestMetric } fr
 import { createCatalogBrowserAttemptCap, inspectCatalogBrowserDecision, CATALOG_BROWSER_MAX_ATTEMPTS,
   type CatalogBrowserName, type CatalogBrowserTopic } from './lib/catalog-browser.js';
 
-const origin = 'http://127.0.0.1:5183';
+const origin = 'http://127.0.0.1:5194';
 const endpoint = 'http://127.0.0.1:5193/v1/decide';
 const scenarios = [
   { browser: 'chromium', topic: 'features', launcher: chromium },

@@ -26,7 +26,7 @@ ESMパッケージだけ必要な場合は `npm run build:packages`、単体ブ�
 npm run preview:distribution
 ```
 
-[ESMデモ](http://127.0.0.1:5185/es/)と[IIFEデモ](http://127.0.0.1:5185/iife/)は生成した固定ファイルを読み込みます。計測を許可・開始し、集計と案内が動くことを確認します。
+[ESM検証画面](http://127.0.0.1:5185/es/)と[IIFE検証画面](http://127.0.0.1:5185/iife/)は生成した固定ファイルを読み込みます。計測を許可・開始し、集計と案内が動くことを確認します。
 
 IIFEは `window.Imicue` に `createTracker`・`createRulesEngine`・`createRemoteEngine`・`version` を公開します。読み込みだけでは計測を始めません。既存の `window.Imicue` は上書きせず、重複読み込みは `imicue:global_conflict` で知らせます。
 
@@ -51,4 +51,4 @@ npm run preview:next
 
 初期モードはRulesです。左下のDebugでRemoteを選ぶ場合だけ、別ターミナルで `npm run dev:server` を起動してください。モード変更時は記録を削除して自動開始します。Next.js内には判定用のPOST APIを置いていません。
 
-Next.jsのソースを編集する場合は `npm run dev:next` で開発サーバーを起動します。静的配信は5184、開発サーバーは5186を使います。検証範囲と受け入れ条件は [テストガイド](../06-implementation-and-tests.md)を参照してください。
+PACELETのソースを編集する場合は `npm run dev` で開発サーバーを起動します。静的配信は5184、開発サーバーは5183を使います。検証範囲と受け入れ条件は [テストガイド](../06-implementation-and-tests.md)を参照してください。

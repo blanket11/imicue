@@ -392,7 +392,7 @@ a {
   color: var(--muted);
 }
 
-.mock-search {
+.mock-feature {
   display: flex;
   gap: 8px;
   align-items: center;
@@ -405,54 +405,36 @@ a {
   background: white;
 }
 
-.mock-search .icon {
+.mock-feature .icon {
   width: 15px;
   height: 15px;
 }
 
-.book-stack {
-  position: relative;
-  min-height: 178px;
+
+
+
+
+
+.product-board {
   align-self: center;
+  min-width: 0;
+  margin-left: 12px;
+  padding: 12px;
+  background: #eaf2ff;
+  border: 1px solid #dbe7fa;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px #729bdc1f;
 }
-
-.book {
-  position: absolute;
-  width: 76px;
-  height: 122px;
-  box-shadow: 5px 7px 12px #729bdc1f;
-  border-radius: 2px 6px 6px 2px;
-  border-left: 5px solid #afc6f7;
-  background: #d2e2ff;
-  display: block;
-  padding: 18px 12px;
-  font-size: 13px;
-  font-weight: 650;
-  color: #34568e;
-  line-height: 1.8;
-}
-
-.book-one {
-  left: 0;
-  top: 32px;
-  transform: rotate(-9deg);
-}
-
-.book-two {
-  left: 58px;
-  top: 46px;
-  transform: rotate(10deg);
-  background: #f8fbff;
-  border-color: #e4eeff;
-  z-index: 2;
-}
-
-.book-three {
-  left: 84px;
-  top: 5px;
-  background: #e4eeff;
-  color: #5676a4;
-  transform: rotate(8deg);
+.product-board p { font-weight: 650; }
+.product-board small { display: block; color: var(--muted); font-size: 9px; font-weight: 400; }
+.product-board > div { margin-top: 8px; padding: 10px; border-radius: 5px; background: white; }
+.product-board span { color: #43669d; font-size: 9px; }
+.product-board strong { display: block; font-size: 11px; margin: 4px 0; }
+@media (max-width: 600px) {
+  .product-board { padding: 7px; margin-left: 4px; }
+  .product-board > div { padding: 7px; }
+  .product-board strong { font-size: 9px; }
+  .product-board small { font-size: 8px; }
 }
 
 .hero-advice {
@@ -650,13 +632,13 @@ fieldset {
   height: 16px;
 }
 
-.sample-books {
+.product-topics {
   display: flex;
   gap: 12px;
   margin-top: 16px;
 }
 
-.sample-book {
+.product-topic {
   padding: 12px;
   font-size: 11px;
   min-height: 54px;
@@ -666,7 +648,7 @@ fieldset {
   flex: 1;
 }
 
-.sample-book small {
+.product-topic small {
   display: block;
   font-size: 10px;
   color: var(--muted);
@@ -1258,17 +1240,9 @@ dialog .muted {
   .hero-mock-content h2 {
     font-size: 21px;
   }
-  .book {
-    width: 62px;
-    height: 112px;
-    padding: 14px 8px;
-  }
-  .book-two {
-    left: 37px;
-  }
-  .book-three {
-    left: 61px;
-  }
+
+
+
   .demo-layout {
     gap: 28px;
     grid-template-columns: minmax(0, 2.2fr) minmax(220px, 1fr);
@@ -1335,16 +1309,9 @@ dialog .muted {
   .hero-mock-content h2 {
     font-size: 24px;
   }
-  .book {
-    width: 76px;
-    height: 130px;
-  }
-  .book-two {
-    left: 58px;
-  }
-  .book-three {
-    left: 94px;
-  }
+
+
+
   .hero-advice {
     right: 0;
     width: 310px;
@@ -1517,35 +1484,20 @@ dialog .muted {
   .hero-mock-content .mock-kicker {
     font-size: 9px;
   }
-  .mock-search {
+  .mock-feature {
     font-size: 8px;
     padding: 8px;
     margin-top: 14px;
   }
-  .mock-search .icon {
+  .mock-feature .icon {
     width: 12px;
     height: 12px;
   }
-  .book {
-    width: 52px;
-    height: 94px;
-    padding: 12px 7px;
-    font-size: 10px;
-  }
-  .book-stack {
-    min-height: 150px;
-  }
-  .book-one {
-    top: 25px;
-  }
-  .book-two {
-    left: 32px;
-    top: 37px;
-  }
-  .book-three {
-    left: 51px;
-    top: 6px;
-  }
+
+
+
+
+
   .hero-advice {
     width: 260px;
     bottom: 28px;
@@ -1616,10 +1568,10 @@ dialog .muted {
   #mock-page h3 {
     font-size: 22px;
   }
-  .sample-books {
+  .product-topics {
     gap: 8px;
   }
-  .sample-book {
+  .product-topic {
     padding: 10px;
     font-size: 10px;
   }

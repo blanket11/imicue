@@ -3,8 +3,9 @@ import { resolve } from 'node:path';
 
 export default defineConfig({
   resolve: { conditions: ['imicue-source', 'module', 'browser', 'development|production'] },
+  // SDK regression fixtures, separate from the default PACELET demo.
   root: 'examples/vanilla',
-  server: { host: '127.0.0.1', port: 5183, strictPort: true },
+  server: { host: '127.0.0.1', port: 5194, strictPort: true },
   preview: { host: '127.0.0.1', port: 4173, strictPort: true },
   build: {
     outDir: '../../dist/demo',

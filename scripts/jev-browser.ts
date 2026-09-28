@@ -15,7 +15,7 @@ if (process.env.RUN_JEV_BROWSER !== '1' || !process.env.TYPESAFE_API_KEY?.trim()
   const measured = measuredTransport(globalThis.fetch, 3);
   const server = createNodeServer(createDecisionHandler({ definitions: [definition],
     engine: createJevEngine({ model: JEV_MODEL, apiKey: process.env.TYPESAFE_API_KEY, fetch: measured.fetch }),
-    mode: 'development', origins: ['http://127.0.0.1:5183'],
+    mode: 'development', origins: ['http://127.0.0.1:5194'],
   }));
   const results = [];
   let stage = 'listen';
@@ -37,12 +37,12 @@ if (process.env.RUN_JEV_BROWSER !== '1' || !process.env.TYPESAFE_API_KEY?.trim()
         page.on('pageerror', () => { pageErrors++; });
         page.on('request', (request) => {
           const origin = new URL(request.url()).origin;
-          if (!['http://127.0.0.1:5183', 'http://127.0.0.1:5193'].includes(origin)) unexpectedTraffic = true;
+          if (!['http://127.0.0.1:5194', 'http://127.0.0.1:5193'].includes(origin)) unexpectedTraffic = true;
           if (request.headers().authorization) credentialInBrowser = true;
           if (request.method() === 'POST') posts++;
         });
         stage = `${name}:before-consent`;
-        await page.goto('http://127.0.0.1:5183/?engine=remote');
+        await page.goto('http://127.0.0.1:5194/?engine=remote');
         await page.locator('#feature-action').click();
         await page.locator('#consent').check();
         await page.locator('#feature-action').click();

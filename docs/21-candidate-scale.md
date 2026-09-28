@@ -129,9 +129,9 @@ Core／Browser／Serverを一緒に更新する。旧ブラウザは新policyや
 
 ```sh
 npm ci
-npm run dev -- --port 5183 --strictPort
-# http://127.0.0.1:5183/catalog/
-# http://127.0.0.1:5183/catalog/?topic=cases
+npm run dev:fixtures
+# http://127.0.0.1:5194/catalog/
+# http://127.0.0.1:5194/catalog/?topic=cases
 
 # APIを呼ばず分割数・容量を確認
 npm run eval:catalog -- --suite pilot --plan

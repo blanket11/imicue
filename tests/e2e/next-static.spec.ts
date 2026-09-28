@@ -3,7 +3,11 @@ import type { Snapshot } from '@imicue/core';
 
 const base = 'http://127.0.0.1:5184';
 const endpoint = 'http://127.0.0.1:5193/v1/decide';
-async function snapshot(page: Page): Promise<Snapshot> { return JSON.parse((await page.locator('#snapshot').textContent())!); }
+async function snapshot(page: Page): Promise<Snapshot> {
+  // Reload can finish before React restores the tracker and publishes its first snapshot.
+  await expect(page.locator('#snapshot')).toContainText('"schemaVersion": "0.1"');
+  return JSON.parse((await page.locator('#snapshot').textContent())!);
+}
 async function tick(page: Page, seconds: number) {
   for (let i = 0; i < seconds; i++) { await page.clock.runFor(1000); await page.waitForTimeout(100); }
 }

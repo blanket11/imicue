@@ -91,30 +91,30 @@
           <div
             class="hero-visual"
             role="img"
-            aria-label="読書ノートの検索ページに、読書メモを検索するガイドが表示される組み込み例"
+            aria-label="PACELETの製品紹介に、機能ページへの案内が表示される組み込み例"
           >
             <div class="browser-frame hero-browser" aria-hidden="true">
               <div class="browser-bar"><i></i><i></i><i></i><span></span></div>
               <div class="mock-header">
                 <strong
-                  ><svg class="icon"><use href="#i-book" /></svg
-                  >読書ノート</strong
-                ><span>本を探す　　読書記録</span>
+                  ><svg class="icon"><use href="#i-page" /></svg
+                  >PACELET</strong
+                ><span>機能　　事例　　資料請求</span>
               </div>
               <div class="hero-mock-content">
                 <div>
-                  <p class="mock-kicker">本と、読んだ記憶を。</p>
-                  <h2>もう一度読みたい<br />一節を見つける。</h2>
-                  <p>題名やメモから、<br />あの本を探してみましょう。</p>
-                  <span class="mock-search"
-                    ><svg class="icon"><use href="#i-search" /></svg
-                    >本の題名・メモで探す</span
+                  <p class="mock-kicker">チームの進行管理</p>
+                  <h2>チームの今を、<br />同じ景色に。</h2>
+                  <p>担当・予定・進捗を、<br />ひとつの場所で共有。</p>
+                  <span class="mock-feature"
+                    ><svg class="icon"><use href="#i-sliders" /></svg
+                    >ボードと予定表を使う</span
                   >
                 </div>
-                <div class="book-stack">
-                  <span class="book book-one">海辺の<br />灯台</span
-                  ><span class="book book-two">森の<br />図書館</span
-                  ><span class="book book-three">旅の余白</span>
+                <div class="product-board">
+                  <p>チームのボード <small>今週の予定</small></p>
+                  <div><span>進行中</span><strong>紹介ページの作成</strong><small>制作チーム · 水曜日</small></div>
+                  <div><span>確認待ち</span><strong>掲載内容の確認</strong><small>運用チーム · 金曜日</small></div>
                 </div>
               </div>
             </div>
@@ -124,8 +124,8 @@
                 <span class="icon-tile"
                   ><svg class="icon"><use href="#i-page" /></svg></span
                 ><strong
-                  >読書メモを検索するガイド<small
-                    >読み返したい記録を、見つける。</small
+                  >機能について詳しく見る<small
+                    >ボードと予定表の使い方を紹介。</small
                   ></strong
                 ><span>→</span>
               </div>
@@ -142,7 +142,7 @@
             見ている内容に合わせて、次の案内を。
           </h2>
           <p class="section-lead">
-            モック内のページを切り替えて、案内の変化を試してください。
+            PACELETの閲覧例を選ぶと、機能・事例・資料・相談のどこへ案内するかが変わります。
           </p>
           <noscript
             ><p class="notice">
@@ -157,9 +157,9 @@
               <div class="mock-header">
                 <strong
                   ><svg class="icon" aria-hidden="true">
-                    <use href="#i-book" /></svg
-                  >読書ノート</strong
-                ><span>架空の読書記録アプリ</span>
+                    <use href="#i-page" /></svg
+                  >PACELET</strong
+                ><span>架空のチーム向け進行管理サービス</span>
               </div>
               <div class="mock-layout">
                 <fieldset id="scenario-options" disabled>
@@ -170,8 +170,8 @@
                     aria-pressed="true"
                   >
                     <svg class="icon" aria-hidden="true">
-                      <use href="#i-search" /></svg
-                    >本を探す
+                      <use href="#i-sliders" /></svg
+                    >機能
                   </button>
                   <button
                     type="button"
@@ -179,8 +179,14 @@
                     aria-pressed="false"
                   >
                     <svg class="icon" aria-hidden="true">
-                      <use href="#i-book" /></svg
-                    >読書記録
+                      <use href="#i-page" /></svg
+                    >活用事例
+                  </button>
+                  <button type="button" data-scenario="documents" aria-pressed="false">
+                    <svg class="icon" aria-hidden="true"><use href="#i-page" /></svg>料金・共有設定
+                  </button>
+                  <button type="button" data-scenario="contact" aria-pressed="false">
+                    <svg class="icon" aria-hidden="true"><use href="#i-sliders" /></svg>導入手順
                   </button>
                   <span class="nav-caption">ほかの閲覧例</span>
                   <button
@@ -188,7 +194,7 @@
                     data-scenario="both"
                     aria-pressed="false"
                   >
-                    両方を見た場合
+                    機能と事例を見た場合
                   </button>
                   <button
                     type="button"
@@ -200,9 +206,9 @@
                 </fieldset>
                 <div class="mock-main">
                   <div id="mock-page">
-                    <p class="mock-kicker">検索機能</p>
-                    <h3>本を探す</h3>
-                    <p>題名やメモから、読み返したい記録を探せます。</p>
+                    <p class="mock-kicker">機能の閲覧例</p>
+                    <h3>担当と予定を、ひとつの場所で。</h3>
+                    <p>ボード機能と予定表の説明を見た場合です。</p>
                   </div>
                   <div
                     id="result"
@@ -289,7 +295,7 @@
           </div>
           <dialog id="guide-dialog" aria-labelledby="guide-title">
             <div class="dialog-bar">
-              <span>ガイドの表示例</span
+              <span>案内先の表示例</span
               ><button type="button" id="close-guide">
                 閉じる <span aria-hidden="true">×</span>
               </button>
@@ -298,7 +304,7 @@
             <p id="guide-description"></p>
             <ol id="guide-steps"></ol>
             <p class="muted">
-              架空のガイドです。実際の案内先と表示UIは、利用サイトで用意します。
+              PACELETの案内先を要約した表示例です。フォームの操作とページ移動はローカルデモで試せます。
             </p>
           </dialog>
         </div>
@@ -320,8 +326,8 @@
             </div>
             <p>計測したい要素に、辞書へ登録したIDを付けます。</p>
             <pre><code>&lt;section
-  data-imicue-signal="search-overview"&gt;
-  読書メモの検索方法
+  data-imicue-signal="feature-board"&gt;
+  担当と状態を一覧するボード機能
 &lt;/section&gt;</code></pre>
           </article>
           <article>
@@ -332,7 +338,7 @@
             <p>何を見たか、どの案内と関係するかを定義します。</p>
             <pre><code>// 案内候補の設定の一部
 relatedSignalIds: [
-  'search-overview'
+  'feature-board'
 ]</code></pre>
           </article>
           <article>
@@ -343,7 +349,7 @@ relatedSignalIds: [
             <p>候補のIDか見送りを受け取り、カードやリンクを表示します。</p>
             <pre><code>{
   type: 'recommend',
-  contentId: 'feature-guide', …
+  contentId: 'product-features', …
 }</code></pre>
           </article>
         </div>
@@ -440,7 +446,7 @@ npm run dev</code></pre>
               aria-live="polite"
             ></p>
             <p class="local-step">
-              起動後、<code>http://127.0.0.1:5183/collection/</code>で自動開始を試せます。手動開始・無効化にも切り替えられます。
+              起動後、<code>http://127.0.0.1:5183/</code>でPACELETを開きます。製品紹介を閲覧すると計測が進み、記録に応じて右下に案内が出ます。
             </p>
             <a href="https://github.com/blanket11/imicue#ローカルデモを動かす"
               >詳しい導入手順 ↗</a

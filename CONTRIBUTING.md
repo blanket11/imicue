@@ -20,7 +20,9 @@ npm run check
 
 型検査、lint、単体・統合試験、ビルド、配布検査、Rules評価、3ブラウザエンジンのE2Eが順に動きます。実APIは呼びません。E2Eは4173・4187・5184・5185・5193を使用します。同じポートを使うこのリポジトリのプレビューが起動中なら停止してください。
 
-開発中のVanillaデモは `npm run dev`、紹介サイトは `npm run dev:site` で確認できます。デモの確認手順は [利用ガイド](docs/guides/local-demos.md)、個別の検査は [テストガイド](docs/06-implementation-and-tests.md)を参照してください。
+開発中のPACELETデモは `npm run dev`、紹介サイトは `npm run dev:site` で確認できます。デモの確認手順は [利用ガイド](docs/guides/local-demos.md)、個別の検査は [テストガイド](docs/06-implementation-and-tests.md)を参照してください。
+
+SDKの互換APIや100候補の固定シナリオは `npm run dev:fixtures`（5194番）で検証します。[回帰確認画面の手順](docs/guides/development-fixtures.md)を参照してください。
 
 ## 変更箇所と確認する契約を決める
 

@@ -4,8 +4,10 @@ import { definition, makeSnapshot } from '../../site/scenarios.js';
 
 describe('public site browsing examples use the actual Rules engine', () => {
   it.each([
-    ['features', '読書メモを検索するガイド'],
-    ['cases', '読みかけの本を整理する方法'],
+    ['features', '機能について詳しく見る'],
+    ['cases', 'チームの活用事例を見る'],
+    ['documents', '詳しい製品資料を見る'],
+    ['contact', '導入について相談する'],
   ] as const)('recommends the matching candidate from %s browsing without clicks or actions', async (scenario, title) => {
     const snapshot = makeSnapshot(scenario);
     expect(snapshot.observations).toHaveLength(2);
@@ -18,7 +20,7 @@ describe('public site browsing examples use the actual Rules engine', () => {
     if (decision.type !== 'recommend') throw new Error('expected_recommendation');
     expect(definition.contents[decision.contentId]?.title).toBe(title);
     expect(decision.engine.name).toBe('rules');
-    expect(decision.assessments).toHaveLength(2);
+    expect(decision.assessments).toHaveLength(4);
     expect(decision.assessments.every((assessment) => assessment.scoreKind === 'heuristic')).toBe(true);
   });
 
@@ -27,7 +29,7 @@ describe('public site browsing examples use the actual Rules engine', () => {
     expect(snapshot.observations).toHaveLength(4);
     const decision = await evaluateSnapshot(definition, snapshot, createRulesEngine());
     expect(decision).toMatchObject({ type: 'abstain', reason: 'ambiguous' });
-    expect(decision.assessments).toHaveLength(2);
+    expect(decision.assessments).toHaveLength(4);
     const scores = decision.assessments.map((assessment) => assessment.score);
     expect(scores[0]).toBeGreaterThan(0);
     expect(scores[0]).toBe(scores[1]);
