@@ -1,6 +1,6 @@
 # 辞書と計測をページに組み込む
 
-Imicueを組み込むには、観測する表示・操作と案内先を辞書に登録し、利用サイトで同意と表示処理を接続します。このガイドはJavaScriptでWebページを実装する人向けです。まず [動くVanillaの例](../../examples/vanilla/main.js)を確認し、以下を自分のページに合わせて変更してください。
+Imicueを組み込むには、観測する表示・操作と案内先を辞書に登録し、利用サイトで開始・停止と表示処理を接続します。このガイドはJavaScriptでWebページを実装する人向けです。まず [動くVanillaの例](../../examples/vanilla/main.js)を確認し、以下を自分のページに合わせて変更してください。
 
 現在はnpm未公開のため、パッケージ名を使う以下のコードは、このリポジトリのworkspaces内で `npm run build:packages` を実行して使います。外部のページで単体ファイルを使う場合は [配布ファイルの手順](distribution.md)を参照してください。
 
@@ -69,7 +69,7 @@ Rulesは `relatedSignalIds` やtopicの対応関係を使います。Jevはサ�
 
 `data-imicue-ignore` で対象外を示し、`data-imicue-source="recommendation"` で推薦由来の記録を分離します。記録する単位や表示条件は [ブラウザ計測の仕様](../03-browser-tracking.md)を参照してください。
 
-## 同意と結果の表示を接続する
+## 開始・停止と結果の表示を接続する
 
 次のコードを、上のHTMLがあるページのブラウザ用スクリプトから実行します。同意ボタンは動作説明のための最小例です。利用サイトに同意管理がある場合は、そこから許可・撤回を接続してください。
 
@@ -83,6 +83,7 @@ const tracker = createTracker({
   pageId: 'home',
   engine: createRulesEngine(),
   storage: 'memory',
+  collection: { mode: 'manual' },
 });
 const container = document.querySelector('#recommendation');
 
@@ -99,11 +100,11 @@ const unsubscribe = tracker.onDecision((decision) => {
 });
 
 document.querySelector('#allow-measurement').addEventListener('click', () => {
-  tracker.setConsent('granted');
   tracker.start();
 });
 document.querySelector('#revoke-measurement').addEventListener('click', () => {
-  tracker.setConsent('denied');
+  tracker.stop();
+  tracker.reset();
   container.replaceChildren();
 });
 document.querySelector('#open-example').addEventListener('click', () => {
@@ -120,7 +121,7 @@ window.addEventListener('pageshow', (event) => {
 });
 ```
 
-初期化だけでは計測を始めません。未許可の操作も記録しません。見送り時は通常のページをそのまま使えるようにし、案内が必ず出ることを前提にしないでください。
+この例は明示したmanualモードなので、startまで計測しません。ページ表示時に始める場合は `collection: { mode: 'auto' }` に変更でき、無効化には `disabled` を使えます。[開始モードと既存APIからの移行](collection.md)も参照してください。見送り時は通常のページをそのまま使えるようにし、案内が必ず出ることを前提にしないでください。
 
 この例は、ブラウザの「戻る」でページがキャッシュから復帰した場合に再読み込みし、Trackerを作り直します。SPAで画面を切り替える場合は、次の節の方法で同じTrackerを維持できます。
 
@@ -130,7 +131,7 @@ window.addEventListener('pageshow', (event) => {
 
 SPAでは同じTrackerを維持して `setPage(pageId)` を呼びます。画面遷移時には、前のページで表示した案内も取り除いてください。コンポーネントを破棄する場合は購読を解除し、`destroy()` を呼びます。
 
-通常のリンク遷移や再読み込みでも記録を使うには、各ページで同じ辞書と `storage: 'session'` を指定します。同一Origin・同じタブのsessionStorageから、許可と `start()` の後に直近30分の記録を復元します。同意は保存しません。
+通常のリンク遷移や再読み込みでも記録を使うには、各ページで同じ辞書と `storage: 'session'` を指定します。同一Origin・同じタブのsessionStorageから、計測開始時に直近30分の記録を復元します。manualでは各ページでstartを呼び、autoでは各ページの初期化時に開始します。同意状態は保存しません。
 
 表示条件を満たした案内先や、確認完了した案内先は再推薦から除外します。機能ガイドを見たことだけで、次に料金へ興味があると断定するわけではありません。次の候補にも辞書の関連と観測の根拠が必要です。[ページ横断デモ](local-demos.md#ページ移動後の記録を試す)で復元と撤回を確かめてください。
 
@@ -141,6 +142,6 @@ SPAでは同じTrackerを維持して `setPage(pageId)` を呼びます。画面
 | Definition | 観測するID、その意味、案内先の対応を定義した辞書 |
 | Snapshot | 期間内の表示・操作・案内結果を集計した判定入力 |
 | Decision | 登録済み候補への推薦、または見送り |
-| Tracker | 同意、観測、保存、判定の実行を管理するブラウザ側のインスタンス |
+| Tracker | 開始・停止、観測、保存、判定の実行を管理するブラウザ側のインスタンス |
 
 Jevを使う場合は [判定サーバーへの接続](server-and-jev.md)、設定と制約の全体像は [ドキュメント一覧](../README.md)を参照してください。

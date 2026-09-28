@@ -1,127 +1,540 @@
 <!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Imicueは、サイト内の閲覧や操作に合わせ、登録した候補から次の案内を選ぶOSSライブラリです。APIキー不要のデモで、案内する場合と見送る場合を比較できます。">
-  <meta name="referrer" content="no-referrer">
-  <link rel="icon" href="data:,">
-  <title>Imicue — サイト内の閲覧から、次に案内する情報を選ぶ。</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./main.ts"></script>
-</head>
-<body>
-  <a class="skip-link" href="#main">本文へ移動</a>
-  <header class="site-header">
-    <a class="wordmark" href="#" aria-label="Imicue トップ">imicue</a>
-    <nav aria-label="メインナビゲーション">
-      <a href="#try">デモ</a><a href="#how">仕組み</a><a href="#start">導入</a>
-      <a href="https://github.com/blanket11/imicue">GitHub <span aria-hidden="true">↗</span></a>
-    </nav>
-  </header>
-  <main id="main">
-    <section class="hero container" aria-labelledby="hero-title">
-      <h1 id="hero-title">サイト内の閲覧から、<br><span>次に案内する情報を選ぶ。</span></h1>
-      <p class="hero-description">読書メモの検索方法を見た人には、検索ガイドを。<br>読みかけの本を整理している人には、記録の使い方を。</p>
-      <p class="hero-about">Imicueは、閲覧や操作の記録をもとに、登録した候補から案内先を選ぶOSSライブラリです。<br>案内カードやリンクの見せ方は、サイトに合わせて実装できます。</p>
-      <div class="hero-actions"><a class="button primary" href="#try">案内の変化を試す <span aria-hidden="true">→</span></a><a href="#start">導入手順を見る</a></div>
-    </section>
-    <section class="playground container" id="try" aria-labelledby="try-title">
-      <h2 class="section-title" id="try-title">見る内容が変わると、案内も変わる。</h2>
-      <p class="section-lead">訪問者の閲覧例を切り替えて、記録と案内の関係を比べてください。</p>
-      <p class="muted">架空の読書記録アプリを使った比較デモです。用意した記録をブラウザ内のルールで判定します。<br>このページでの閲覧履歴は収集せず、外部へ送信しません。</p>
-      <noscript><p class="notice">デモを試すにはJavaScriptを有効にしてください。仕組みと導入手順は、このまま読めます。</p></noscript>
-      <div class="workbench">
-        <fieldset id="scenario-options" disabled>
-          <legend>訪問者の閲覧例</legend>
-          <div class="scenario-choices">
-            <label class="choice"><input type="radio" name="scenario" value="features" checked><span>本の検索機能を見る</span></label>
-            <label class="choice"><input type="radio" name="scenario" value="cases"><span>読書記録の使い方を見る</span></label>
-            <label class="choice"><input type="radio" name="scenario" value="both"><span>両方を同じくらい見る</span></label>
-            <label class="choice"><input type="radio" name="scenario" value="empty"><span>閲覧記録がない</span></label>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Imicueは、閲覧や操作の記録をもとに、登録した候補から次の案内を選ぶOSSライブラリです。サイトモックで案内の変化を試し、APIキーなしでローカルから導入できます。"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" href="data:," />
+    <title>Imicue — サイト内の閲覧から、次に案内する情報を選ぶ。</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">本文へ移動</a>
+    <svg
+      class="icon-sprite"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="i-book" viewBox="0 0 24 24">
+          <path
+            d="M12 5v15M12 5C9 3 5 3 2 4v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Z"
+          />
+        </symbol>
+        <symbol id="i-search" viewBox="0 0 24 24">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m16 16 5 5" />
+        </symbol>
+        <symbol id="i-page" viewBox="0 0 24 24">
+          <path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8" />
+        </symbol>
+        <symbol id="i-window" viewBox="0 0 24 24">
+          <rect x="2" y="3" width="20" height="18" rx="2" />
+          <path d="M2 8h20M6 5.5h.1M9 5.5h.1M6 12h5v5H6M14 12h4M14 16h4" />
+        </symbol>
+        <symbol id="i-eye" viewBox="0 0 24 24">
+          <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" />
+          <circle cx="12" cy="12" r="3" />
+        </symbol>
+        <symbol id="i-spark" viewBox="0 0 24 24">
+          <path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7Z" />
+        </symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="m12 2 9 4v6c0 5-9 10-9 10S3 17 3 12V6l9-4Z" />
+          <path d="m8 12 3 3 5-6" />
+        </symbol>
+        <symbol id="i-sliders" viewBox="0 0 24 24">
+          <path d="M3 6h18M3 18h18" />
+          <circle cx="8" cy="6" r="3" />
+          <circle cx="16" cy="18" r="3" />
+        </symbol>
+      </defs>
+    </svg>
+    <header class="site-header container">
+      <a class="wordmark" href="#" aria-label="Imicue トップ">imicue</a>
+      <nav aria-label="メインナビゲーション">
+        <a href="#try">デモ</a><a href="#how">仕組み</a><a href="#start">導入</a
+        ><a href="https://github.com/blanket11/imicue"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero-band" aria-labelledby="hero-title">
+        <div class="hero container">
+          <div class="hero-copy">
+            <p class="eyebrow">OSSの行動ベースガイドライブラリ</p>
+            <h1 id="hero-title">
+              サイト内の閲覧から、<br /><span>次に案内する情報を選ぶ。</span>
+            </h1>
+            <p class="hero-description">
+              Imicue（イミキュー）は、閲覧や操作の記録をもとに、登録した候補から案内先を選ぶOSSライブラリです。
+            </p>
+            <p class="hero-about">
+              ガイドや資料へのリンクを、サイトに合わせた見せ方で組み込めます。
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#try"
+                >デモを見る <span aria-hidden="true">→</span></a
+              ><a class="button" href="#start">導入手順を見る</a>
+            </div>
+            <div class="hero-meta">
+              <a href="https://github.com/blanket11/imicue">GitHubで見る ↗</a
+              ><span>Apache-2.0</span><span>個人・商用利用可</span>
+            </div>
           </div>
-        </fieldset>
-        <a class="result-jump" href="#decision-title">選んだ閲覧例の案内結果を見る ↓</a>
-        <div class="evidence-flow" aria-label="閲覧記録と案内の関係">
-          <section class="evidence-panel" aria-labelledby="observations-title">
-            <h3 id="observations-title">閲覧記録</h3>
-            <p class="panel-help">登録した要素の表示回数と時間</p>
-            <div id="observations"><p>選んだ閲覧例の記録を表示します。</p></div>
-          </section>
-          <section class="evidence-panel" aria-labelledby="mapping-title">
-            <h3 id="mapping-title">辞書に登録した関連</h3>
-            <p class="panel-help">どの説明と、どの案内を結ぶか</p>
-            <div id="mapping"><p>要素の説明と、関連する案内先を表示します。</p></div>
-          </section>
-          <section class="evidence-panel decision-panel" aria-labelledby="decision-title">
-            <h3 id="decision-title">表示する案内</h3>
-            <p class="panel-help">2件の候補をルールで比較</p>
-            <div id="result" role="status" aria-live="polite" aria-atomic="true"><p class="result-label">デモを準備しています</p><h4>閲覧例から案内を選びます</h4><p>JavaScriptを有効にすると判定結果を表示します。</p></div>
-          </section>
+          <div
+            class="hero-visual"
+            role="img"
+            aria-label="読書ノートの検索ページに、読書メモを検索するガイドが表示される組み込み例"
+          >
+            <div class="browser-frame hero-browser" aria-hidden="true">
+              <div class="browser-bar"><i></i><i></i><i></i><span></span></div>
+              <div class="mock-header">
+                <strong
+                  ><svg class="icon"><use href="#i-book" /></svg
+                  >読書ノート</strong
+                ><span>本を探す　　読書記録</span>
+              </div>
+              <div class="hero-mock-content">
+                <div>
+                  <p class="mock-kicker">本と、読んだ記憶を。</p>
+                  <h2>もう一度読みたい<br />一節を見つける。</h2>
+                  <p>題名やメモから、<br />あの本を探してみましょう。</p>
+                  <span class="mock-search"
+                    ><svg class="icon"><use href="#i-search" /></svg
+                    >本の題名・メモで探す</span
+                  >
+                </div>
+                <div class="book-stack">
+                  <span class="book book-one">海辺の<br />灯台</span
+                  ><span class="book book-two">森の<br />図書館</span
+                  ><span class="book book-three">旅の余白</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-advice" aria-hidden="true">
+              <p>このページを見た方におすすめ</p>
+              <div>
+                <span class="icon-tile"
+                  ><svg class="icon"><use href="#i-page" /></svg></span
+                ><strong
+                  >読書メモを検索するガイド<small
+                    >読み返したい記録を、見つける。</small
+                  ></strong
+                ><span>→</span>
+              </div>
+            </div>
+            <p class="visual-caption">Imicueを組み込んだときの表示例</p>
+          </div>
         </div>
-        <div class="demo-tools">
-          <details id="reason" hidden><summary>比較スコアを見る <span aria-hidden="true">↓</span></summary><div id="reason-content"></div></details>
-          <button class="button reset" id="reset-demo" type="button" disabled>最初の閲覧例に戻す</button>
+      </section>
+
+      <section class="demo-band section" id="try" aria-labelledby="try-title">
+        <div class="container">
+          <p class="section-label">DEMO</p>
+          <h2 class="section-title" id="try-title">
+            見ている内容に合わせて、次の案内を。
+          </h2>
+          <p class="section-lead">
+            モック内のページを切り替えて、案内の変化を試してください。
+          </p>
+          <noscript
+            ><p class="notice">
+              デモを試すにはJavaScriptを有効にしてください。仕組みと導入手順は、このまま読めます。
+            </p></noscript
+          >
+          <div class="demo-layout">
+            <div class="browser-frame demo-browser">
+              <div class="browser-bar" aria-hidden="true">
+                <i></i><i></i><i></i><span></span>
+              </div>
+              <div class="mock-header">
+                <strong
+                  ><svg class="icon" aria-hidden="true">
+                    <use href="#i-book" /></svg
+                  >読書ノート</strong
+                ><span>架空の読書記録アプリ</span>
+              </div>
+              <div class="mock-layout">
+                <fieldset id="scenario-options" disabled>
+                  <legend class="sr-only">閲覧例を切り替える</legend>
+                  <button
+                    type="button"
+                    data-scenario="features"
+                    aria-pressed="true"
+                  >
+                    <svg class="icon" aria-hidden="true">
+                      <use href="#i-search" /></svg
+                    >本を探す
+                  </button>
+                  <button
+                    type="button"
+                    data-scenario="cases"
+                    aria-pressed="false"
+                  >
+                    <svg class="icon" aria-hidden="true">
+                      <use href="#i-book" /></svg
+                    >読書記録
+                  </button>
+                  <span class="nav-caption">ほかの閲覧例</span>
+                  <button
+                    type="button"
+                    data-scenario="both"
+                    aria-pressed="false"
+                  >
+                    両方を見た場合
+                  </button>
+                  <button
+                    type="button"
+                    data-scenario="empty"
+                    aria-pressed="false"
+                  >
+                    記録がない場合
+                  </button>
+                </fieldset>
+                <div class="mock-main">
+                  <div id="mock-page">
+                    <p class="mock-kicker">検索機能</p>
+                    <h3>本を探す</h3>
+                    <p>題名やメモから、読み返したい記録を探せます。</p>
+                  </div>
+                  <div
+                    id="result"
+                    class="advice-card"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                  >
+                    <p class="result-label">デモを準備しています</p>
+                    <h4>閲覧例から案内を選びます</h4>
+                    <p>JavaScriptを有効にすると判定結果を表示します。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="demo-explanation">
+              <ol class="demo-steps" aria-label="記録から案内までの仕組み">
+                <li>
+                  <span class="step-number">01</span>
+                  <div>
+                    <h3>
+                      <svg class="icon" aria-hidden="true">
+                        <use href="#i-eye" /></svg
+                      >閲覧を記録
+                    </h3>
+                    <p>登録した要素の表示回数や時間、操作を記録します。</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="step-number">02</span>
+                  <div>
+                    <h3>
+                      <svg class="icon" aria-hidden="true">
+                        <use href="#i-page" /></svg
+                      >辞書で関連づけ
+                    </h3>
+                    <p>
+                      見た内容と案内候補を、サイト側が用意した辞書で結びます。
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <span class="step-number">03</span>
+                  <div>
+                    <h3>
+                      <svg class="icon" aria-hidden="true">
+                        <use href="#i-spark" /></svg
+                      >次の案内を選ぶ
+                    </h3>
+                    <p>
+                      候補を比較し、表示する案内のID、または見送りを返します。
+                    </p>
+                  </div>
+                </li>
+              </ol>
+              <p class="demo-note">
+                用意した閲覧記録を使うデモです。このページの閲覧履歴は収集・送信しません。
+              </p>
+            </div>
+          </div>
+          <div class="demo-tools">
+            <details id="reason" hidden>
+              <summary>
+                判定の理由を見る <span aria-hidden="true">↓</span>
+              </summary>
+              <div class="evidence-flow">
+                <section>
+                  <h3>閲覧記録</h3>
+                  <div id="observations"></div>
+                </section>
+                <section>
+                  <h3>辞書に登録した関連</h3>
+                  <div id="mapping"></div>
+                </section>
+                <section>
+                  <h3>Rulesの比較スコア</h3>
+                  <div id="reason-content"></div>
+                </section>
+              </div>
+            </details>
+            <button class="text-button" id="reset-demo" type="button" disabled>
+              最初の閲覧例に戻す
+            </button>
+          </div>
+          <dialog id="guide-dialog" aria-labelledby="guide-title">
+            <div class="dialog-bar">
+              <span>ガイドの表示例</span
+              ><button type="button" id="close-guide">
+                閉じる <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <h2 id="guide-title"></h2>
+            <p id="guide-description"></p>
+            <ol id="guide-steps"></ol>
+            <p class="muted">
+              架空のガイドです。実際の案内先と表示UIは、利用サイトで用意します。
+            </p>
+          </dialog>
         </div>
-      </div>
-      <p class="demo-note">案内先は事前に登録します。実際のサイトでは、条件を満たした表示や操作を記録し、案内するIDまたは見送りを返します。表示されたことだけで、読了や購入意思を断定しません。</p>
-    </section>
-    <section class="mechanism container" id="how" aria-labelledby="how-title">
-      <h2 class="section-title" id="how-title">記録する対象と、案内先はサイト側で決める。</h2>
-      <p class="section-lead">ページ、資料、事例、相談窓口。登録した最大100件の候補から、次の案内を選べます。</p>
-      <div class="integration">
-        <div>
-          <h3>HTMLにIDを付け、辞書で内容を説明する</h3>
-          <p>計測したい要素に登録済みIDを付けます。辞書には要素の説明、関連する話題、案内候補を定義します。</p>
-          <pre><code>&lt;section data-imicue-signal="search-overview"&gt;
+      </section>
+
+      <section class="section container" id="how" aria-labelledby="how-title">
+        <p class="section-label">HOW IT WORKS</p>
+        <h2 class="section-title" id="how-title">
+          記録する対象と、案内先はサイト側で決める。
+        </h2>
+        <p class="section-lead">
+          HTMLと辞書を設定し、判定結果をいつものUIに使えます。
+        </p>
+        <div class="three-columns integration">
+          <article>
+            <div class="card-title">
+              <span class="step-number">01</span>
+              <h3>HTMLにIDを付ける</h3>
+            </div>
+            <p>計測したい要素に、辞書へ登録したIDを付けます。</p>
+            <pre><code>&lt;section
+  data-imicue-signal="search-overview"&gt;
   読書メモの検索方法
 &lt;/section&gt;</code></pre>
+          </article>
+          <article>
+            <div class="card-title">
+              <span class="step-number">02</span>
+              <h3>辞書で説明する</h3>
+            </div>
+            <p>何を見たか、どの案内と関係するかを定義します。</p>
+            <pre><code>// 案内候補の設定の一部
+relatedSignalIds: [
+  'search-overview'
+]</code></pre>
+          </article>
+          <article>
+            <div class="card-title">
+              <span class="step-number">03</span>
+              <h3>判定結果をUIに使う</h3>
+            </div>
+            <p>候補のIDか見送りを受け取り、カードやリンクを表示します。</p>
+            <pre><code>{
+  type: 'recommend',
+  contentId: 'feature-guide', …
+}</code></pre>
+          </article>
         </div>
-        <div>
-          <h3>判定結果を、サイトのUIに使う</h3>
-          <p>返されるのは候補のIDまたは見送りです。カードやインラインリンクなど、表示する場所と形を選べます。</p>
-          <pre><code>{ type: 'recommend', contentId: 'search-guide', … }
-// または
-{ type: 'abstain', reason: 'ambiguous', … }</code></pre>
+        <div class="capabilities">
+          <p>
+            <strong>Rulesで始める</strong
+            >辞書の関連と回数・時間を使ってブラウザ内で判定。APIキーは不要です。
+          </p>
+          <p>
+            <strong>Jevで意味を比較する</strong
+            >説明文をサーバー経由で評価する方法も選べます。APIキーと利用料が必要です。
+          </p>
+          <p>
+            <strong>ページをまたいで使う</strong
+            >session保存を選ぶと、同じタブの直近30分の記録を引き継げます。
+          </p>
         </div>
-      </div>
-      <dl class="capabilities">
-        <div><dt>APIキーなしで始める</dt><dd>ルール判定（Rules）は、辞書に登録した関連と回数・時間を使い、ブラウザ内で動作します。</dd></div>
-        <div><dt>説明の意味からも比較する</dt><dd>AIモデルのJevを使う場合は、説明文を含む情報をサーバー経由で評価します。APIキーと利用料が必要です。</dd></div>
-        <div><dt>ページ移動後の記録も使う</dt><dd>標準はメモリ内で保持。同意後にsession保存を有効にすると、同じタブでページを移動しても記録を引き継げます。</dd></div>
-      </dl>
-    </section>
-    <section class="setup container" id="start" aria-labelledby="start-title">
-      <div class="setup-heading"><h2 id="start-title">ローカルで、<br>実際の計測を試す。</h2><p>ソースコードを取得すると、閲覧や操作を記録するデモが動きます。Rulesの利用にAPIキーは不要です。</p><p class="prerequisites">Node.js 24.14.0 / npm 11.9.0<br>開発版をソースから利用できます。npmパッケージは未公開です。</p></div>
-      <div class="setup-code">
-        <div class="terminal"><div class="terminal-bar"><span>ターミナル</span><button type="button" id="copy-command" disabled>コピー</button></div><pre><code id="install-command">git clone https://github.com/blanket11/imicue.git
+        <a
+          class="detail-link"
+          href="https://github.com/blanket11/imicue/blob/main/docs/guides/integration.md"
+          >辞書とSDKの組み込み手順 ↗</a
+        >
+      </section>
+
+      <section class="use-cases container" aria-labelledby="use-title">
+        <p class="section-label">USE CASES</p>
+        <h2 class="section-title" id="use-title">こんな場面で使える。</h2>
+        <div class="three-columns use-grid">
+          <article>
+            <span class="icon-tile"
+              ><svg class="icon" aria-hidden="true">
+                <use href="#i-window" /></svg
+            ></span>
+            <div>
+              <h3>プロダクトサイト</h3>
+              <p>見ている機能に合わせて、詳しい使い方や関連する資料へ案内。</p>
+            </div>
+          </article>
+          <article>
+            <span class="icon-tile"
+              ><svg class="icon" aria-hidden="true"><use href="#i-page" /></svg
+            ></span>
+            <div>
+              <h3>記事・資料への案内</h3>
+              <p>読んだテーマと関係する記事や資料を、次の候補として表示。</p>
+            </div>
+          </article>
+          <article>
+            <span class="icon-tile"
+              ><svg class="icon" aria-hidden="true">
+                <use href="#i-window" /></svg
+            ></span>
+            <div>
+              <h3>Webアプリ内ガイド</h3>
+              <p>使った機能に関連する操作ガイドを、アプリの画面内に表示。</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="setup-band section"
+        id="start"
+        aria-labelledby="start-title"
+      >
+        <div class="setup container">
+          <div>
+            <p class="section-label">QUICK START</p>
+            <h2 class="section-title" id="start-title">ローカルで試す。</h2>
+            <p class="section-lead">
+              APIキーなしで、計測とRules判定を試せます。
+            </p>
+            <p class="prerequisites">
+              Node.js 24.14.0 / npm 11.9.0<br />開発版をソースから利用できます。npmパッケージは未公開です。
+            </p>
+          </div>
+          <div class="setup-code">
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span>ターミナル</span
+                ><button type="button" id="copy-command" disabled>
+                  コピー
+                </button>
+              </div>
+              <pre><code id="install-command">git clone https://github.com/blanket11/imicue.git
 cd imicue
 npm ci
-npm run dev</code></pre></div>
-        <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
-        <p class="local-step">起動後、<code>http://127.0.0.1:5183/</code>を開き、計測を許可して「計測を開始」を押してください。</p>
-        <a href="https://github.com/blanket11/imicue#ローカルデモを動かす">詳しい導入手順 <span aria-hidden="true">↗</span></a>
-      </div>
-    </section>
-    <section class="boundaries container" aria-labelledby="boundaries-title">
-      <h2 class="section-title" id="boundaries-title">導入前に確認すること</h2>
-      <dl>
-        <div><dt>記録は同意後に開始</dt><dd>初期状態では計測・保存・判定通信を始めません。DOM本文やフォームの入力文を収集する機能はありません。</dd></div>
-        <div><dt>根拠が足りなければ見送る</dt><dd>候補を絞れない場合も案内を出しません。見送りや障害時も、サイト本来の機能を使えるように組み込みます。</dd></div>
-        <div><dt>開発版として検証して使う</dt><dd>APIや初期値は変更される場合があります。利用サイトでの推薦品質や効果は未検証です。<a href="https://github.com/blanket11/imicue/tree/main/docs#検証結果と制約">検証範囲と制約</a>を確認してください。</dd></div>
-      </dl>
-    </section>
-    <section class="boundaries container" id="community" aria-labelledby="community-title">
-      <h2 class="section-title" id="community-title">自由に使って、自分のサイトに合わせて育ててください。</h2>
-      <p class="section-lead">Imicueは<a href="https://github.com/blanket11/imicue/blob/main/LICENSE">Apache-2.0ライセンス</a>のOSSです。ライセンスの条件に従って、個人・商用を問わず利用・改変・再配布できます。</p>
-      <dl>
-        <div><dt>自分のサイトに合わせて使う</dt><dd>ソースをコピーしたり、GitHubでFork（自分のリポジトリへのコピー）したりして、自由に改変できます。</dd></div>
-        <div><dt>使うだけでも歓迎</dt><dd>開発への参加、改変したソースの公開、公式への変更提案は、利用の条件ではありません。</dd></div>
-        <div><dt>改善の提案も歓迎</dt><dd>不具合の報告や使い方の共有は<a href="https://github.com/blanket11/imicue/issues">GitHub Issues</a>へ。文書やコードの変更は<a href="https://github.com/blanket11/imicue/blob/main/CONTRIBUTING.md">貢献ガイド</a>に沿ってPull Request（PR）で提案できます。公式本体への変更は、メンテナーが内容を確認して取り込みを判断します。</dd></div>
-      </dl>
-      <p class="muted">再配布時には、ライセンスの同梱、必要な著作権表示などの保持、変更したファイルへの変更表示などの条件があります。詳しくは<a href="https://github.com/blanket11/imicue/blob/main/LICENSE">LICENSE</a>を確認してください。この説明はライセンス本文を置き換えるものではありません。</p>
-    </section>
-  </main>
-  <footer class="site-footer container"><a class="wordmark" href="#">imicue</a><nav aria-label="関連資料"><a href="https://github.com/blanket11/imicue/tree/main/docs">ドキュメント <span aria-hidden="true">↗</span></a><a href="https://github.com/blanket11/imicue/blob/main/CONTRIBUTING.md">開発に参加する <span aria-hidden="true">↗</span></a><a href="https://github.com/blanket11/imicue/blob/main/LICENSE">Apache-2.0 <span aria-hidden="true">↗</span></a></nav></footer>
-</body>
+npm run dev</code></pre>
+            </div>
+            <p
+              id="copy-status"
+              class="copy-status"
+              role="status"
+              aria-live="polite"
+            ></p>
+            <p class="local-step">
+              起動後、<code>http://127.0.0.1:5183/collection/</code>で自動開始を試せます。手動開始・無効化にも切り替えられます。
+            </p>
+            <a href="https://github.com/blanket11/imicue#ローカルデモを動かす"
+              >詳しい導入手順 ↗</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="section container" aria-labelledby="boundaries-title">
+        <p class="section-label">COLLECTION &amp; CONTROL</p>
+        <h2 class="section-title" id="boundaries-title">
+          サイトの方針に合わせて使う。
+        </h2>
+        <div class="three-columns safety-grid">
+          <article>
+            <span class="icon-tile"
+              ><svg class="icon" aria-hidden="true">
+                <use href="#i-sliders" /></svg
+            ></span>
+            <h3>計測開始を選べる</h3>
+            <p>
+              ページ表示時の自動開始と、既存の同意管理に連携した手動開始に対応。計測の無効化も選べます。
+            </p>
+          </article>
+          <article>
+            <span class="icon-tile"
+              ><svg class="icon" aria-hidden="true"><use href="#i-page" /></svg
+            ></span>
+            <h3>必要な情報だけ記録</h3>
+            <p>
+              登録したIDと数値を扱います。DOM本文やフォームの入力文を自動収集する機能はありません。
+            </p>
+          </article>
+          <article>
+            <span class="icon-tile"
+              ><svg class="icon" aria-hidden="true">
+                <use href="#i-shield" /></svg
+            ></span>
+            <h3>根拠が足りなければ見送る</h3>
+            <p>
+              候補を絞れないときは案内を表示しません。見送り時も、サイト本来の機能を使えるように組み込みます。
+            </p>
+          </article>
+        </div>
+        <p class="release-note">
+          開発版です。APIや初期値は変更される場合があります。導入前に<a
+            href="https://github.com/blanket11/imicue/tree/main/docs#検証結果と制約"
+            >検証範囲と制約</a
+          >を確認してください。同意の要否や表示・送信の方針は、利用サイトで判断します。
+        </p>
+      </section>
+
+      <section
+        class="community container"
+        id="community"
+        aria-labelledby="community-title"
+      >
+        <a class="wordmark" href="#">imicue</a>
+        <div>
+          <h2 id="community-title">自分のサイトに合わせて、自由に組み込む。</h2>
+          <p>
+            Apache-2.0ライセンスのOSSです。条件に従って、個人・商用を問わず利用・改変・再配布できます。
+          </p>
+          <p>
+            使うだけでも、改善の提案でも。開発への参加や、改変したソースの公開は利用の条件ではありません。
+          </p>
+          <details>
+            <summary>
+              利用と貢献について <span aria-hidden="true">↓</span>
+            </summary>
+            <p>
+              ソースのコピーやForkで自由に改変できます。再配布時は、ライセンスの同梱、必要な著作権表示の保持、変更したファイルへの変更表示などの条件があります。詳しくはLICENSEを確認してください。
+            </p>
+            <p>
+              文書やコードの変更は<a
+                href="https://github.com/blanket11/imicue/blob/main/CONTRIBUTING.md"
+                >貢献ガイド</a
+              >に沿ってPRで提案できます。公式本体への変更は、メンテナーが確認して取り込みを判断します。
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer container">
+      <span>Imicue · Open source project</span>
+      <nav aria-label="関連資料">
+        <a href="https://github.com/blanket11/imicue">GitHub ↗</a
+        ><a href="https://github.com/blanket11/imicue/issues">Issues ↗</a
+        ><a href="https://github.com/blanket11/imicue/tree/main/docs"
+          >ドキュメント ↗</a
+        ><a href="https://github.com/blanket11/imicue/blob/main/LICENSE"
+          >LICENSE ↗</a
+        >
+      </nav>
+    </footer>
+  </body>
 </html>

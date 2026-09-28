@@ -16,8 +16,9 @@ export { createRemoteEngine } from './remote.js';
 export type { RemoteEngine, RemoteOptions, RemoteDiagnostic } from './remote.js';
 
 export type Consent = 'unknown' | 'granted' | 'denied';
+export type CollectionMode = 'auto' | 'manual' | 'disabled';
 export type DiagnosticCode =
-  | 'consent_required' | 'destroyed' | 'not_started' | 'invalid_signal'
+  | 'consent_required' | 'collection_disabled' | 'destroyed' | 'not_started' | 'invalid_signal'
   | 'invalid_content' | 'invalid_page' | 'invalid_source' | 'nested_signal'
   | 'element_capacity' | 'record_capacity' | 'storage_unavailable'
   | 'storage_invalid' | 'storage_capacity' | 'callback_error'
@@ -31,6 +32,8 @@ export interface TrackerOptions {
   readonly pageId: string;
   readonly engine?: DecisionEngine | RemoteEngine;
   readonly storage?: 'memory' | 'session';
+  /** Explicit modes separate collection from consent. Omission preserves the legacy consent gate. */
+  readonly collection?: { readonly mode: CollectionMode };
   readonly root?: Document | Element;
   readonly allowedOrigins?: readonly string[];
   /** Monotonic observation clock and epoch clock for storage/availability only. */
@@ -39,6 +42,8 @@ export interface TrackerOptions {
 
 export interface TrackerState {
   readonly consent: Consent;
+  readonly collectionMode: CollectionMode;
+  readonly consentRequired: boolean;
   readonly started: boolean;
   readonly destroyed: boolean;
   readonly observedElements: number;
@@ -46,6 +51,7 @@ export interface TrackerState {
 }
 
 export interface Tracker {
+  /** @deprecated Prefer explicit collection modes and start()/stop()+reset() in site policy handlers. */
   setConsent(consent: 'granted' | 'denied'): void;
   start(): void;
   stop(): void;
@@ -103,6 +109,11 @@ export function createTracker(options: TrackerOptions): Tracker {
     onWarning: (code) => initialDiagnostics.push(code),
   });
   if (!own(definition.pages, options.pageId)) throw new Error('invalid_page');
+  const consentRequired = options.collection === undefined;
+  const collectionMode = consentRequired ? 'manual' : options.collection?.mode;
+  if (collectionMode !== 'auto' && collectionMode !== 'manual' && collectionMode !== 'disabled') {
+    throw new Error('invalid_collection_mode');
+  }
   const now = options.clock?.now ?? (() => performance.now());
   const wallNow = options.clock?.wallNow ?? (() => Date.now());
   const engine = options.engine ?? createRulesEngine();
@@ -149,8 +160,10 @@ export function createTracker(options: TrackerOptions): Tracker {
   let diagnosing = false;
   let recordTruncated = false;
   let elementCapacityExceeded = false;
+  let initializing = true;
 
   function diagnostic(code: DiagnosticCode): void {
+    if (initializing) { initialDiagnostics.push(code); return; }
     if (diagnosing) return;
     diagnosing = true;
     for (const callback of diagnostics) {
@@ -166,9 +179,14 @@ export function createTracker(options: TrackerOptions): Tracker {
 
   function collecting(): boolean {
     if (!available()) return false;
-    if (consent !== 'granted') { diagnostic('consent_required'); return false; }
+    if (collectionMode === 'disabled') { diagnostic('collection_disabled'); return false; }
+    if (!collectionAllowed()) { diagnostic('consent_required'); return false; }
     if (!started) { diagnostic('not_started'); return false; }
     return true;
+  }
+
+  function collectionAllowed(): boolean {
+    return collectionMode !== 'disabled' && consent !== 'denied' && (!consentRequired || consent === 'granted');
   }
 
   function getSnapshot(): Snapshot {
@@ -232,7 +250,7 @@ export function createTracker(options: TrackerOptions): Tracker {
   }
 
   function persist(): void {
-    if (storageDisabled || consent !== 'granted' || !started) return;
+    if (storageDisabled || !collectionAllowed() || !started) return;
     const storage = session();
     if (!storage) return;
     const wall = wallNow();
@@ -277,7 +295,7 @@ export function createTracker(options: TrackerOptions): Tracker {
   }
 
   function scheduleEvaluation(): void {
-    if (!pending || !started || consent !== 'granted' || !isVisible() || inFlight || evaluationTimer !== undefined) return;
+    if (!pending || !started || !collectionAllowed() || !isVisible() || inFlight || evaluationTimer !== undefined) return;
     const delay = Math.max(0, lastEvaluation + 15_000 - now());
     evaluationTimer = setTimeout(() => {
       evaluationTimer = undefined;
@@ -286,7 +304,7 @@ export function createTracker(options: TrackerOptions): Tracker {
   }
 
   function runEvaluation(): Promise<Decision | undefined> {
-    if (!started || consent !== 'granted' || destroyed || !isVisible()) return Promise.resolve(undefined);
+    if (!started || !collectionAllowed() || destroyed || !isVisible()) return Promise.resolve(undefined);
     pending = true;
     if (inFlight || now() < lastEvaluation + 15_000) {
       scheduleEvaluation();
@@ -306,7 +324,7 @@ export function createTracker(options: TrackerOptions): Tracker {
       : evaluateSnapshot(definition, snapshot, engine as DecisionEngine, { now: wallNow(), signal: controller.signal });
     const work = evaluation
       .then((decision): Decision | undefined => {
-        if (destroyed || !started || consent !== 'granted' || controller.signal.aborted
+        if (destroyed || !started || !collectionAllowed() || controller.signal.aborted
           || generation !== currentGeneration || revision !== snapshot.revision
           || pageViewId !== snapshot.pageViewId || now() - requestedAt > decision.maxAgeMs) {
           diagnostic('stale_decision');
@@ -315,7 +333,7 @@ export function createTracker(options: TrackerOptions): Tracker {
         accepted.set(decision, { generation: currentGeneration, at: requestedAt });
         for (const callback of decisions) {
           // A previous callback can withdraw consent or change the page.
-          if (generation !== currentGeneration || revision !== snapshot.revision || !started || consent !== 'granted') break;
+          if (generation !== currentGeneration || revision !== snapshot.revision || !started || !collectionAllowed()) break;
           try { callback(decision); } catch { diagnostic('callback_error'); }
         }
         return decision;
@@ -354,7 +372,7 @@ export function createTracker(options: TrackerOptions): Tracker {
 
   function reconcile(at: number): boolean {
     const active = new Map<string, Target>();
-    if (started && consent === 'granted' && isVisible() && at < idleUntil) {
+    if (started && collectionAllowed() && isVisible() && at < idleUntil) {
       for (const target of targets.values()) if (target.exposed) active.set(`${target.signalId}:${target.source}`, target);
     }
     let dirty = false;
@@ -585,7 +603,7 @@ export function createTracker(options: TrackerOptions): Tracker {
   }
 
   function click(event: Event): void {
-    if (!started || consent !== 'granted') return;
+    if (!started || !collectionAllowed()) return;
     let element = event.target as Element | null;
     if (!element || element.nodeType !== 1 || element.closest('[data-imicue-ignore]')) return;
     while (element && (element === root || root?.contains(element))) {
@@ -655,7 +673,8 @@ export function createTracker(options: TrackerOptions): Tracker {
 
   function start(): void {
     if (!available() || started) return;
-    if (consent !== 'granted') { diagnostic('consent_required'); return; }
+    if (collectionMode === 'disabled') { diagnostic('collection_disabled'); return; }
+    if (!collectionAllowed()) { diagnostic('consent_required'); return; }
     root ??= typeof document === 'undefined' ? undefined : document;
     if (!root) { diagnostic('observer_unavailable'); return; }
     doc = root.nodeType === 9 ? root as Document : root.ownerDocument ?? undefined;
@@ -778,14 +797,14 @@ export function createTracker(options: TrackerOptions): Tracker {
     getSnapshot,
     getState: () => {
       available();
-      return Object.freeze({ consent, started, destroyed, observedElements: targets.size, revision });
+      return Object.freeze({ consent, collectionMode, consentRequired, started, destroyed, observedElements: targets.size, revision });
     },
     evaluate() {
       if (!collecting()) return Promise.resolve(undefined);
       return runEvaluation();
     },
     canDisplay(decision) {
-      if (destroyed || !started || consent !== 'granted' || !isVisible()) return false;
+      if (destroyed || !started || !collectionAllowed() || !isVisible()) return false;
       const receipt = accepted.get(decision);
       if (!receipt || receipt.generation !== generation || decision.type !== 'recommend') return false;
       const content = definition.contents[decision.contentId];
@@ -810,5 +829,7 @@ export function createTracker(options: TrackerOptions): Tracker {
       return () => { diagnostics.delete(callback); };
     },
   };
+  if (collectionMode === 'auto') start();
+  initializing = false;
   return tracker;
 }

@@ -10,7 +10,9 @@ Imicueは、登録した閲覧・操作の記録と辞書を使い、次に案�
 
 | 目的 | 利用ガイド |
 | --- | --- |
+| 製品サイトを普通に閲覧し、自動の案内とデモフォームを試す | [製品サイトデモ](guides/product-demo.md) |
 | 計測とRules判定、100件の候補、ページ横断を試す | [ローカルデモで動きを確かめる](guides/local-demos.md) |
+| 自動開始・手動開始・無効化を選ぶ | [計測開始のタイミング](guides/collection.md) |
 | 自分のページに観測する内容と案内先を登録する | [辞書と計測をページに組み込む](guides/integration.md) |
 | モックで通信を確認し、Jevへ接続する | [判定サーバーとJevに接続する](guides/server-and-jev.md) |
 | ESM、scriptタグ、Next.jsの例を使う | [配布ファイルとNext.js](guides/distribution.md) |
@@ -25,7 +27,7 @@ Jevの実APIを使う手順ではAPI利用料が発生します。Rules、モッ
 | --- | --- |
 | [目的と構成](01-product-and-architecture.md) | Imicueの役割、Core・Browser・Serverの分担 |
 | [データ契約](02-data-contracts.md) | 辞書、観測、案内先、判定結果の型とバージョン |
-| [ブラウザ計測](03-browser-tracking.md) | data属性、表示条件、同意、保存、ページ移動、応答の鮮度 |
+| [ブラウザ計測](03-browser-tracking.md) | data属性、表示条件、開始・停止、保存、ページ移動、応答の鮮度 |
 | [判定方式](04-decision-engines.md) | Rules、Jev、候補の除外、見送り条件 |
 | [セキュリティとプライバシー](05-security-and-privacy.md) | 収集範囲、キーの隔離、HTTP契約、容量と利用量の制限 |
 | [出典と設計判断](08-references-and-decisions.md) | 一次資料、設計上の選択、未検証の条件 |
@@ -44,7 +46,7 @@ Jevの実APIを使う手順ではAPI利用料が発生します。Rules、モッ
 利用サイトがカードやリンクとして表示
 ```
 
-初期化だけでは観測・保存・判定通信を始めません。任意の入力文やDOM本文を集めず、許可後に登録したIDと数値を扱います。表示されたことを読了、料金を見たことを購入意思として断定しません。
+`auto / manual / disabled` で計測の開始方式を選べます。任意の入力文やDOM本文を集めず、計測中は登録したIDと数値を扱います。表示されたことを読了、料金を見たことを購入意思として断定しません。
 
 ## 検証結果と制約
 

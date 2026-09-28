@@ -13,19 +13,19 @@ test('browsing examples update records, meaning and Rules results without collec
   });
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('サイト内の閲覧から');
-  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeChecked();
+  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
   for (const [label, topic, expected] of [
-    ['本の検索機能を見る', '本の検索機能', '読書メモを検索するガイド'],
-    ['読書記録の使い方を見る', '読みかけ', '読みかけの本を整理する方法'],
+    ['本を探す', '本の検索機能', '読書メモを検索するガイド'],
+    ['読書記録', '読みかけ', '読みかけの本を整理する方法'],
   ] as const) {
-    await page.getByLabel(label, { exact: true }).check();
+    await page.getByRole('button', { name: label, exact: true }).click();
     await expect(page.locator('#observations')).toContainText(topic);
     await expect(page.locator('#observations')).toContainText('30秒');
     await expect(page.locator('#mapping')).toContainText(expected);
     await expect(page.locator('#result h4')).toHaveText(expected);
   }
-  await page.getByLabel('両方を同じくらい見る', { exact: true }).check();
+  await page.getByRole('button', { name: '両方を見た場合', exact: true }).click();
   await expect(page.locator('#observations')).toContainText('検索');
   await expect(page.locator('#observations')).toContainText('読みかけ');
   await expect(page.locator('#mapping')).toContainText('読書メモを検索するガイド');
@@ -34,12 +34,12 @@ test('browsing examples update records, meaning and Rules results without collec
   await expect(page.locator('#result')).toContainText('同点');
   await page.locator('#reason summary').click();
   await expect(page.locator('#reason-content')).toContainText('関心や購入の確率ではありません');
-  await page.getByLabel('閲覧記録がない', { exact: true }).check();
+  await page.getByRole('button', { name: '記録がない場合', exact: true }).click();
   await expect(page.locator('#result')).toContainText('見送ります');
   await expect(page.locator('#result')).toContainText('記録がない');
   await expect(page.locator('#mapping')).not.toContainText('読みかけの本を整理する方法');
   await page.getByRole('button', { name: '最初の閲覧例に戻す' }).click();
-  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeChecked();
+  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
   await expect(page.locator('#observations')).toContainText('本の検索機能');
   await expect(page.locator('#observations')).not.toContainText('読みかけ');
@@ -52,16 +52,14 @@ test('browsing examples update records, meaning and Rules results without collec
 
 test('rapid selection changes keep the final records, meaning and result together', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toBeEnabled();
   // Dispatch within one browser turn so earlier asynchronous evaluations can finish after a newer selection.
   await page.locator('#scenario-options').evaluate((options) => {
     for (const value of ['cases', 'empty', 'features', 'both', 'cases']) {
-      const input = options.querySelector<HTMLInputElement>(`input[value="${value}"]`)!;
-      input.checked = true;
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+      options.querySelector<HTMLButtonElement>(`button[data-scenario="${value}"]`)!.click();
     }
   });
-  await expect(page.getByLabel('読書記録の使い方を見る', { exact: true })).toBeChecked();
+  await expect(page.getByRole('button', { name: '読書記録', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#observations')).toContainText('読みかけ');
   await expect(page.locator('#observations')).not.toContainText('本の検索機能');
   await expect(page.locator('#mapping')).toContainText('読みかけの本を整理する方法');
@@ -74,10 +72,12 @@ test('keyboard controls, copy success and refusal, and narrow layouts', async ({
   // macOS WebKit uses Option+Tab to include links in keyboard navigation.
   await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
   await expect(page.getByRole('link', { name: '本文へ移動' })).toBeFocused();
-  await page.getByLabel('本の検索機能を見る', { exact: true }).focus();
+  await page.getByRole('button', { name: '本を探す', exact: true }).focus();
   await page.keyboard.press('Space');
   await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
-  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
+  await expect(page.getByRole('button', { name: '読書記録', exact: true })).toBeFocused();
+  await page.keyboard.press('Enter');
   await expect(page.locator('#result h4')).toHaveText('読みかけの本を整理する方法');
   await page.evaluate(() => {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value: string) => {
@@ -106,7 +106,7 @@ test('static content and documentation remain usable without JavaScript', async 
   await expect(page.locator('noscript .notice')).toBeVisible();
   await expect(page.locator('noscript .notice')).toContainText('JavaScriptを有効にしてください', { useInnerText: true });
   await expect(page.getByRole('link', { name: '詳しい導入手順' })).toHaveAttribute('href', /^https:\/\/github.com\/blanket11\/imicue/);
-  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toBeDisabled();
   await context.close();
 });
 
@@ -141,7 +141,7 @@ test('missing and private paths return the 404 page with working assets and home
   const response = await page.goto('/missing/nested/page');
   expect(response?.status()).toBe(404);
   await expect(page.getByRole('heading', { name: 'ページが見つかりません' })).toBeVisible();
-  expect(await page.locator('h1').evaluate((element) => getComputedStyle(element).fontFamily)).toContain('Mincho');
+  expect(await page.locator('h1').evaluate((element) => getComputedStyle(element).fontFamily)).toBe(await page.locator('body').evaluate((element) => getComputedStyle(element).fontFamily));
   expect(response?.headers()['content-security-policy']).toContain("connect-src 'none'");
   for (const path of ['/_headers', '/.env.local', '/_worker.js']) {
     expect((await request.get(path)).status()).toBe(404);
@@ -152,5 +152,27 @@ test('missing and private paths return the 404 page with working assets and home
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link', { name: 'トップページへ戻る', exact: true }).click();
   await expect(page).toHaveURL('http://127.0.0.1:4187/');
-  await expect(page.getByLabel('本の検索機能を見る', { exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toBeEnabled();
+});
+
+
+test('the mock guide opens with useful content, closes by keyboard, and text uses one font family', async ({ page }) => {
+  await page.goto('/');
+  const family = await page.locator('body').evaluate((element) => getComputedStyle(element).fontFamily);
+  const families = await page.locator('h1,h2,h3,h4,button').evaluateAll((elements) => elements.map((element) => getComputedStyle(element).fontFamily));
+  expect(families.every((value) => value === family)).toBe(true);
+  expect(family).not.toMatch(/Mincho|(?:^|,)\s*serif/);
+  await page.getByRole('button', { name: 'ガイドの表示例を見る' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.locator('#guide-title')).toHaveText('読書メモを検索するガイド');
+  await expect(page.locator('#guide-steps li')).toHaveCount(3);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(page.getByRole('button', { name: 'ガイドの表示例を見る' })).toBeFocused();
+  await page.getByRole('button', { name: '読書記録', exact: true }).click();
+  await expect(page.locator('#mock-page h3')).toContainText('読みかけ');
+  await page.getByRole('button', { name: 'ガイドの表示例を見る' }).click();
+  await expect(page.locator('#guide-title')).toHaveText('読みかけの本を整理する方法');
+  await page.getByRole('button', { name: '閉じる' }).click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
 });
