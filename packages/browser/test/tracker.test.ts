@@ -445,6 +445,127 @@ describe('B07/B09 — consent and opt-in storage', () => {
   });
 });
 
+describe('collection modes — explicit lifecycle and legacy compatibility', () => {
+  const key = 'imicue:browser-test:test-1';
+
+  it('keeps the consent gate only when collection is omitted', () => {
+    const tracker = setup();
+    tracker.start();
+    expect(tracker.getState()).toMatchObject({ collectionMode: 'manual', consentRequired: true, started: false });
+    tracker.setConsent('granted');
+    expect(tracker.getState().started).toBe(false);
+    tracker.start();
+    expect(tracker.getState().started).toBe(true);
+  });
+
+  it('explicit manual waits for start without reading storage, then records without consent state', async () => {
+    const read = vi.spyOn(Storage.prototype, 'getItem');
+    const write = vi.spyOn(Storage.prototype, 'setItem');
+    const tracker = setup({ collection: { mode: 'manual' }, storage: 'session' });
+    tracker.track('action');
+    expect(await tracker.evaluate()).toBeUndefined();
+    expect(read).not.toHaveBeenCalled(); expect(write).not.toHaveBeenCalled();
+    expect(FakeIntersectionObserver.instances).toHaveLength(0);
+    tracker.start(); tracker.track('action');
+    expect(tracker.getState()).toMatchObject({ consent: 'unknown', consentRequired: false, started: true });
+    expect(observed(tracker, 'action')?.actions).toBe(1);
+    expect(read).toHaveBeenCalledTimes(1); expect(write).toHaveBeenCalled();
+    expect((await tracker.evaluate())?.type).toBe('recommend');
+  });
+
+  it('auto starts once, counts real observations and actions, and can stop and restart', async () => {
+    const tracker = setup({ collection: { mode: 'auto' } });
+    expect(tracker.getState()).toMatchObject({ consent: 'unknown', collectionMode: 'auto', started: true });
+    const observer = io(); tracker.start(); expect(io()).toBe(observer);
+    io().emit(element());
+    await advance(3_000);
+    document.querySelector('button')!.click();
+    tracker.track('action'); tracker.stop();
+    expect(observed(tracker)?.qualifiedViews).toBe(1);
+    expect(observed(tracker)?.clicks).toBe(1);
+    expect(observed(tracker, 'action')?.actions).toBe(1);
+    tracker.track('action'); await advance(20_000);
+    expect(observed(tracker)?.visibleMs).toBe(3_000);
+    tracker.start(); tracker.track('action');
+    expect(observed(tracker, 'action')?.actions).toBe(2);
+  });
+
+  it('disabled does not observe, restore, save, or evaluate, even after legacy consent', async () => {
+    sessionStorage.setItem(key, 'unread'); sessionStorage.setItem('unrelated', 'keep');
+    const read = vi.spyOn(Storage.prototype, 'getItem');
+    const write = vi.spyOn(Storage.prototype, 'setItem');
+    const rules = createRulesEngine(); const evaluate = vi.fn(rules.evaluate);
+    const tracker = setup({ collection: { mode: 'disabled' }, storage: 'session', engine: { ...rules, evaluate } });
+    const codes: string[] = []; tracker.onDiagnostic((event) => codes.push(event.code));
+    tracker.start(); tracker.setConsent('granted'); tracker.start();
+    tracker.track('action'); tracker.recordOutcome('guide', 'shown'); tracker.refresh();
+    tracker.setPage('other'); await tracker.evaluate(); await advance(20_000);
+    expect(tracker.getState().started).toBe(false);
+    expect(tracker.getSnapshot().observations).toEqual([]);
+    expect(tracker.getSnapshot().outcomes).toEqual([]);
+    expect(FakeIntersectionObserver.instances).toHaveLength(0);
+    expect(read).not.toHaveBeenCalled(); expect(write).not.toHaveBeenCalled();
+    expect(evaluate).not.toHaveBeenCalled(); expect(codes).toContain('collection_disabled');
+    tracker.reset();
+    expect(sessionStorage.getItem(key)).toBeNull();
+    expect(sessionStorage.getItem('unrelated')).toBe('keep');
+  });
+
+  it.each(['auto', 'manual'] as const)('%s restores on start, preserves on stop/destroy, and clears on stop plus reset', (mode) => {
+    const first = setup({ collection: { mode: 'manual' }, storage: 'session' });
+    first.start(); first.track('action'); first.recordOutcome('guide', 'dismissed'); first.destroy();
+    const next = setup({ collection: { mode }, storage: 'session' });
+    if (mode === 'manual') {
+      expect(next.getSnapshot().observations).toEqual([]);
+      next.start();
+    }
+    expect(observed(next, 'action')?.actions).toBe(1);
+    expect(next.getSnapshot().outcomes).toHaveLength(1);
+    next.stop(); expect(sessionStorage.getItem(key)).not.toBeNull();
+    next.reset();
+    expect(next.getState().started).toBe(false);
+    expect(next.getSnapshot().observations).toEqual([]);
+    expect(next.getSnapshot().outcomes).toEqual([]);
+    expect(sessionStorage.getItem(key)).toBeNull();
+    next.start(); expect(observed(next, 'action')).toBeUndefined();
+  });
+
+  it('auto can be reset before return to the event loop and never restarts after destroy', async () => {
+    const tracker = setup({ collection: { mode: 'auto' }, storage: 'session' });
+    tracker.track('action'); tracker.reset();
+    expect(tracker.getState().started).toBe(true);
+    expect(tracker.getSnapshot().observations).toEqual([]);
+    tracker.destroy(); await advance(30_000);
+    expect(tracker.getState()).toMatchObject({ started: false, destroyed: true, observedElements: 0 });
+  });
+
+  it.each(['auto', 'manual'] as const)('legacy denial still stops %s and clears data until granted plus explicit start', (mode) => {
+    const tracker = setup({ collection: { mode }, storage: 'session' });
+    tracker.start(); tracker.track('action'); tracker.setConsent('denied');
+    tracker.start(); tracker.track('action');
+    expect(tracker.getState().started).toBe(false);
+    expect(sessionStorage.getItem(key)).toBeNull();
+    expect(tracker.getSnapshot().observations).toEqual([]);
+    tracker.setConsent('granted'); expect(tracker.getState().started).toBe(false);
+    tracker.start(); tracker.track('action');
+    expect(observed(tracker, 'action')?.actions).toBe(1);
+  });
+
+  it('buffers auto-start diagnostics and keeps memory collection when storage is unavailable', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('unavailable'); });
+    const tracker = setup({ collection: { mode: 'auto' }, storage: 'session' });
+    const codes: string[] = []; tracker.onDiagnostic((event) => codes.push(event.code));
+    tracker.track('action');
+    expect(codes).toContain('storage_invalid');
+    expect(observed(tracker, 'action')?.actions).toBe(1);
+  });
+
+  it.each([null, {}, { mode: 'typo' }])('rejects invalid JS collection configuration %j', (collection) => {
+    expect(() => setup({ collection: collection as TrackerOptions['collection'] })).toThrow('invalid_collection_mode');
+    expect(FakeIntersectionObserver.instances).toHaveLength(0);
+  });
+});
+
 describe('B08 — scheduler, stale asynchronous results and render guards', () => {
   it.each([1, 100].flatMap((count) => ['withdraw', 'page', 'revision'].map((action) => ({ count, action }))))('discards a real remote response with $count candidates after $action', async ({ count, action }) => {
     const source = { ...definition, contents: { ...definition.contents,
@@ -486,18 +607,24 @@ describe('B08 — scheduler, stale asynchronous results and render guards', () =
     return { engine, evaluate, signals, resolve: () => resolvers.shift()?.() };
   }
 
-  it.each(['withdraw', 'page', 'reset', 'stop', 'revision'])('discards a delayed result after %s', async (action) => {
-    const delay = delayed(); const tracker = setup({ engine: delay.engine }); const outputs: Decision[] = [];
-    tracker.onDecision((decision) => outputs.push(decision)); begin(tracker); tracker.track('action');
+  it.each(([undefined, 'auto', 'manual'] as const).flatMap((mode) =>
+    ['withdraw', 'page', 'reset', 'stop', 'revision', 'destroy'].map((action) => ({ mode, action })),
+  ))('discards a delayed result after $action in $mode mode', async ({ mode, action }) => {
+    const delay = delayed(); const tracker = setup({ engine: delay.engine, ...(mode ? { collection: { mode } } : {}) }); const outputs: Decision[] = [];
+    tracker.onDecision((decision) => outputs.push(decision));
+    if (mode) tracker.start(); else begin(tracker);
+    tracker.track('action');
     const result = tracker.evaluate();
     if (action === 'withdraw') tracker.setConsent('denied');
     if (action === 'page') tracker.setPage('other');
     if (action === 'reset') tracker.reset();
     if (action === 'stop') tracker.stop();
     if (action === 'revision') tracker.track('action');
+    if (action === 'destroy') tracker.destroy();
     delay.resolve(); expect(await result).toBeUndefined();
     expect(outputs).toHaveLength(0);
     if (action !== 'revision') expect(delay.signals[0]?.aborted).toBe(true);
+    tracker.destroy();
   });
 
   it('coalesces changes and manual calls into one latest snapshot per >=15s with concurrency one', async () => {

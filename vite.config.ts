@@ -10,7 +10,7 @@ export default defineConfig({
     outDir: '../../dist/demo',
     emptyOutDir: true,
     rollupOptions: {
-      input: Object.fromEntries(['index.html', 'guides/features/index.html', 'guides/pricing/index.html', 'guides/cases/index.html', 'catalog/index.html', 'catalog/guide.html']
+      input: Object.fromEntries(['index.html', 'guides/features/index.html', 'guides/pricing/index.html', 'guides/cases/index.html', 'catalog/index.html', 'catalog/guide.html', 'collection/index.html']
         .map((file) => [file, resolve('examples/vanilla', file)])),
     },
   },

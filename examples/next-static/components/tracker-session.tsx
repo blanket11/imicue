@@ -13,7 +13,7 @@ export function useImicueActions() {
   return actions;
 }
 type Mode = 'rules' | 'remote';
-const initialState: TrackerState = { consent: 'unknown', started: false, destroyed: false, observedElements: 0, revision: 0 };
+const initialState: TrackerState = { consent: 'unknown', collectionMode: 'manual', consentRequired: true, started: false, destroyed: false, observedElements: 0, revision: 0 };
 
 /** A site-owned lifecycle example; this is not a React SDK. */
 export function TrackerSession({ pageId, children }: { pageId: string; children: ReactNode }) {

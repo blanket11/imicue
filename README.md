@@ -50,6 +50,12 @@ npm run dev
 
 紹介サイトのデモは、あらかじめ用意した閲覧記録を切り替える説明用です。ブラウザ上の表示時間やページ移動を確かめるには、このローカルデモを使ってください。
 
+## 計測の開始方法を選ぶ
+
+[開始モードのデモ](http://127.0.0.1:5183/collection/)では、ページ表示時の自動開始、ボタンからの手動開始、計測の無効化を試せます。「読書メモの検索例を開く」を押し、集計と案内の変化を確認してください。
+
+停止は記録を保持し、リセットは保存分も削除します。ページ移動時の復元も確認できます。[操作手順](docs/guides/collection.md#ローカルで確かめる)を参照してください。
+
 ## 次に試すこと
 
 | 確かめたいこと | 手順 |
@@ -65,17 +71,17 @@ npm run dev
 
 [ページ横断デモ](http://127.0.0.1:5183/?storage=session)では、同じサイト・同じタブの直近30分の記録を使います。各ページで許可して開始すると、前のページの記録が戻ります。操作順と削除の確認は、[ページ横断の手順](docs/guides/local-demos.md#ページ移動後の記録を試す)を参照してください。
 
-SDKでは `storage: 'session'` を指定します。同意自体は保存しないため、利用サイトの同意管理との接続が必要です。別ドメインや別端末をまたぐユーザー識別は行いません。
+SDKでは `storage: 'session'` を指定し、計測開始時に記録を復元します。自動開始か手動開始かはサイト側で選べます。同意状態そのものは保存しません。別ドメインや別端末をまたぐユーザー識別は行いません。
 
 ## SDKの構成
 
 | パッケージ | 役割 |
 | --- | --- |
 | `@imicue/core` | 辞書の検証、集計、Rules、候補の除外と見送り |
-| `@imicue/browser` | 同意、DOM属性の計測、保存、判定の実行と購読 |
+| `@imicue/browser` | 計測の開始・停止、DOM属性の計測、保存、判定の実行と購読 |
 | `@imicue/server` | 固定辞書の解決、HTTP入力と利用量の検査、Jev接続 |
 
-次は初期化の形です。辞書、同意ボタン、結果の表示を含む例は [SDKを組み込む](docs/guides/integration.md)にあります。パッケージはリポジトリ内でビルドして使用します。
+次は初期化の形です。辞書、開始・停止、結果の表示を含む例は [SDKを組み込む](docs/guides/integration.md)にあります。パッケージはリポジトリ内でビルドして使用します。
 
 ```js
 import { createTracker } from '@imicue/browser';
@@ -85,16 +91,19 @@ import { definition } from './definition.js';
 const tracker = createTracker({
   definition,
   pageId: 'home',
+  collection: { mode: 'auto' }, // 初期化時に計測開始
   engine: createRulesEngine(),
   storage: 'memory',
 });
 
-// 利用サイトの同意管理から許可を受けた後に呼びます。
-tracker.setConsent('granted');
-tracker.start();
+// 停止と保存済み記録の削除は、サイト側の操作から制御できます。
+// tracker.stop();
+// tracker.reset();
 ```
 
-初期化だけでは、観測・保存・判定通信を始めません。Jevを使う場合もAPIキーはサーバー側で扱います。
+`auto` は初期化時に計測を開始します。`manual` は `start()` まで待機し、`disabled` は計測を無効にします。Imicueは同意UIや同意要否の判断を持たず、利用サイトが開始タイミングを決めます。Jevを使う場合もAPIキーはサーバー側で扱います。
+
+`collection` を省略した既存コードは、従来どおり `setConsent('granted')` → `start()` が必要です。詳しくは[開始モードと移行方法](docs/guides/collection.md)を参照してください。
 
 ## 検証と利用上の制約
 

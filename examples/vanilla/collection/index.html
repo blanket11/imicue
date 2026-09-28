@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../styles.css" />
+    <title>計測開始モード | Imicue デモ</title>
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <header>
+      <div><strong>Imicue</strong><span> 計測開始モードのデモ</span></div>
+      <nav>
+        <a href="/">基本デモ</a
+        ><a id="page-link" href="?page=features-guide">検索ガイドへ</a>
+      </nav>
+    </header>
+    <main>
+      <h1 id="page-title">開始するタイミングを選ぶ</h1>
+      <p>
+        自動開始、手動開始、計測の無効化を切り替えて確認します。通常はブラウザ内のRulesで判定し、APIキーは不要です。
+      </p>
+      <section data-imicue-ignore aria-labelledby="controls-title">
+        <h2 id="controls-title">計測の設定</h2>
+        <nav aria-label="計測モード">
+          <a id="mode-auto" href="?mode=auto">自動開始</a> /
+          <a id="mode-manual" href="?mode=manual">手動開始</a> /
+          <a id="mode-disabled" href="?mode=disabled">計測しない</a>
+        </nav>
+        <p id="mode-help"></p>
+        <p id="storage-help"></p>
+        <p id="engine-help"></p>
+        <a id="storage-link" href="?storage=session"
+          >ページ移動後も記録を使う</a
+        >
+        <p id="status" role="status">初期化前</p>
+        <div class="controls">
+          <button id="start" type="button">計測を開始</button
+          ><button id="stop" type="button">計測を停止</button
+          ><button id="reset" type="button">記録をリセット</button
+          ><button id="clear-stop" type="button">記録を削除して停止</button
+          ><button id="destroy" type="button">Trackerを破棄</button>
+        </div>
+      </section>
+      <section id="sample" data-imicue-signal="demo-features">
+        <h2>読書メモを検索する</h2>
+        <p>本の題名やメモから、読み返したい記録を探す例です。</p>
+        <button id="feature-action" type="button">
+          読書メモの検索例を開く
+        </button>
+        <p id="feature-result"></p>
+      </section>
+      <aside data-imicue-ignore>
+        <h2>判定結果</h2>
+        <p id="decision-status" role="status">判定前</p>
+        <div id="recommendation-slot"></div>
+      </aside>
+      <details data-imicue-ignore>
+        <summary>計測と判定の記録を確認する</summary>
+        <h2>集計</h2>
+        <pre id="snapshot"></pre>
+        <h2>状態</h2>
+        <pre id="state"></pre>
+        <h2>判定</h2>
+        <pre id="decision">判定前</pre>
+        <h2>診断</h2>
+        <pre id="diagnostics">診断なし</pre>
+      </details>
+    </main>
+    <footer>
+      Imicue /
+      計測の開始・停止は利用サイトが制御します。DOM本文やフォーム入力文は自動収集しません。
+    </footer>
+  </body>
+</html>
