@@ -1,0 +1,6 @@
+import Link from 'next/link';
+import { Board, Timeline, Roles } from '../../components/product-visuals';
+export const metadata = { title: '機能 | PACELET' };
+export default function Features() {
+  return <><div className="page-intro container"><p className="breadcrumb"><Link href="/">トップ</Link><span> / 機能</span></p><p className="eyebrow">FEATURES</p><h1>次に進めることが、見える。</h1><p>担当、予定、共有範囲。チームの進行に必要な情報をまとめます。</p></div><article className="container section" data-imicue-signal="features-detail"><div className="feature-row" id="board"><div><h2>担当と状態を、<br />ひとつのタスクに。</h2><p>「これから」「進行中」「確認待ち」の列で仕事の状態を共有。担当と期限が見えるので、確認先を探す手間を減らせます。</p><ol><li>作業をタスクに分ける</li><li>担当と期限を決める</li><li>進行状況をボードで共有する</li></ol></div><Board /></div><div className="feature-row" id="timeline"><div><h2>予定の重なりを、<br />早めに確認。</h2><p>前後の作業を並べて、締め切りまでの流れを見渡します。ひとつの予定が変わったときも、関係する担当と相談できます。</p></div><Timeline /></div><div className="feature-row"><div><h2>共有する相手に、<br />合った役割を。</h2><p>進捗だけ確認したい人には閲覧の役割を。更新する人には編集の役割を付け、プロジェクトの参加方法を分けます。</p></div><Roles /></div></article><div className="container cta-band" data-imicue-protect><div><h2>チームでの使い方を見る</h2><p>機能を組み合わせた、ふたつの活用例を紹介します。</p></div><Link className="button" href="/cases/">導入事例を見る →</Link></div></>;
+}

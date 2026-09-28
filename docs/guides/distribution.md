@@ -37,7 +37,7 @@ IIFEは `window.Imicue` に `createTracker`・`createRulesEngine`・`createRemot
 <script src="/assets/imicue-init.js" defer></script>
 ```
 
-`imicue-init.js` で `window.Imicue.createTracker()` を使い、[辞書・同意・表示処理](integration.md)を接続します。CSPで許可する配信元は利用サイトの設定に合わせてください。SRIを付ける場合は、今回生成した `dist/browser/manifest.json` の値を使用します。
+`imicue-init.js` で `window.Imicue.createTracker()` を使い、[辞書・開始停止・表示処理](integration.md)を接続します。CSPで許可する配信元は利用サイトの設定に合わせてください。SRIを付ける場合は、今回生成した `dist/browser/manifest.json` の値を使用します。
 
 ## Next.jsのページ移動を試す
 
@@ -45,10 +45,10 @@ IIFEは `window.Imicue` に `createTracker`・`createRulesEngine`・`createRemot
 npm run preview:next
 ```
 
-[Next.js静的デモ](http://127.0.0.1:5184/)で計測を許可・開始し、「読書メモの検索例を開く」を操作します。候補のリンクは「候補のガイドを表示」を押すと現れます。
+[Next.js静的デモ](http://127.0.0.1:5184/)は、架空の製品「PACELET」のサイトです。計測は自動で始まり、閲覧内容に応じて機能・事例・資料請求・お問い合わせを右下に案内します。操作の手順は [製品サイトデモ](product-demo.md)を参照してください。
 
-上部のガイド間を移動するとpageIdとpageViewIdが変わり、同じTrackerの記録と許可を維持します。再読み込みではリセットします。この例の保存先はメモリです。
+ページ移動ではpageIdとpageViewIdを更新し、同じTrackerを使い続けます。記録はsessionStorageに30分間保持し、再読み込み後も復元します。資料請求とお問い合わせはデモ内の完了表示だけで、入力内容を送信・保存しません。
 
-初期モードはRulesです。「判定サーバー接続」を選ぶ場合だけ、別ターミナルで `npm run dev:server` を起動してください。モード変更時は許可と記録をリセットします。Next.js内には判定用のPOST APIを置いていません。
+初期モードはRulesです。左下のDebugでRemoteを選ぶ場合だけ、別ターミナルで `npm run dev:server` を起動してください。モード変更時は記録を削除して自動開始します。Next.js内には判定用のPOST APIを置いていません。
 
 Next.jsのソースを編集する場合は `npm run dev:next` で開発サーバーを起動します。静的配信は5184、開発サーバーは5186を使います。検証範囲と受け入れ条件は [テストガイド](../06-implementation-and-tests.md)を参照してください。
