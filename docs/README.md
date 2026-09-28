@@ -11,7 +11,7 @@ Imicueは、登録した閲覧・操作の記録と辞書を使い、次に案�
 | 目的 | 利用ガイド |
 | --- | --- |
 | 製品サイトを普通に閲覧し、自動の案内とデモフォームを試す | [製品サイトデモ](guides/product-demo.md) |
-| 計測とRules判定、100件の候補、ページ横断を試す | [ローカルデモで動きを確かめる](guides/local-demos.md) |
+| 起動コマンドとローカルのURLを確認する | [ローカルデモで動きを確かめる](guides/local-demos.md) |
 | 自動開始・手動開始・無効化を選ぶ | [計測開始のタイミング](guides/collection.md) |
 | 自分のページに観測する内容と案内先を登録する | [辞書と計測をページに組み込む](guides/integration.md) |
 | モックで通信を確認し、Jevへ接続する | [判定サーバーとJevに接続する](guides/server-and-jev.md) |
@@ -80,4 +80,4 @@ PlaywrightのChromium・Firefox・WebKitで検証しています。Safari製品�
 | [単発操作の採点基準](18-jev-relevance-rubric.md) | 内容が一致する操作の評価 |
 | [100候補の評価](21-candidate-scale.md) | 全件評価、容量による分割、閲覧デモ、実測結果 |
 
-ライセンスは [Apache-2.0](../LICENSE) です。更新日: 2026-09-27。
+ライセンスは [Apache-2.0](../LICENSE) です。更新日: 2026-09-28。

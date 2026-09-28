@@ -6,7 +6,7 @@ import { createDecisionHandler, createJevEngine, createNodeServer, JEV_MODEL } f
 import { definition } from '../examples/vanilla/definition.js';
 import { measuredTransport } from './lib/jev-evaluation.js';
 
-const origin = 'http://127.0.0.1:5183';
+const origin = 'http://127.0.0.1:5194';
 const driverOrigin = 'http://127.0.0.1:5199';
 const endpoint = 'http://127.0.0.1:5193/v1/decide';
 const storageKey = 'imicue:reading-notes:demo-1';

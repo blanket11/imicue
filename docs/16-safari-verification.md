@@ -20,7 +20,7 @@
 
 ## 再現コマンド
 
-macOSでSafariのWebDriverを利用可能にし、別ターミナルで `npm run dev` を起動する。通常の試験ではさらに `npm run dev:server` でモックサーバーを起動する。
+macOSでSafariのWebDriverを利用可能にし、別ターミナルで `npm run dev:fixtures`（5194番）を起動する。通常の試験ではさらに `npm run dev:server` でモックサーバーを起動する。
 
 ```sh
 npm run test:safari

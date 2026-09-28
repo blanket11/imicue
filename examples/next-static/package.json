@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev --hostname 127.0.0.1 --port 5186",
+    "dev": "node ../../scripts/dev-demo.mjs",
     "build": "NEXT_TELEMETRY_DISABLED=1 next build"
   },
   "dependencies": {
@@ -14,5 +14,8 @@
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
-  "devDependencies": { "@types/react": "19.3.0", "@types/react-dom": "19.3.0" }
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0"
+  }
 }

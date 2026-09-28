@@ -1,61 +1,61 @@
 # 辞書と計測をページに組み込む
 
-Imicueを組み込むには、観測する表示・操作と案内先を辞書に登録し、利用サイトで開始・停止と表示処理を接続します。このガイドはJavaScriptでWebページを実装する人向けです。まず [動くVanillaの例](../../examples/vanilla/main.js)を確認し、以下を自分のページに合わせて変更してください。
+Imicueを組み込むには、観測する表示・操作と案内先を辞書に登録し、利用サイトで開始・停止と表示処理を接続します。このガイドはJavaScriptでWebページを実装する人向けです。まず [PACELETの組み込み例](../../examples/next-static/components/tracker-session.tsx)を確認し、以下を自分のページに合わせて変更してください。
 
 現在はnpm未公開のため、パッケージ名を使う以下のコードは、このリポジトリのworkspaces内で `npm run build:packages` を実行して使います。外部のページで単体ファイルを使う場合は [配布ファイルの手順](distribution.md)を参照してください。
 
 ## 観測する内容と案内先を登録する
 
-`definition.js` に固定の辞書を置きます。次は架空の読書ノートアプリです。`signals` は観測する表示・操作、`contents` は案内先、`pages` は計測するページを表します。
+`definition.js` に固定の辞書を置きます。次はPACELETのボード機能を題材にした最小例です。製品サイトデモの辞書全体は [product/definition.ts](../../examples/product/definition.ts)にあります。`signals` は観測する表示・操作、`contents` は案内先、`pages` は計測するページを表します。
 
 ```js
 export const definition = {
   schemaVersion: '0.1',
-  siteId: 'reading-notes-example',
+  siteId: 'pacelet-example',
   definitionVersion: 'example-1',
   topics: {},
   signals: {
-    'search-overview': {
+    'feature-board': {
       kind: 'content',
-      label: '読書メモ検索の紹介',
-      description: '本の題名やメモの語句から記録を探す機能を説明するセクション',
-      productId: 'reading-notes-example',
+      label: 'ボード機能の紹介',
+      description: '担当と状態を一覧するボード機能の説明',
+      productId: 'pacelet-example',
     },
-    'search-example-opened': {
+    'board-example-opened': {
       kind: 'action',
-      label: '検索例を開く操作',
-      description: '読書メモを探す固定の検索例を開く操作。検索語は記録しない',
-      productId: 'reading-notes-example',
+      label: 'ボードの操作例を開く操作',
+      description: '担当と進捗を共有するボードの操作例を開く操作',
+      productId: 'pacelet-example',
     },
   },
   contents: {
-    'search-guide': {
-      title: '読書メモを検索するガイド',
-      description: '本の題名やメモの語句から記録を探し、内容を見返す手順',
-      href: '/guides/search/',
+    'product-features': {
+      title: '機能について詳しく見る',
+      description: 'ボードと予定表でチームの進行状況を確認する手順',
+      href: '/features/',
       enabled: true,
-      productId: 'reading-notes-example',
-      relatedSignalIds: ['search-overview', 'search-example-opened'],
+      productId: 'pacelet-example',
+      relatedSignalIds: ['feature-board', 'board-example-opened'],
     },
   },
   pages: {
-    home: { productId: 'reading-notes-example' },
+    home: { productId: 'pacelet-example' },
   },
 };
 ```
 
-`/guides/search/` は利用サイトが用意する案内先です。Imicueがページを生成するわけではありません。辞書や対象ページを変えたら `definitionVersion` も更新してください。型と必須条件は [データ契約](../02-data-contracts.md)にあります。
+`/features/` は利用サイトが用意する案内先です。Imicueがページを生成するわけではありません。辞書や対象ページを変えたら `definitionVersion` も更新してください。型と必須条件は [データ契約](../02-data-contracts.md)にあります。
 
 Rulesは `relatedSignalIds` やtopicの対応関係を使います。Jevはサーバーで辞書の説明を展開して候補を評価します。どちらも、未登録のURLを生成して案内する仕組みではありません。
 
 ## HTMLに観測するIDを付ける
 
 ```html
-<section data-imicue-signal="search-overview">
-  <h2>読書メモから本を探す</h2>
-  <p>題名やメモに書いた語句から、記録した本を探せます。</p>
-  <button id="open-example" type="button">検索例を開く</button>
-  <p id="search-example" hidden>「海辺の灯台」に付けた「灯台守」のメモを表示する例です。</p>
+<section data-imicue-signal="feature-board">
+  <h2>担当と進捗をボードで共有する</h2>
+  <p>担当と状態を一覧にして、次の作業を確認できます。</p>
+  <button id="open-example" type="button">ボードの操作例を見る</button>
+  <p id="board-example" hidden>「紹介ページの作成」を進行中から確認待ちへ移す例です。</p>
 </section>
 
 <div data-imicue-ignore>
@@ -108,8 +108,8 @@ document.querySelector('#revoke-measurement').addEventListener('click', () => {
   container.replaceChildren();
 });
 document.querySelector('#open-example').addEventListener('click', () => {
-  document.querySelector('#search-example').hidden = false;
-  tracker.track('search-example-opened', { source: 'direct' });
+  document.querySelector('#board-example').hidden = false;
+  tracker.track('board-example-opened', { source: 'direct' });
 });
 
 window.addEventListener('pagehide', () => {
@@ -133,7 +133,7 @@ SPAでは同じTrackerを維持して `setPage(pageId)` を呼びます。画面
 
 通常のリンク遷移や再読み込みでも記録を使うには、各ページで同じ辞書と `storage: 'session'` を指定します。同一Origin・同じタブのsessionStorageから、計測開始時に直近30分の記録を復元します。manualでは各ページでstartを呼び、autoでは各ページの初期化時に開始します。同意状態は保存しません。
 
-表示条件を満たした案内先や、確認完了した案内先は再推薦から除外します。機能ガイドを見たことだけで、次に料金へ興味があると断定するわけではありません。次の候補にも辞書の関連と観測の根拠が必要です。[ページ横断デモ](local-demos.md#ページ移動後の記録を試す)で復元と撤回を確かめてください。
+表示条件を満たした案内先や、確認完了した案内先は再推薦から除外します。機能ガイドを見たことだけで、次に料金へ興味があると断定するわけではありません。次の候補にも辞書の関連と観測の根拠が必要です。[ページ移動と記録の保持](product-demo.md#ページ移動と記録の保持を確認する)で復元と撤回を確かめてください。
 
 ## 用語と参照先
 

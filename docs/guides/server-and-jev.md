@@ -12,9 +12,9 @@
 npm run dev:server
 ```
 
-[サーバー接続デモ](http://127.0.0.1:5183/?engine=remote)を開き、許可して計測を開始し、「読書メモの検索例を開く」を押します。判定の詳細に `mock-local-v1`、スコアに「モック」と表示されれば接続できています。
+[PACELET](http://127.0.0.1:5183/)で左下の「Imicue Debug」を開き、EngineをRemoteに切り替えます。パネルを閉じてボード機能と予定表の説明を閲覧し、再びDebugを開いてDecisionの `engine.model` が `mock-local-v1` であることを確認してください。判定の開始間隔は最低15秒です。
 
-サーバーは `127.0.0.1:5193` で待ち受けます。このコマンドはAPIキーが環境に存在してもモックを使い、外部APIを呼びません。スコアとconfidenceは通信確認用の合成値で、Jevの判断品質を再現するものではありません。URLの `?engine=remote` を外すとRulesに戻ります。
+サーバーは `127.0.0.1:5193` で待ち受けます。このコマンドはAPIキーが環境に存在してもモックを使い、外部APIを呼びません。スコアとconfidenceは通信確認用の合成値で、Jevの判断品質を再現するものではありません。DebugでRulesを選ぶとブラウザ内の判定に戻ります。Engineを切り替えると記録を削除して自動開始します。
 
 ## Jevに接続する
 
@@ -42,7 +42,7 @@ RUN_JEV_INTEGRATION=1 JEV_INTEGRATION_REQUESTS=1 node --env-file=.env.local --im
 RUN_JEV_SERVER=1 node --env-file=.env.local --import tsx --conditions=imicue-source examples/server-node/index.ts --jev
 ```
 
-[サーバー接続デモ](http://127.0.0.1:5183/?engine=remote)で許可して計測を開始します。100候補を使う場合は [100件のサーバー接続デモ](http://127.0.0.1:5183/catalog/?engine=remote)を開きます。操作や閲覧に応じてAPIを呼び得るため、確認が済んだら同意を撤回し、ターミナルでサーバーを停止してください。
+[PACELET](http://127.0.0.1:5183/)のDebugでRemoteに切り替えます。閲覧に応じてAPIを呼び得るため、確認が済んだらDebugで計測を停止し、ターミナルでサーバーを停止してください。100候補の試験には、別途起動する[開発用画面](development-fixtures.md#100件の案内先を閲覧だけで試す)を使います。
 
 現在のJev判定ポリシーは `jev-rubric-v4` です。最大100件を全件評価し、要求の容量に応じて分割します。分割後の一部だけが成功しても案内を出しません。Jevの推薦根拠は最終観測が直近5分以内のシグナルに限定し、記録と既読・完了による除外は30分保持します。具体的な辞書説明と、場面ごとの評価が必要です。
 

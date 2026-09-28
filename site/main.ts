@@ -91,14 +91,14 @@ async function selectScenario(scenario: Scenario) {
       const candidate = definition.contents[decision.contentId]!;
       showResult('このページを見た方におすすめ', candidate.title, candidate.description, 'recommend');
       const open = document.createElement('button');
-      open.type = 'button'; open.className = 'guide-button'; open.textContent = 'ガイドの表示例を見る →';
+      open.type = 'button'; open.className = 'guide-button'; open.textContent = '案内先の表示例を見る →';
       open.addEventListener('click', () => {
         guideTrigger = open;
         showGuide(decision.contentId);
       });
       result.append(open);
     } else if (decision.reason === 'ambiguous') {
-      showResult('今回は見送り', '案内を見送ります', '検索と読書記録の候補が同点です。どちらかに絞る根拠が足りないため、案内を表示しません。', 'abstain');
+      showResult('今回は見送り', '案内を見送ります', '機能と事例の候補が同点です。どちらかに絞る根拠が足りないため、案内を表示しません。', 'abstain');
     } else if (decision.reason === 'insufficient_evidence') {
       showResult('今回は見送り', '案内を見送ります', '閲覧記録がないため、案内を選びません。', 'abstain');
     } else {
@@ -131,7 +131,7 @@ options.addEventListener('click', (event) => {
   if (!(event.target instanceof Element)) return;
   const button = event.target.closest<HTMLButtonElement>('button[data-scenario]');
   const scenario = button?.dataset.scenario;
-  if (!scenario || !['features', 'cases', 'both', 'empty'].includes(scenario)) return;
+  if (!scenario || !['features', 'cases', 'documents', 'contact', 'both', 'empty'].includes(scenario)) return;
   void selectScenario(scenario as Scenario);
 });
 reset.addEventListener('click', () => { void selectScenario('features'); });

@@ -88,7 +88,7 @@ RUN_JEV_EVALUATION=1 JEV_EVALUATION_VARIANT=labels node --env-file=.env.local --
 
 結果はGit管理外の `test-results/jev-regression-evaluation.json`、`test-results/jev-freshness-evaluation.json` と日時付きファイルに保存する。入力表現を変えた結果は、ファイル名にlabelsまたはdictionary-enが付く。
 
-ブラウザ接続試験は別ターミナルで `npm run dev` を起動し、5193番ポートのモックサーバーを停止してから実行する。
+ブラウザ接続試験は別ターミナルで `npm run dev:fixtures`（5194番）を起動し、5193番ポートのモックサーバーを停止してから実行する。
 
 ```sh
 RUN_JEV_BROWSER=1 node --env-file=.env.local --import tsx --conditions=imicue-source scripts/jev-browser.ts

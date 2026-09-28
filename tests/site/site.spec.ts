@@ -13,11 +13,13 @@ test('browsing examples update records, meaning and Rules results without collec
   });
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('サイト内の閲覧から');
-  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
+  await expect(page.getByRole('button', { name: '機能', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#result h4')).toHaveText('機能について詳しく見る');
   for (const [label, topic, expected] of [
-    ['本を探す', '本の検索機能', '読書メモを検索するガイド'],
-    ['読書記録', '読みかけ', '読みかけの本を整理する方法'],
+    ['機能', 'ボード機能', '機能について詳しく見る'],
+    ['活用事例', '制作チーム', 'チームの活用事例を見る'],
+    ['料金・共有設定', '料金表', '詳しい製品資料を見る'],
+    ['導入手順', 'データ移行', '導入について相談する'],
   ] as const) {
     await page.getByRole('button', { name: label, exact: true }).click();
     await expect(page.locator('#observations')).toContainText(topic);
@@ -25,11 +27,11 @@ test('browsing examples update records, meaning and Rules results without collec
     await expect(page.locator('#mapping')).toContainText(expected);
     await expect(page.locator('#result h4')).toHaveText(expected);
   }
-  await page.getByRole('button', { name: '両方を見た場合', exact: true }).click();
-  await expect(page.locator('#observations')).toContainText('検索');
-  await expect(page.locator('#observations')).toContainText('読みかけ');
-  await expect(page.locator('#mapping')).toContainText('読書メモを検索するガイド');
-  await expect(page.locator('#mapping')).toContainText('読みかけの本を整理する方法');
+  await page.getByRole('button', { name: '機能と事例を見た場合', exact: true }).click();
+  await expect(page.locator('#observations')).toContainText('ボード');
+  await expect(page.locator('#observations')).toContainText('制作チーム');
+  await expect(page.locator('#mapping')).toContainText('機能について詳しく見る');
+  await expect(page.locator('#mapping')).toContainText('チームの活用事例を見る');
   await expect(page.locator('#result')).toContainText('見送ります');
   await expect(page.locator('#result')).toContainText('同点');
   await page.locator('#reason summary').click();
@@ -37,13 +39,13 @@ test('browsing examples update records, meaning and Rules results without collec
   await page.getByRole('button', { name: '記録がない場合', exact: true }).click();
   await expect(page.locator('#result')).toContainText('見送ります');
   await expect(page.locator('#result')).toContainText('記録がない');
-  await expect(page.locator('#mapping')).not.toContainText('読みかけの本を整理する方法');
+  await expect(page.locator('#mapping')).not.toContainText('チームの活用事例を見る');
   await page.getByRole('button', { name: '最初の閲覧例に戻す' }).click();
-  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
-  await expect(page.locator('#observations')).toContainText('本の検索機能');
-  await expect(page.locator('#observations')).not.toContainText('読みかけ');
-  await expect(page.locator('#mapping')).toContainText('読書メモを検索するガイド');
+  await expect(page.getByRole('button', { name: '機能', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#result h4')).toHaveText('機能について詳しく見る');
+  await expect(page.locator('#observations')).toContainText('ボード機能');
+  await expect(page.locator('#observations')).not.toContainText('制作チーム');
+  await expect(page.locator('#mapping')).toContainText('機能について詳しく見る');
   await expect(page.locator('#reason')).not.toHaveAttribute('open');
   expect(errors).toEqual([]);
   await expect(page.locator('html')).not.toHaveAttribute('data-csp-violation');
@@ -52,19 +54,19 @@ test('browsing examples update records, meaning and Rules results without collec
 
 test('rapid selection changes keep the final records, meaning and result together', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: '機能', exact: true })).toBeEnabled();
   // Dispatch within one browser turn so earlier asynchronous evaluations can finish after a newer selection.
   await page.locator('#scenario-options').evaluate((options) => {
     for (const value of ['cases', 'empty', 'features', 'both', 'cases']) {
       options.querySelector<HTMLButtonElement>(`button[data-scenario="${value}"]`)!.click();
     }
   });
-  await expect(page.getByRole('button', { name: '読書記録', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('#observations')).toContainText('読みかけ');
-  await expect(page.locator('#observations')).not.toContainText('本の検索機能');
-  await expect(page.locator('#mapping')).toContainText('読みかけの本を整理する方法');
-  await expect(page.locator('#mapping')).not.toContainText('読書メモを検索するガイド');
-  await expect(page.locator('#result h4')).toHaveText('読みかけの本を整理する方法');
+  await expect(page.getByRole('button', { name: '活用事例', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#observations')).toContainText('制作チーム');
+  await expect(page.locator('#observations')).not.toContainText('ボード機能');
+  await expect(page.locator('#mapping')).toContainText('チームの活用事例を見る');
+  await expect(page.locator('#mapping')).not.toContainText('機能について詳しく見る');
+  await expect(page.locator('#result h4')).toHaveText('チームの活用事例を見る');
 });
 
 test('keyboard controls, copy success and refusal, and narrow layouts', async ({ page, browserName }) => {
@@ -72,13 +74,13 @@ test('keyboard controls, copy success and refusal, and narrow layouts', async ({
   // macOS WebKit uses Option+Tab to include links in keyboard navigation.
   await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
   await expect(page.getByRole('link', { name: '本文へ移動' })).toBeFocused();
-  await page.getByRole('button', { name: '本を探す', exact: true }).focus();
+  await page.getByRole('button', { name: '機能', exact: true }).focus();
   await page.keyboard.press('Space');
-  await expect(page.locator('#result h4')).toHaveText('読書メモを検索するガイド');
+  await expect(page.locator('#result h4')).toHaveText('機能について詳しく見る');
   await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
-  await expect(page.getByRole('button', { name: '読書記録', exact: true })).toBeFocused();
+  await expect(page.getByRole('button', { name: '活用事例', exact: true })).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page.locator('#result h4')).toHaveText('読みかけの本を整理する方法');
+  await expect(page.locator('#result h4')).toHaveText('チームの活用事例を見る');
   await page.evaluate(() => {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (value: string) => {
       if (!value.includes('npm ci\nnpm run dev')) throw new Error('invalid_command');
@@ -106,7 +108,7 @@ test('static content and documentation remain usable without JavaScript', async 
   await expect(page.locator('noscript .notice')).toBeVisible();
   await expect(page.locator('noscript .notice')).toContainText('JavaScriptを有効にしてください', { useInnerText: true });
   await expect(page.getByRole('link', { name: '詳しい導入手順' })).toHaveAttribute('href', /^https:\/\/github.com\/blanket11\/imicue/);
-  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '機能', exact: true })).toBeDisabled();
   await context.close();
 });
 
@@ -152,7 +154,7 @@ test('missing and private paths return the 404 page with working assets and home
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link', { name: 'トップページへ戻る', exact: true }).click();
   await expect(page).toHaveURL('http://127.0.0.1:4187/');
-  await expect(page.getByRole('button', { name: '本を探す', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: '機能', exact: true })).toBeEnabled();
 });
 
 
@@ -162,17 +164,17 @@ test('the mock guide opens with useful content, closes by keyboard, and text use
   const families = await page.locator('h1,h2,h3,h4,button').evaluateAll((elements) => elements.map((element) => getComputedStyle(element).fontFamily));
   expect(families.every((value) => value === family)).toBe(true);
   expect(family).not.toMatch(/Mincho|(?:^|,)\s*serif/);
-  await page.getByRole('button', { name: 'ガイドの表示例を見る' }).click();
+  await page.getByRole('button', { name: '案内先の表示例を見る' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await expect(page.locator('#guide-title')).toHaveText('読書メモを検索するガイド');
+  await expect(page.locator('#guide-title')).toHaveText('機能について詳しく見る');
   await expect(page.locator('#guide-steps li')).toHaveCount(3);
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();
-  await expect(page.getByRole('button', { name: 'ガイドの表示例を見る' })).toBeFocused();
-  await page.getByRole('button', { name: '読書記録', exact: true }).click();
-  await expect(page.locator('#mock-page h3')).toContainText('読みかけ');
-  await page.getByRole('button', { name: 'ガイドの表示例を見る' }).click();
-  await expect(page.locator('#guide-title')).toHaveText('読みかけの本を整理する方法');
+  await expect(page.getByRole('button', { name: '案内先の表示例を見る' })).toBeFocused();
+  await page.getByRole('button', { name: '活用事例', exact: true }).click();
+  await expect(page.locator('#mock-page h3')).toContainText('チームに合う進め方');
+  await page.getByRole('button', { name: '案内先の表示例を見る' }).click();
+  await expect(page.locator('#guide-title')).toHaveText('チームの活用事例を見る');
   await page.getByRole('button', { name: '閉じる' }).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();
 });
