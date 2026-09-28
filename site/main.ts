@@ -1,5 +1,6 @@
 import { createRulesEngine, evaluateSnapshot, type Decision, type Snapshot } from '@imicue/core';
 import { definition, makeSnapshot, observationLabels, type Scenario } from './scenarios.js';
+import { renderMockPage, guideSteps } from './mock-site.js';
 
 const options = document.querySelector<HTMLFieldSetElement>('#scenario-options')!;
 const result = document.querySelector<HTMLElement>('#result')!;
@@ -10,6 +11,7 @@ const observations = document.querySelector<HTMLElement>('#observations')!;
 const mapping = document.querySelector<HTMLElement>('#mapping')!;
 const engine = createRulesEngine();
 let revision = 0;
+let guideTrigger: HTMLButtonElement | undefined;
 
 function paragraph(text: string, className?: string) {
   const node = document.createElement('p');
@@ -18,7 +20,8 @@ function paragraph(text: string, className?: string) {
   return node;
 }
 
-function showResult(label: string, title: string, description: string) {
+function showResult(label: string, title: string, description: string, state = 'pending') {
+  result.dataset.state = state;
   const heading = document.createElement('h4');
   heading.textContent = title;
   result.replaceChildren(paragraph(label, 'result-label'), heading, paragraph(description));
@@ -72,6 +75,10 @@ function showReason(decision: Decision) {
 
 async function selectScenario(scenario: Scenario) {
   const current = ++revision;
+  for (const button of options.querySelectorAll<HTMLButtonElement>('button[data-scenario]')) {
+    button.setAttribute('aria-pressed', String(button.dataset.scenario === scenario));
+  }
+  renderMockPage(document.querySelector<HTMLElement>('#mock-page')!, scenario);
   reason.hidden = true;
   reason.open = false;
   const snapshot = makeSnapshot(scenario);
@@ -82,11 +89,18 @@ async function selectScenario(scenario: Scenario) {
     if (current !== revision) return;
     if (decision.type === 'recommend') {
       const candidate = definition.contents[decision.contentId]!;
-      showResult('この案内を表示', candidate.title, `${candidate.description} 閲覧した説明に直接関連する候補として選ばれました。`);
+      showResult('このページを見た方におすすめ', candidate.title, candidate.description, 'recommend');
+      const open = document.createElement('button');
+      open.type = 'button'; open.className = 'guide-button'; open.textContent = 'ガイドの表示例を見る →';
+      open.addEventListener('click', () => {
+        guideTrigger = open;
+        showGuide(decision.contentId);
+      });
+      result.append(open);
     } else if (decision.reason === 'ambiguous') {
-      showResult('今回は見送り', '案内を見送ります', '機能と事例の候補が同点です。どちらかに絞る根拠が足りないため、案内を表示しません。');
+      showResult('今回は見送り', '案内を見送ります', '検索と読書記録の候補が同点です。どちらかに絞る根拠が足りないため、案内を表示しません。', 'abstain');
     } else if (decision.reason === 'insufficient_evidence') {
-      showResult('今回は見送り', '案内を見送ります', '閲覧記録がないため、案内を選びません。');
+      showResult('今回は見送り', '案内を見送ります', '閲覧記録がないため、案内を選びません。', 'abstain');
     } else {
       throw new Error('unexpected_playground_result');
     }
@@ -97,17 +111,30 @@ async function selectScenario(scenario: Scenario) {
   }
 }
 
-options.addEventListener('change', (event) => {
-  const input = event.target;
-  if (!(input instanceof HTMLInputElement) || !['features', 'cases', 'both', 'empty'].includes(input.value)) return;
-  void selectScenario(input.value as Scenario);
+const guide = document.querySelector<HTMLDialogElement>('#guide-dialog')!;
+function showGuide(contentId: string): void {
+  const candidate = definition.contents[contentId]!;
+  document.querySelector('#guide-title')!.textContent = candidate.title;
+  document.querySelector('#guide-description')!.textContent = candidate.description;
+  const steps = document.querySelector('#guide-steps')!;
+  steps.replaceChildren(...guideSteps[contentId]!.map((text) => {
+    const item = document.createElement('li'); item.textContent = text; return item;
+  }));
+  guide.showModal();
+}
+document.querySelector('#close-guide')!.addEventListener('click', () => guide.close());
+guide.addEventListener('close', () => {
+  // Safari does not focus buttons on pointer activation, so restore the trigger explicitly.
+  if (guideTrigger?.isConnected) guideTrigger.focus({ preventScroll: true });
 });
-reset.addEventListener('click', () => {
-  for (const input of options.querySelectorAll<HTMLInputElement>('input')) input.checked = input.value === 'features';
-  void selectScenario('features');
+options.addEventListener('click', (event) => {
+  if (!(event.target instanceof Element)) return;
+  const button = event.target.closest<HTMLButtonElement>('button[data-scenario]');
+  const scenario = button?.dataset.scenario;
+  if (!scenario || !['features', 'cases', 'both', 'empty'].includes(scenario)) return;
+  void selectScenario(scenario as Scenario);
 });
-// Reset browser-restored form state so the checked option and initial result agree.
-for (const input of options.querySelectorAll<HTMLInputElement>('input')) input.checked = input.value === 'features';
+reset.addEventListener('click', () => { void selectScenario('features'); });
 options.disabled = false;
 reset.disabled = false;
 void selectScenario('features');
