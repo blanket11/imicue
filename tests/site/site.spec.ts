@@ -55,7 +55,8 @@ test('browsing examples update records, meaning and Rules results without collec
 test('rapid selection changes keep the final records, meaning and result together', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('button', { name: '機能', exact: true })).toBeEnabled();
-  // Dispatch within one browser turn so earlier asynchronous evaluations can finish after a newer selection.
+  // Exercise rapid UI updates here. Deferred, out-of-order evaluation is covered by
+  // site-latest-evaluation.test.ts using the same publisher as the production page.
   await page.locator('#scenario-options').evaluate((options) => {
     for (const value of ['cases', 'empty', 'features', 'both', 'cases']) {
       options.querySelector<HTMLButtonElement>(`button[data-scenario="${value}"]`)!.click();

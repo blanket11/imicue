@@ -33,6 +33,7 @@ describe('bounded live-evaluation harness (mock transport only)', () => {
     expect(sent[7]!.questions).not.toHaveProperty('c1'); // Completed.
     expect(sent[8]!.questions).not.toHaveProperty('c2'); // Foreign product.
     expect(report.humanReview).toBe('pending');
+    expect(report).toMatchObject({ completionStatus: 'completed', authoredExpectationStatus: 'mismatched', humanReviewStatus: 'pending' });
     expect(report.fixtureHash).toMatch(/^[a-f0-9]{64}$/);
     expect(report.results.find((row) => row.id === 'Q07')!.proposedMatch).toBe(true);
     expect(report.results.every((row) => row.matchesAuthoredExpectation === null)).toBe(true);

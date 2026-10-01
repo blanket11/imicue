@@ -34,22 +34,32 @@ test('M3: static demo uses the local mock endpoint only after consent and start'
   expect(external).toEqual([]);
 });
 
-test('B08: consent withdrawal discards a delayed remote response and clears data', async ({ page }) => {
+test('B08: consent withdrawal discards a delayed remote response and clears data', async ({ page }, testInfo) => {
   let release!: () => void;
   const held = new Promise<void>((resolve) => { release = resolve; });
   let arrived!: () => void;
   const ready = new Promise<void>((resolve) => { arrived = resolve; });
+  let delivered!: () => void;
+  const responseDelivered = new Promise<void>((resolve) => { delivered = resolve; });
   await page.route(endpoint, async (route) => {
     const response = await route.fetch();
     arrived();
     await held;
     await route.fulfill({ response }).catch(() => undefined); // The browser may have already aborted.
+    delivered();
   });
   await page.goto('/?engine=remote');
   await begin(page);
   await ready;
   await page.locator('#revoke').click();
   release();
+  await responseDelivered;
+  // Empty UI is already true immediately after withdrawal. Wait for evaluation
+  // completion so a late result cannot slip past the remaining assertions.
+  await expect(page.locator('#diagnostics')).toContainText('stale_decision');
+  const capture = testInfo.outputPath('completed-delayed-response.png');
+  await page.screenshot({ path: capture });
+  await testInfo.attach('completed-delayed-response', { path: capture, contentType: 'image/png' });
   await expect(page.locator('#status')).toHaveText('未許可・計測停止中');
   await expect(page.locator('#decision')).toHaveText('判定前');
   await expect(page.locator('#recommendation-slot')).toBeEmpty();

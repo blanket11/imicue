@@ -1,6 +1,7 @@
 import { createRulesEngine, evaluateSnapshot, type Decision, type Snapshot } from '@imicue/core';
 import { definition, makeSnapshot, observationLabels, type Scenario } from './scenarios.js';
 import { renderMockPage, guideSteps } from './mock-site.js';
+import { createLatestEvaluation } from './latest-evaluation.js';
 
 const options = document.querySelector<HTMLFieldSetElement>('#scenario-options')!;
 const result = document.querySelector<HTMLElement>('#result')!;
@@ -10,7 +11,11 @@ const reasonContent = document.querySelector<HTMLElement>('#reason-content')!;
 const observations = document.querySelector<HTMLElement>('#observations')!;
 const mapping = document.querySelector<HTMLElement>('#mapping')!;
 const engine = createRulesEngine();
-let revision = 0;
+const evaluateLatest = createLatestEvaluation(
+  (snapshot: Snapshot) => evaluateSnapshot(definition, snapshot, engine),
+  showDecision,
+  () => showResult('デモを実行できませんでした', 'もう一度お試しください', '「最初の閲覧例に戻す」を押してから、閲覧例を選び直してください。'),
+);
 let guideTrigger: HTMLButtonElement | undefined;
 
 function paragraph(text: string, className?: string) {
@@ -73,8 +78,7 @@ function showReason(decision: Decision) {
   reason.hidden = false;
 }
 
-async function selectScenario(scenario: Scenario) {
-  const current = ++revision;
+function selectScenario(scenario: Scenario) {
   for (const button of options.querySelectorAll<HTMLButtonElement>('button[data-scenario]')) {
     button.setAttribute('aria-pressed', String(button.dataset.scenario === scenario));
   }
@@ -84,31 +88,28 @@ async function selectScenario(scenario: Scenario) {
   const snapshot = makeSnapshot(scenario);
   showEvidence(snapshot);
   showResult('判定中', '案内を比較しています', '選んだ閲覧記録を使って判定しています。');
-  try {
-    const decision = await evaluateSnapshot(definition, snapshot, engine);
-    if (current !== revision) return;
-    if (decision.type === 'recommend') {
-      const candidate = definition.contents[decision.contentId]!;
-      showResult('このページを見た方におすすめ', candidate.title, candidate.description, 'recommend');
-      const open = document.createElement('button');
-      open.type = 'button'; open.className = 'guide-button'; open.textContent = '案内先の表示例を見る →';
-      open.addEventListener('click', () => {
-        guideTrigger = open;
-        showGuide(decision.contentId);
-      });
-      result.append(open);
-    } else if (decision.reason === 'ambiguous') {
-      showResult('今回は見送り', '案内を見送ります', '機能と事例の候補が同点です。どちらかに絞る根拠が足りないため、案内を表示しません。', 'abstain');
-    } else if (decision.reason === 'insufficient_evidence') {
-      showResult('今回は見送り', '案内を見送ります', '閲覧記録がないため、案内を選びません。', 'abstain');
-    } else {
-      throw new Error('unexpected_playground_result');
-    }
-    showReason(decision);
-  } catch {
-    if (current !== revision) return;
-    showResult('デモを実行できませんでした', 'もう一度お試しください', '「最初の閲覧例に戻す」を押してから、閲覧例を選び直してください。');
+  void evaluateLatest(snapshot);
+}
+
+function showDecision(decision: Decision) {
+  if (decision.type === 'recommend') {
+    const candidate = definition.contents[decision.contentId]!;
+    showResult('このページを見た方におすすめ', candidate.title, candidate.description, 'recommend');
+    const open = document.createElement('button');
+    open.type = 'button'; open.className = 'guide-button'; open.textContent = '案内先の表示例を見る →';
+    open.addEventListener('click', () => {
+      guideTrigger = open;
+      showGuide(decision.contentId);
+    });
+    result.append(open);
+  } else if (decision.reason === 'ambiguous') {
+    showResult('今回は見送り', '案内を見送ります', '機能と事例の候補が同点です。どちらかに絞る根拠が足りないため、案内を表示しません。', 'abstain');
+  } else if (decision.reason === 'insufficient_evidence') {
+    showResult('今回は見送り', '案内を見送ります', '閲覧記録がないため、案内を選びません。', 'abstain');
+  } else {
+    throw new Error('unexpected_playground_result');
   }
+  showReason(decision);
 }
 
 const guide = document.querySelector<HTMLDialogElement>('#guide-dialog')!;

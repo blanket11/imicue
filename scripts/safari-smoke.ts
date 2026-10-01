@@ -5,6 +5,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { createDecisionHandler, createJevEngine, createNodeServer, JEV_MODEL } from '@imicue/server';
 import { definition } from '../examples/vanilla/definition.js';
 import { measuredTransport } from './lib/jev-evaluation.js';
+import { waitForWebDriverReady } from './lib/webdriver-ready.js';
 
 const origin = 'http://127.0.0.1:5194';
 const driverOrigin = 'http://127.0.0.1:5199';
@@ -25,6 +26,7 @@ let recommendation: unknown;
 let catalogRecommendation: unknown;
 let catalogSnapshot: unknown;
 let failureViewport: unknown;
+let failureCode: string | undefined;
 
 async function command<T = unknown>(method: string, path: string, body?: unknown): Promise<T> {
   const response = await fetch(`${driverOrigin}${path}`, { method,
@@ -88,11 +90,9 @@ try {
   driver = spawn('/usr/bin/safaridriver', ['--port', '5199'], { stdio: 'ignore' });
   let launchFailed = false;
   driver.once('error', () => { launchFailed = true; });
-  for (let attempt = 0; attempt < 50; attempt++) {
-    if (launchFailed || driver.exitCode !== null) throw new Error('driver_unavailable');
-    if (await fetch(`${driverOrigin}/status`).then((response) => response.ok, () => false)) break;
-    await delay(100);
-  }
+  await waitForWebDriverReady(`${driverOrigin}/status`, {
+    unavailable: () => launchFailed || driver!.exitCode !== null,
+  });
   stage = 'session-start';
   const session = await command<{ sessionId: string; capabilities: { browserVersion: string } }>('POST', '/session', {
     capabilities: { alwaysMatch: { browserName: 'safari' } },
@@ -244,8 +244,10 @@ try {
   checks.push('no horizontal overflow on TOP, guide and 100-candidate catalog at two desktop window widths');
   stage = 'complete';
   console.log(`Safari ${browserVersion}: PASS (${checks.length} scoped checks, ${measured.requests.length} real API requests)`);
-} catch {
-  console.error(`Safari verification failed at: ${stage}`);
+} catch (error) {
+  // Only named startup failures are safe to retain; other errors may contain page data.
+  failureCode = error instanceof Error && ['driver_start_timeout', 'driver_unavailable'].includes(error.message) ? error.message : undefined;
+  console.error(`Safari verification failed at: ${stage}${failureCode ? ` (${failureCode})` : ''}`);
   process.exitCode = 1;
   if (sessionId) {
     // Geometry and visibility only: never persist page text, storage, or raw driver errors.
@@ -273,6 +275,6 @@ try {
         { probe: 'console-network', reason: 'WebDriver transport has no full console/network event collection in this harness' },
         { probe: 'failure-injection/layout-shift/web-vitals', reason: 'no interception/throttling in this native driver harness' },
         { probe: 'axe-scan/target-size/focus-walk/theme-locale-matrix', reason: 'outside this scoped Safari functional smoke test' },
-      ] }, mode, stage, checks, layouts, failureViewport, recommendation, catalogRecommendation, catalogSnapshot, requests: measured.requests,
+      ] }, mode, stage, failureCode, checks, layouts, failureViewport, recommendation, catalogRecommendation, catalogSnapshot, requests: measured.requests,
   }, null, 2)}\n`);
 }
