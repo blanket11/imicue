@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { evaluateSnapshot, type DecisionEngine, type Snapshot } from '@imicue/core';
 import { JEV_MODEL } from '@imicue/server';
 import { catalogDefinition } from '../../examples/vanilla/catalog/definition.js';
-import { createCatalogBrowserAttemptCap, inspectCatalogBrowserDecision } from '../../scripts/lib/catalog-browser.js';
+import { catalogBrowserStatuses, createCatalogBrowserAttemptCap, inspectCatalogBrowserDecision } from '../../scripts/lib/catalog-browser.js';
 
 const now = Date.parse('2026-09-27T00:00:00Z');
 function snapshot(topic: 'features' | 'cases' = 'features'): Snapshot {
@@ -50,8 +50,14 @@ describe('catalog real-browser harness safety helpers, offline only', () => {
     const observed = snapshot();
     const wrong = await evaluateSnapshot(catalogDefinition, observed, engine('catalog-098'), { now });
     expect(inspectCatalogBrowserDecision(wrong, observed, 'features', now)).toMatchObject({ valid: true, semanticMatch: false, result: 'catalog-098' });
+    expect(catalogBrowserStatuses([{ technicalComplete: true, semanticMatch: false }], 1)).toMatchObject({
+      status: 'failed', completionStatus: 'completed', authoredExpectationStatus: 'mismatched', humanReviewStatus: 'pending' });
     const abstain = await evaluateSnapshot(catalogDefinition, observed, engine('no-match'), { now });
     expect(inspectCatalogBrowserDecision(abstain, observed, 'features', now)).toMatchObject({ valid: true, semanticMatch: false, type: 'abstain', result: 'below_threshold' });
+  });
+  it('keeps successful authored browser acceptance separate from human quality review', () => {
+    expect(catalogBrowserStatuses([{ technicalComplete: true, semanticMatch: true }], 1)).toMatchObject({
+      status: 'completed', completionStatus: 'completed', authoredExpectationStatus: 'all_matched', humanReviewStatus: 'pending' });
   });
   it('rejects stale, incomplete, clicked or secret-containing raw error responses without retaining them', async () => {
     const observed = snapshot();

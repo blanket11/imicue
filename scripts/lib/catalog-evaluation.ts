@@ -3,6 +3,7 @@ import { choice, TypeSafeClient, type ChoiceQuestion, type Fetch, type SystemOne
 import { JEV_POLICY_VERSION, evaluateSnapshot, type CandidateAssessment, type ResolvedEvaluationInput } from '@imicue/core';
 import { buildJevRequests, createJevEngine, createMemoryProviderLimiter, JEV_MODEL, type ProviderUsageLimiter } from '@imicue/server';
 import { CatalogBudget, catalogMeasuredTransport, CATALOG_INPUT_USD_PER_MILLION, type CatalogRequestMetric } from './catalog-budget.js';
+import { evaluationStatuses } from './live-harness.js';
 import { catalogEvaluationInput, catalogFixtures, CATALOG_FIXTURE_TIME, CATALOG_FIXTURE_VERSION, orderCatalog, makeCatalogFixture, type CatalogFixture, type CatalogSuite } from './catalog-fixtures.js';
 
 export type CatalogMethod = 'all-score' | 'choice-top3';
@@ -234,6 +235,8 @@ export async function runCatalogEvaluation(options: {
 }
 function reportFor(plan: ReturnType<typeof planCatalogEvaluation>, results: readonly CatalogResult[], previousSuiteRuns: number) {
   return { schemaVersion: 1, runAt: new Date().toISOString(), ...plan,
+    ...evaluationStatuses({ completed: results.length, planned: plan.rows.length,
+      failures: results.filter(row => row.failed).length, matches: results.filter(row => row.proposedMatch).length }),
     previousSuiteRuns, holdoutStatus: plan.suite !== 'holdout' ? 'not_holdout' : previousSuiteRuns === 0 ? 'first_live_use' : 'previously_used',
     priceSource: 'https://docs.typesafe.ai/models', priceCheckedOn: '2026-09-27', inputUsdPerMillionTokens: CATALOG_INPUT_USD_PER_MILLION,
     retries: 0, budgetPathOmitted: true, plannedEvaluations: plan.rows.length, completedEvaluations: results.length,

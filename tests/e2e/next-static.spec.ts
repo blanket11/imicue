@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import type { Snapshot } from '@imicue/core';
+import type { Decision, Snapshot } from '@imicue/core';
 
 const base = 'http://127.0.0.1:5184';
 const endpoint = 'http://127.0.0.1:5193/v1/decide';
@@ -129,14 +129,51 @@ for (const kind of ['resources', 'contact']) {
 }
 
 test('P01/product: remote mock works and switching engines clears records', async ({ page }) => {
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => { release = resolve; });
+  await page.route(endpoint, async (route) => {
+    const response = await route.fetch();
+    await held;
+    await route.fulfill({ response }).catch(() => undefined);
+  });
   await page.clock.install(); await page.goto(base);
   await page.locator('#debug-toggle').click(); await page.locator('#engine-mode').selectOption('remote');
   await page.getByRole('button', { name: 'Debugを閉じる' }).click();
-  await recommend(page);
+  await view(page, 'feature-board', 5);
+  await view(page, 'feature-timeline', 35);
+  const browsing = await snapshot(page);
+  expect(browsing.observations.filter((row) => row.qualifiedViews > 0).length).toBeGreaterThanOrEqual(2);
+  expect(browsing.observations.every((row) => row.clicks === 0 && row.actions === 0)).toBe(true);
+  // This case verifies transport and engine switching. Freeze the observed input
+  // after real views: advancing the clock across a visibility pulse while HTTP
+  // is pending would correctly discard the response as an older revision.
+  await page.evaluate(() => {
+    for (const target of document.querySelectorAll('[data-imicue-signal]')) target.removeAttribute('data-imicue-signal');
+  });
+  await page.waitForTimeout(100);
+  const stable = await snapshot(page);
+  const latestResponse = page.waitForResponse((response) => response.url() === endpoint
+    && response.request().method() === 'POST'
+    && response.request().postDataJSON().revision === stable.revision);
+  void latestResponse.catch(() => undefined);
+  release();
+  for (let second = 0; second < 20 && !await page.locator('.recommendation').isVisible(); second++) await tick(page, 1);
+  const response = await latestResponse;
+  expect(response.status()).toBe(200);
+  const remoteDecision = await response.json() as Decision;
+  expect(remoteDecision).toMatchObject({ type: 'recommend', contentId: 'product-features', engine: { model: 'mock-local-v1' } });
   await expect(page.locator('#decision')).toContainText('mock-local-v1');
+  expect(JSON.parse((await page.locator('#decision').textContent())!).snapshotId).toBe(remoteDecision.snapshotId);
   await expect(page.locator('.recommendation')).toHaveAttribute('data-content-id', 'product-features');
+  expect((await snapshot(page)).outcomes.some((row) => row.kind === 'shown' && row.contentId === 'product-features')).toBe(true);
   await page.locator('#debug-toggle').click(); await page.locator('#engine-mode').selectOption('rules');
-  expect((await snapshot(page)).outcomes).toEqual([]);
+  await expect.poll(async () => (await snapshot(page)).outcomes).toEqual([]);
+  await expect.poll(async () => (await snapshot(page)).observations).toEqual([]);
+  await expect.poll(async () => {
+    const text = await page.locator('#decision').textContent();
+    return text?.startsWith('{') ? JSON.parse(text) as Decision : null;
+  }).toMatchObject({ type: 'abstain', reason: 'insufficient_evidence', engine: { name: 'rules' } });
+  expect((JSON.parse((await page.locator('#decision').textContent())!) as Decision).decisionId).not.toBe(remoteDecision.decisionId);
   await expect(page.locator('#status')).toHaveText('計測中');
   await expect(page.locator('.recommendation')).toHaveCount(0);
 });

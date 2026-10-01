@@ -7,6 +7,7 @@ import { freshnessScenarios } from './freshness-scenarios.js';
 import { evaluationInput, type InputVariant } from './evaluation-input.js';
 import { semanticScenarios } from './semantic-scenarios.js';
 import type { EvaluationScenario } from './evaluation-scenario.js';
+import { evaluationStatuses } from './live-harness.js';
 
 export type EvaluationSuite = 'regression' | 'freshness' | 'semantic';
 
@@ -82,17 +83,20 @@ export async function compareScenarios(options: { apiKey: string; transport: Fet
     ? measured.requests.reduce((sum, row) => sum + row.inputTokens!, 0) : null;
   const outputTokens = measured.requests.every((row) => row.outputTokens !== null)
     ? measured.requests.reduce((sum, row) => sum + row.outputTokens!, 0) : null;
+  const failures = results.filter((row) => row.failed).length;
+  const matches = results.filter(row => row.review ? row.proposedMatch : row.matchesAuthoredExpectation).length;
   return {
     schemaVersion: 1, suite: options.suite ?? 'regression', runAt: new Date().toISOString(), fixtureTime: new Date(NOW).toISOString(),
     model: JEV_MODEL, humanReview: 'pending', comparison: 'rules-vs-jev', variant: options.variant ?? 'dictionary-ja',
     fixtureHash,
+    ...evaluationStatuses({ completed: results.length, planned: selected.length, failures, matches }),
     holdoutCaveat: options.suite === 'semantic' ? 'authored_for_this_evaluation_not_independent_holdout' : 'already_used_in_regression_tests', requestLimit: 12, retries: 0,
     summary: {
       completed: results.length, planned: selected.length, requests: measured.requests.length,
       gatedWithoutApi: results.filter((row) => row.requests.length === 0).length,
       matchesAuthoredExpectation: results.some((row) => row.review) ? null : results.filter((row) => row.matchesAuthoredExpectation).length,
       matchesProposedOutcomes: results.some((row) => row.proposedMatch !== null) ? results.filter((row) => row.proposedMatch).length : null,
-      failures: results.filter((row) => row.failed).length,
+      failures,
       inputTokens, outputTokens,
       estimatedInputCostUsd: inputTokens === null ? null : inputTokens / 1_000_000 * 0.042,
       priceSource: 'https://docs.typesafe.ai/models', priceCheckedOn: '2026-09-26',

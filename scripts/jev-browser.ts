@@ -1,16 +1,18 @@
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium, firefox, webkit, expect } from '@playwright/test';
 import { createDecisionHandler, createJevEngine, createNodeServer, JEV_MODEL } from '@imicue/server';
 import { JEV_POLICY_VERSION } from '@imicue/core';
 import { definition } from '../examples/vanilla/definition.js';
 import { measuredTransport } from './lib/jev-evaluation.js';
+import { createHarnessRun, evaluationStatuses, prepareLiveHarness } from './lib/live-harness.js';
 
 // Separate from normal E2E: synthetic demo actions, at most three paid requests in total.
-if (process.env.RUN_JEV_BROWSER !== '1' || !process.env.TYPESAFE_API_KEY?.trim()) {
-  console.log('SKIP: RUN_JEV_BROWSER=1とTYPESAFE_API_KEYが必要です。');
-} else {
+const run = createHarnessRun('jev-browser');
+async function main() {
   const scenario = process.env.JEV_BROWSER_SCENARIO ?? 'single-action';
+  const validScenario = ['single-action', 'feature-and-action'].includes(scenario);
+  if (scenario === 'feature-and-action') run.addLatest(`jev-browser-${scenario}`);
+  if (!await prepareLiveHarness(run, 'RUN_JEV_BROWSER', { model: JEV_MODEL, ...(validScenario ? { scenario } : {}) })) return;
   if (!['single-action', 'feature-and-action'].includes(scenario)) throw new Error('invalid_browser_scenario');
   const measured = measuredTransport(globalThis.fetch, 3);
   const server = createNodeServer(createDecisionHandler({ definitions: [definition],
@@ -93,8 +95,10 @@ if (process.env.RUN_JEV_BROWSER !== '1' || !process.env.TYPESAFE_API_KEY?.trim()
   } finally {
     server.closeAllConnections();
     await new Promise<void>((resolve) => server.close(() => resolve()));
-    await mkdir('test-results', { recursive: true });
-    await writeFile(`test-results/jev-browser${scenario === 'single-action' ? '' : `-${scenario}`}.json`, `${JSON.stringify({ model: JEV_MODEL, stage, scenario,
-      requests: measured.requests, results }, null, 2)}\n`);
+    await run.save({ model: JEV_MODEL, stage, scenario, requests: measured.requests, results,
+      ...evaluationStatuses({ completed: results.length, planned: 3, failures: stage === 'complete' ? 0 : 1, matches: null }) });
+    console.log(`終了0はブラウザ接続試験の完了を示し、推薦品質の合格を示しません。詳細: ${run.path}`);
   }
 }
+try { await main(); }
+catch (error) { await run.fail(error); }

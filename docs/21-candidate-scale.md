@@ -146,7 +146,36 @@ RUN_CATALOG_EVALUATION=1 node --env-file=.env.local --import tsx --conditions=im
 RUN_CATALOG_BROWSER=1 node --env-file=.env.local --import tsx --conditions=imicue-source scripts/catalog-browser.ts
 ```
 
-ブラウザ試験は先に5183でデモを起動し、5193を空けてから実行する。スクリプト自身がローカル判定サーバーを起動・終了する。1ブラウザ1判定・最大8試行、全体最大24試行を、共通の600試行台帳と併用する。通常のデモを実APIへ常時つないだまま繰り返す検証にはしていない。
+ブラウザ試験は先に `npm run dev:fixtures` で5194番の開発用画面を起動し、5193番を空けてから実行する。スクリプト自身がローカル判定サーバーを起動・終了する。1ブラウザ1判定・最大8試行、全体最大24試行を、共通の600試行台帳と併用する。通常のデモを実APIへ常時つないだまま繰り返す検証にはしていない。
+
+### 結果ファイルと終了コードを読む
+
+現在の評価スクリプトは、技術的に試験が完了したか、作成済みの期待案に一致したか、人が推薦品質を確認したかを分けて記録する。JSONでは、まず `status` と `completionStatus` を確認する。
+
+| フィールド | 内容 |
+| --- | --- |
+| `status` | 実行中は `running`、完了は `completed`、失敗は `failed`、未実行は `skipped`、APIを呼ばない計画は `planned` |
+| `completionStatus` | 技術的な完了状態。`running / completed / failed / incomplete / not_started` |
+| `authoredExpectationStatus` | 作成済みの期待案との一致。`all_matched / mismatched / incomplete / not_evaluated` |
+| `humanReviewStatus` | 人による推薦品質の確認。現在は `pending` で、一致しても品質合格へ変更しない |
+
+比較評価（`eval:jev` / `eval:catalog`）の終了コード0は全件を技術的に完了したことを示し、期待案との不一致も終了0で `authoredExpectationStatus: 'mismatched'` に記録する。技術的な失敗や未完は終了1である。
+
+100候補のブラウザ試験は、従来の受け入れ条件として期待候補との一致も必要である。技術的に全件完了しても誤った候補なら、`completionStatus: 'completed'`、`authoredExpectationStatus: 'mismatched'`、`humanReviewStatus: 'pending'`、全体の `status: 'failed'` と終了1を記録する。期待候補に一致しても、人による推薦品質の確認が済んだことにはならない。
+
+実行フラグを指定しなかった場合はAPIを呼ばず、終了0で `status: 'skipped'` となる。実行フラグを指定したのにキーがなければ、終了1で `status: 'failed'`、`reason: 'api_key_missing'` となる。catalog評価の `--plan` または `--live` なしは、終了0の計画出力であり、実APIの成功に数えない。
+
+catalog評価の最新結果は `test-results/catalog-evaluation.json`、ブラウザ試験は `test-results/catalog-browser.json` に保存する。Jevの接続・比較・ブラウザ試験も、それぞれ `jev-integration.json`、`jev-evaluation.json`、`jev-browser.json` を同じディレクトリに保存する。SKIPや起動失敗も最新ファイルを置き換えるため、前回の成功を今回の結果として読まない。実行ごとの記録は、時刻とUUIDを付けた別ファイルに残す。SKIPや起動失敗には測定値がない場合があり、`summary` や `results` だけで合否を判断しない。
+
+### 費用台帳のロックが残った場合
+
+異常終了でロックが残った場合は、先にcatalogの評価・ブラウザ試験・容量試験のプロセスをすべて停止する。復旧が完了するまで新しい試験を始めず、リポジトリのルートで次を実行する。APIキーや `.env.local` は不要である。
+
+```sh
+npm run recover:catalog-budget -- --confirm-no-running-tests
+```
+
+所有プロセスが稼働中のロックは回収しない。古いロックや所有情報が欠けたロックは、全試験を停止したことを確認したうえで、上のフラグを指定して回収する。復旧はロックだけを削除し、`test-results/catalog-budget.json` の累積試行と未確定の予約を保持する。台帳を削除・リセットして試行枠を戻さず、復旧コマンドが成功してから試験を再開する。
 
 ## 費用と残る確認
 

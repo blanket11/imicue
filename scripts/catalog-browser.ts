@@ -1,10 +1,12 @@
-import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium, firefox, webkit, expect } from '@playwright/test';
 import { createDecisionHandler, createJevEngine, createMemoryProviderLimiter, createNodeServer, JEV_MODEL } from '@imicue/server';
 import { catalogDefinition } from '../examples/vanilla/catalog/definition.js';
 import { CatalogBudget, catalogMeasuredTransport, type CatalogRequestMetric } from './lib/catalog-budget.js';
-import { createCatalogBrowserAttemptCap, inspectCatalogBrowserDecision, CATALOG_BROWSER_MAX_ATTEMPTS,
+import { createCatalogBrowserAttemptCap, inspectCatalogBrowserDecision, catalogBrowserStatuses, CATALOG_BROWSER_MAX_ATTEMPTS,
   type CatalogBrowserName, type CatalogBrowserTopic } from './lib/catalog-browser.js';
+import { createHarnessRun, prepareLiveHarness } from './lib/live-harness.js';
+
+const run = createHarnessRun('catalog-browser');
 
 const origin = 'http://127.0.0.1:5194';
 const endpoint = 'http://127.0.0.1:5193/v1/decide';
@@ -18,6 +20,7 @@ interface Result {
   topic: CatalogBrowserTopic;
   stage: string;
   status: 'passed' | 'failed';
+  technicalComplete: boolean;
   httpPosts: number;
   preConsentPosts: number;
   preStartPosts: number;
@@ -40,11 +43,8 @@ interface Result {
 }
 
 async function main() {
-  const key = process.env.TYPESAFE_API_KEY;
-  if (process.env.RUN_CATALOG_BROWSER !== '1' || !key?.trim()) {
-    console.log('SKIP: RUN_CATALOG_BROWSER=1とTYPESAFE_API_KEYが必要です。');
-    return;
-  }
+  if (!await prepareLiveHarness(run, 'RUN_CATALOG_BROWSER', { model: JEV_MODEL })) return;
+  const key = process.env.TYPESAFE_API_KEY!;
   if (process.argv.slice(2).length) throw new Error('catalog_browser_unexpected_argument');
   const budget = new CatalogBudget('test-results/catalog-budget.json');
   if (600 - (await budget.inspect()).attempts.length < CATALOG_BROWSER_MAX_ATTEMPTS) throw new Error('catalog_browser_insufficient_attempt_budget');
@@ -62,13 +62,14 @@ async function main() {
   const results: Result[] = [];
   let stage = 'listen';
   let listening = false;
-  await mkdir('test-results', { recursive: true });
-  const runId = new Date().toISOString().replace(/[:.]/g, '-');
-  const path = `test-results/catalog-browser-${runId}.json`;
-  const save = async () => {
+  const save = async (final = false) => {
     const requested = results.filter(row => row.httpPosts > 0);
     const recommendations = results.filter(row => row.decision?.type === 'recommend');
-    await writeFile(path, `${JSON.stringify({ schemaVersion: 1, model: JEV_MODEL, sdk: '0.6.0', stage,
+    const statuses = catalogBrowserStatuses(results.map(row => ({ technicalComplete: row.technicalComplete,
+      semanticMatch: row.decision?.semanticMatch ?? false })), scenarios.length);
+    await run.save({ schemaVersion: 1, model: JEV_MODEL, sdk: '0.6.0', stage,
+      ...statuses, status: final ? (stage === 'complete' ? statuses.status : 'failed') : 'running',
+      completionStatus: final ? (stage === 'complete' ? statuses.completionStatus : 'failed') : 'running',
       definitionVersion: catalogDefinition.definitionVersion, catalogSize: 100, realTimeBrowsing: true,
       timingMeaning: {
         clock: 'Node performance.now; elapsed from the Playwright event for the first decision POST.',
@@ -83,7 +84,7 @@ async function main() {
         accepted: { numerator: requested.filter(row => row.accepted).length, denominator: requested.length },
         cardShown: { numerator: recommendations.filter(row => row.cardShown).length, denominator: recommendations.length },
         semanticMatch: { numerator: results.filter(row => row.decision?.semanticMatch).length, denominator: requested.length },
-      }, caveat: 'Three synthetic browser checks are not a production completion-rate or semantic-quality estimate.' }, null, 2)}\n`, { mode: 0o600 });
+      }, caveat: 'Three synthetic browser checks are not a production completion-rate or semantic-quality estimate.' });
   };
   try {
     await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(5193, '127.0.0.1', resolve); });
@@ -92,7 +93,7 @@ async function main() {
       const measured = catalogMeasuredTransport(globalThis.fetch, budget, `browser-${scenario.browser}-${scenario.topic}`);
       const engine = createJevEngine({ model: JEV_MODEL, apiKey: key, fetch: cap.wrap(scenario.browser, measured.fetch), providerLimiter });
       active = { handler: createDecisionHandler({ definitions: [catalogDefinition], engine, mode: 'development', origins: [origin] }), posts: 0 };
-      const row: Result = { browser: scenario.browser, topic: scenario.topic, stage: 'launch', status: 'failed', httpPosts: 0,
+      const row: Result = { browser: scenario.browser, topic: scenario.topic, stage: 'launch', status: 'failed', technicalComplete: false, httpPosts: 0,
         preConsentPosts: 0, preStartPosts: 0, httpStatus: null, unexpectedTraffic: false, browserCredential: false,
         snapshotBytes: null, decisionBytes: null, httpHeadersMs: null, httpResponseMs: null, browserAcceptedMs: null,
         browserServerSdk: false, pageErrors: 0, accepted: false, cardShown: false, withdrawn: false, staleDiagnostic: false,
@@ -181,9 +182,10 @@ async function main() {
         await expect(page.locator('#catalog-decision')).toHaveText('判定前');
         const cleared = JSON.parse((await page.locator('#catalog-snapshot').textContent()) ?? '{}');
         row.withdrawn = Array.isArray(cleared.observations) && cleared.observations.length === 0;
-        row.status = row.httpStatus === 200 && row.httpPosts === 1 && row.decision.valid && row.accepted && row.withdrawn
+        row.technicalComplete = row.httpStatus === 200 && row.httpPosts === 1 && row.decision.valid && row.accepted && row.withdrawn
           && !row.unexpectedTraffic && !row.browserCredential && !row.browserServerSdk && row.pageErrors === 0
-          && row.decision.semanticMatch && (row.decision.type !== 'recommend' || row.cardShown) ? 'passed' : 'failed';
+          && (row.decision.type !== 'recommend' || row.cardShown);
+        row.status = row.technicalComplete && row.decision.semanticMatch ? 'passed' : 'failed';
         row.stage = 'complete';
       } catch { /* Store the bounded stage name, never Playwright/SDK error objects or page bodies. */ }
       finally {
@@ -201,11 +203,9 @@ async function main() {
   } finally {
     active = undefined;
     if (listening) { server.closeAllConnections(); await new Promise<void>(resolve => server.close(() => resolve())); }
-    await save();
-    console.log(`100候補の実ブラウザ試験結果: ${path}`);
+    await save(true);
+    console.log(`終了0は100候補のブラウザ試験の完了を示し、推薦品質の合格を示しません。詳細: ${run.path}`);
   }
 }
 try { await main(); }
-catch {
-  console.error('catalog_browser_failed'); process.exitCode = 1;
-}
+catch (error) { await run.fail(error); }

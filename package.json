@@ -39,6 +39,7 @@
     "check:package": "node scripts/check-package.mjs",
     "eval:jev": "tsx --conditions=imicue-source scripts/evaluate-jev.ts",
     "eval:catalog": "tsx --conditions=imicue-source scripts/evaluate-catalog.ts",
+    "recover:catalog-budget": "tsx --conditions=imicue-source scripts/recover-catalog-budget.ts",
     "test:catalog:browser": "tsx --conditions=imicue-source scripts/catalog-browser.ts",
     "test:jev:browser": "tsx --conditions=imicue-source scripts/jev-browser.ts",
     "test:safari": "tsx --conditions=imicue-source scripts/safari-smoke.ts",

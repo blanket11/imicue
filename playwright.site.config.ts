@@ -4,7 +4,8 @@ export default defineConfig({
   testDir: './tests/site',
   outputDir: './test-results/site',
   fullyParallel: true,
-  workers: 3,
+  workers: process.env.CI ? 1 : 3,
+  forbidOnly: Boolean(process.env.CI),
   timeout: 30_000,
   use: { baseURL: 'http://127.0.0.1:4187', trace: 'retain-on-failure' },
   projects: [

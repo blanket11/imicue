@@ -34,7 +34,7 @@ TYPESAFE_API_KEY=発行したAPIキー
 RUN_JEV_INTEGRATION=1 JEV_INTEGRATION_REQUESTS=1 node --env-file=.env.local --import tsx --conditions=imicue-source scripts/jev-integration.ts
 ```
 
-判定の種類とモデルが表示されます。`engine_unavailable` や `invalid_result` が出た場合は成功として扱わず、キーの有効性や接続設定を確認してください。回数の指定は1〜5で、自動再試行はありません。
+判定の種類とモデルが表示され、最新結果を `test-results/jev-integration.json` に保存します。`status: 'completed'` は接続試験の完了を示し、推薦品質の合格を示すものではありません。`engine_unavailable` や `invalid_result` が出た場合は成功として扱わず、キーの有効性や接続設定を確認してください。回数の指定は1〜5で、自動再試行はありません。SKIPや失敗も最新結果を更新します。[結果ファイルと終了コードの読み方](../21-candidate-scale.md#結果ファイルと終了コードを読む)も確認してください。
 
 ブラウザから接続する場合は、モックサーバーを停止してから次を実行します。
 
@@ -48,7 +48,40 @@ RUN_JEV_SERVER=1 node --env-file=.env.local --import tsx --conditions=imicue-sou
 
 ## SDKで接続先を指定する
 
-[組み込み例](integration.md)の `engine` を、次のように置き換えます。
+自分のページで使う場合は、ブラウザとサーバーに同じ辞書を登録します。付属の `npm run dev:server` はデモ用の固定辞書だけを読み込むため、[組み込み例](integration.md)の `pacelet-example / example-1` をそのまま送ると、409の `definition_mismatch` になります。
+
+### 同じ辞書と利用ページのOriginをサーバーへ登録する
+
+リポジトリ内に `examples/custom-site` を作り、組み込み例の辞書を `examples/custom-site/definition.js` として保存します。ブラウザのコードもこの辞書ファイルを使います。次を `examples/custom-site/server.js` として保存してください。
+
+```js
+import { createRulesEngine } from '@imicue/core';
+import { createDecisionHandler, createNodeServer } from '@imicue/server';
+import { definition } from './definition.js';
+
+const handler = createDecisionHandler({
+  definitions: [definition],
+  engine: createRulesEngine(),
+  mode: 'development',
+  origins: ['http://127.0.0.1:5183'],
+});
+const server = createNodeServer(handler);
+server.listen(5193, '127.0.0.1', () => {
+  console.log('Imicue endpoint: http://127.0.0.1:5193/v1/decide');
+});
+```
+
+この例はサーバー側のRulesで、辞書の登録とHTTP通信を確認します。APIキーは不要で、実APIを呼びません。利用ページは `http://127.0.0.1:5183` で配信する想定です。別のポートやドメインを使う場合は、`origins` をそのページのOriginに変更してください。
+
+5193番を使う付属のデモサーバーを停止し、リポジトリのルートで起動します。
+
+```sh
+node --import tsx --conditions=imicue-source examples/custom-site/server.js
+```
+
+### ブラウザの判定先を変更する
+
+組み込み例のTrackerで、`engine: createRulesEngine()` を以下の `engine` に置き換えます。
 
 ```js
 import { createRemoteEngine } from '@imicue/browser';
@@ -59,7 +92,9 @@ const engine = createRemoteEngine({
 });
 ```
 
-同一Originなら `endpoint: '/v1/decide'` を使えます。localhost以外はHTTPSが必要です。送信するのは観測の集計であるSnapshotだけで、辞書・プロンプト・APIキーをブラウザから渡しません。辞書はサーバーで固定して解決します。
+サーバーの `origins` は利用ページのOrigin、ブラウザの `allowedOrigins` は接続先のOriginです。計測を開始して「ボードの操作例を見る」を押すと、サーバーで選んだ候補を表示できます。
+
+同一Originなら `endpoint: '/v1/decide'` を使えます。localhost以外はHTTPSが必要です。送信するのは観測の集計であるSnapshotだけで、辞書・プロンプト・APIキーをブラウザから渡しません。辞書を変更するときは `definitionVersion` を更新し、ブラウザとサーバーの両方へ同じ版を配置してください。
 
 通信失敗時は見送り、Rulesへ自動で切り替えません。400・409・413を受け取ると、そのRemoteEngineは再送を止めます。辞書や設定を修正してインスタンスを作り直してください。429では `Retry-After` に従って待機し、その後の判定要求で再開します。
 

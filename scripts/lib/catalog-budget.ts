@@ -1,6 +1,7 @@
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { hostname } from 'node:os';
 import type { Fetch } from '@typesafe-ai/sdk';
 
 export const CATALOG_MAX_ATTEMPTS = 600;
@@ -30,6 +31,16 @@ const empty = (): CatalogBudgetState => ({ schemaVersion: 1, maxAttempts: 600, e
   inputUsdPerMillion: 0.042, attempts: [], runs: [] });
 const isMissing = (error: unknown) => error !== null && typeof error === 'object' && 'code' in error && error.code === 'ENOENT';
 const count = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+interface LockOwner { schemaVersion: 1; pid: number; host: string; ownerId: string }
+
+function ownerIsRunning(pid: number): boolean {
+  try { process.kill(pid, 0); return true; }
+  catch (error) {
+    if (error !== null && typeof error === 'object' && 'code' in error && error.code === 'ESRCH') return false;
+    // Permission errors and unknown OS errors cannot prove that the owner has stopped.
+    throw new Error('catalog_budget_owner_unverified', { cause: error });
+  }
+}
 
 /** Budget state is persisted before transport starts. A crash or missing usage retains its reservation. */
 export class CatalogBudget {
@@ -60,6 +71,9 @@ export class CatalogBudget {
     }
     const temporary = `${this.path}.${randomUUID()}.tmp`;
     try {
+      const owner: LockOwner = { schemaVersion: 1, pid: process.pid, host: hostname(), ownerId: randomUUID() };
+      await writeFile(`${lock}/owner.tmp`, JSON.stringify(owner), { mode: 0o600 });
+      await rename(`${lock}/owner.tmp`, `${lock}/owner.json`);
       const state = await this.read();
       const result = callback(state);
       await writeFile(temporary, `${JSON.stringify(state, null, 2)}\n`, { mode: 0o600 });
@@ -71,6 +85,36 @@ export class CatalogBudget {
     }
   }
   async inspect(): Promise<CatalogBudgetState> { return this.read(); }
+  /** Offline, operator-triggered recovery. All catalog runners must remain stopped until it completes. */
+  async recoverLock(options: { confirmNoRunningTests: boolean }): Promise<{ status: 'recovered' | 'not_locked'; retainedAttempts: number }> {
+    if (options.confirmNoRunningTests !== true) throw new Error('catalog_budget_recovery_requires_stopped_tests');
+    // Validate the ledger before touching its lock. Never reset reservations, including pending attempts.
+    const state = await this.read();
+    const lock = `${this.path}.lock`;
+    let owner: LockOwner | undefined;
+    try {
+      const raw = JSON.parse(await readFile(`${lock}/owner.json`, 'utf8')) as Partial<LockOwner>;
+      if (raw.schemaVersion !== 1 || !Number.isSafeInteger(raw.pid) || !raw.pid || raw.pid < 1
+        || typeof raw.host !== 'string' || typeof raw.ownerId !== 'string') throw new Error('catalog_budget_invalid_lock_owner');
+      owner = raw as LockOwner;
+    } catch (error) {
+      // Old locks and a crash before owner.json was written need the explicit stopped-tests confirmation.
+      if (!isMissing(error)) throw new Error('catalog_budget_invalid_lock_owner', { cause: error });
+    }
+    if (owner) {
+      if (owner.host !== hostname()) throw new Error('catalog_budget_owner_unverified');
+      if (ownerIsRunning(owner.pid)) throw new Error('catalog_budget_owner_running');
+    }
+    // Move only the stopped lock out of the acquisition path; the ledger bytes are untouched.
+    const retired = `${lock}.${randomUUID()}.recovering`;
+    try { await rename(lock, retired); }
+    catch (error) {
+      if (isMissing(error)) return { status: 'not_locked', retainedAttempts: state.attempts.length };
+      throw new Error('catalog_budget_lock_recovery_failed', { cause: error });
+    }
+    await rm(retired, { recursive: true });
+    return { status: 'recovered', retainedAttempts: state.attempts.length };
+  }
   async startRun(suite: string, fixtureHash: string) {
     if (!/^(pilot|dev|holdout|stability|capacity|legacy)$/.test(suite) || !/^[a-f0-9]{64}$/.test(fixtureHash)) throw new Error('invalid_catalog_run');
     return this.edit(state => {

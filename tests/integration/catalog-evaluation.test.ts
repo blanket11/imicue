@@ -142,6 +142,7 @@ describe('catalog live runner with offline mock transport', () => {
       apiKey:'synthetic-key', transport, budget:store});
     expect(report.results[0]).toMatchObject({actual:targetId, failed:false, eligibleCount:100, assessedCount:100, scope:'all-candidates', proposedMatch:true});
     expect(report.holdoutStatus).toBe('first_live_use');
+    expect(report).toMatchObject({ completionStatus: 'completed', authoredExpectationStatus: 'all_matched', humanReviewStatus: 'pending' });
     expect(report.results[0]!.requests.length).toBeGreaterThan(1);
     expect(report.summary[0]!.precision.value).toBe(1);
     expect(report.summary[0]!.responseBytes).toBeGreaterThan(0);

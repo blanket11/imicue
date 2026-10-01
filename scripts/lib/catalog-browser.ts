@@ -2,11 +2,21 @@ import type { Fetch } from '@typesafe-ai/sdk';
 import { validateDecision, validateSnapshot } from '@imicue/core';
 import { JEV_MODEL } from '@imicue/server';
 import { catalogDefinition } from '../../examples/vanilla/catalog/definition.js';
+import { evaluationStatuses } from './live-harness.js';
 
 export const CATALOG_BROWSER_MAX_ATTEMPTS = 24;
 export const CATALOG_BROWSER_ATTEMPTS_PER_BROWSER = 8;
 export type CatalogBrowserName = 'chromium' | 'firefox' | 'webkit';
 export type CatalogBrowserTopic = 'features' | 'cases';
+
+/** Keep the browser's authored acceptance check while reporting technical completion separately. */
+export function catalogBrowserStatuses(results: readonly { technicalComplete: boolean; semanticMatch: boolean }[], planned = 3) {
+  const statuses = evaluationStatuses({ completed: results.length, planned,
+    failures: results.filter(row => !row.technicalComplete).length,
+    matches: results.filter(row => row.technicalComplete && row.semanticMatch).length });
+  return { ...statuses, status: statuses.status === 'completed' && statuses.authoredExpectationStatus === 'all_matched'
+    ? 'completed' : 'failed' } as const;
+}
 
 /** Independent run cap, in addition to the shared persistent 600-attempt ledger. No reset API. */
 export function createCatalogBrowserAttemptCap() {
