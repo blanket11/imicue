@@ -429,12 +429,12 @@ relatedSignalIds: [
           <div class="setup-code">
             <div class="terminal">
               <div class="terminal-bar">
-                <span>ターミナル</span
+                <span id="install-command-label">ターミナル</span
                 ><button type="button" id="copy-command" disabled>
                   コピー
                 </button>
               </div>
-              <pre><code id="install-command">git clone https://github.com/blanket11/imicue.git
+              <pre tabindex="0" role="region" aria-labelledby="install-command-label"><code id="install-command">git clone https://github.com/blanket11/imicue.git
 cd imicue
 npm ci
 npm run dev</code></pre>

@@ -1039,6 +1039,11 @@ details[open] > summary > span {
   overflow: auto;
 }
 
+.terminal pre:focus-visible {
+  outline: 3px solid white;
+  outline-offset: -6px;
+}
+
 code {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
 }
