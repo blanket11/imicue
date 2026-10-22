@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { chromium, firefox, webkit, expect } from '@playwright/test';
 import { createDecisionHandler, createJevEngine, createNodeServer, JEV_MODEL } from '@imicue/server';
 import { JEV_POLICY_VERSION } from '@imicue/core';
 import { definition } from '../examples/vanilla/definition.js';
@@ -14,6 +13,7 @@ async function main() {
   if (scenario === 'feature-and-action') run.addLatest(`jev-browser-${scenario}`);
   if (!await prepareLiveHarness(run, 'RUN_JEV_BROWSER', { model: JEV_MODEL, ...(validScenario ? { scenario } : {}) })) return;
   if (!['single-action', 'feature-and-action'].includes(scenario)) throw new Error('invalid_browser_scenario');
+  const { chromium, firefox, webkit, expect } = await import('@playwright/test');
   const measured = measuredTransport(globalThis.fetch, 3);
   const server = createNodeServer(createDecisionHandler({ definitions: [definition],
     engine: createJevEngine({ model: JEV_MODEL, apiKey: process.env.TYPESAFE_API_KEY, fetch: measured.fetch }),

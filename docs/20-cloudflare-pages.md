@@ -38,13 +38,15 @@ npm run preview:site
 | Production branch | `main` |
 | Framework preset | `None` |
 | Root directory | リポジトリ直下。`site` に変更しない |
-| Build command | `npm ci --include=dev && npm run build:site && npm run check:site` |
+| Build command | `npx --yes --package=npm@11.9.0 -c 'npm ci --include=dev && npm run build:site && npm run check:site'` |
 | Build output directory | `dist/site` |
 | Build system | v3 |
-| 環境変数 `NODE_VERSION` | `24.14.0` |
+| 環境変数 `NODE_VERSION` | `24.22.1` |
 | 環境変数 `SKIP_DEPENDENCY_INSTALL` | `1` |
 
-自動インストールを止め、ビルドコマンド内の `npm ci` でlockfileどおりに依存関係を入れる。Node.jsのバージョンは既存の `.nvmrc` と揃える。Node.js 24.14.0にはnpm 11.9.0が同梱される。参照: [Pagesのビルド環境](https://developers.cloudflare.com/pages/configuration/build-image/)、[Node.jsのリリース記録](https://nodejs.org/en/blog/release/v24.14.0)。
+自動インストールを止め、ビルドコマンド内の `npm ci` でlockfileどおりに依存関係を入れる。Node.jsは `.nvmrc` と揃え、同梱版にかかわらずnpm 11.9.0でインストール・ビルドする。参照: [Pagesのビルド環境](https://developers.cloudflare.com/pages/configuration/build-image/)、[Node.jsのリリース記録](https://nodejs.org/en/blog/release/v24.22.1)。
+
+2026-10-22のセキュリティ対応で上表のNode.jsとビルドコマンドを更新した。管理画面に古い `NODE_VERSION` が残っている場合は `.nvmrc` の変更だけで更新済みと判断せず、上表に合わせる。管理画面の設定変更・再デプロイ・実際のビルドログでのバージョン確認は、このリポジトリの修正とは別に行う。
 
 JevのAPIキー、CloudflareのAPIトークン、アカウントID、独自ドメインをビルド環境変数やリポジトリへ追加する必要はない。Git連携の認証とカスタムドメインは管理画面で扱う。
 

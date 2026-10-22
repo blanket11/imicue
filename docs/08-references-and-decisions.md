@@ -100,7 +100,7 @@ Imicueの受信32KiB、Jev要求64KiB、30回/分、100回/日といった数値
 
 [Node.js Releases](https://nodejs.org/en/about/previous-releases)
 
-実装時にサポート状況を確認して実行環境を選ぶ。2026-09-26の確認では24系と22系がLTSとして掲載されている。リポジトリはNode.js 24.14.0とnpm 11.9.0に固定している。
+実装時にサポート状況を確認して実行環境を選ぶ。2026-09-26の確認では24系と22系がLTSとして掲載されている。リポジトリはNode.js 24.22.1とnpm 11.9.0に固定している。
 
 ## S11
 
@@ -142,6 +142,20 @@ UIを加えたときの回遊やCVへの影響は、このライブラリの技�
 npmスコープ・パッケージ公開名、SDKを配るCDNの実URL、WordPressプラグイン、Cloud/Hosted版の運用・料金、長期的なガバナンスは未確定。[紹介サイト](https://imicue.push.tokyo/)は公開済みだが、npmパッケージと本番用のJev判定サービスは公開していない。
 
 Cloudflare Workers等のEdge環境、他フレームワーク専用SDK、iframe/Shadow DOMの自動計測、複数サイトを横断する識別はv0.1で対応済みと記載しない。
+
+## 2026-10-22のセキュリティ更新
+
+Node.js 24.14.0から24.22.1、Next.js 16.3.6から16.4.2へ更新した。[Node.jsの10月21日セキュリティリリース](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)はBrotli展開のRCE、TLSホスト名検証の回避、DNS入力の不備などを修正する。[Next.jsの10月14日発表](https://nextjs.org/blog/nextjs-security-update-october-14-2026)の修正版は16.4.1以上で、Cache Components・画像最適化のRCEとServer ActionsのDoSを修正する。16.4.2は調査時点の安定版として選んだ。
+
+公開する紹介サイトはViteで生成した静的ファイルだけで、Next.jsサーバーやPages Functionsは配信しない。Next.jsデモも静的exportを使い、Server Actions、Cache Components、画像最適化APIの利用はないため、公開構成に今回のNext.jsサーバー向け攻撃の入口は見当たらない。ただし、[9月30日発表の開発サーバーのMCP情報漏洩](https://nextjs.org/blog/september-2026-security-release)も16.3.6より後で修正されており、開発用の依存も更新対象とした。React/React DOM 19.3.0は維持し、RSCの修正はNext.js同梱分の更新で取り込む。
+
+依存監査で検出したViteとVitestも、同じマイナー内の修正版8.3.5と5.0.5へ更新した。根拠は[Viteのファイル公開範囲の不備](https://github.com/vitejs/vite/security/advisories/GHSA-rq7h-c2jc-7f22)、[launch-editorのコマンド注入](https://github.com/vitejs/launch-editor/security/advisories/GHSA-587h-7wmj-h5pm)、[Vitestのmock登録からのコード注入](https://github.com/vitest-dev/vitest/security/advisories/GHSA-qxg6-89mg-rqv8)。間接依存も、[sharpの修正](https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w)を含む0.35.5と、[source-map-js 1.2.2](https://github.com/7rulnik/source-map-js/releases/tag/v1.2.2)をlockfileで確認した。過去の日付が付いた実装・検証記録のバージョンは、その当時の結果として残す。
+
+高負荷時にCLI統合試験の子プロセス起動が5秒の期限を超えたため、Vitestの同時実行を3に制限した。実APIのブラウザ試験では、実行許可と入力の検査後にPlaywrightを読み込むようにした。試験期限と実APIの実行条件は維持する。
+
+公開対象はmainを起点に今回の修正だけを切り出し、Node.js 24.22.1・npm 11.9.0で `npm ci` と `npm run check` を実行した。型・lint、単体383件、全ビルド・配布検査、Rulesの12シナリオが成功した。3ブラウザのE2Eは初回139件成功・2件失敗で、失敗した2件は `npx playwright test --last-failed --workers=1` で再実行して成功した。紹介サイトも `npm run test:site -- --workers=1` で3ブラウザ計21件が成功した。試験期限や期待値は変更していない。ローカルの通常チェックが初回で最後まで完走した記録とは区別し、全体の完走は対象リビジョンのGitHub Actionsで確認する。全依存と本番依存それぞれの `npm audit` は指摘0件だった。このローカル検証では実APIを呼び出していない。
+
+Cloudflareのビルド設定は[配信手順](20-cloudflare-pages.md#pagesのgit連携に設定する値)を更新した。管理画面の設定変更と公開反映は、ローカルの修正・検証とは区別する。
 
 ## 変更するときのルール
 

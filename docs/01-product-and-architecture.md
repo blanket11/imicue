@@ -87,7 +87,7 @@ examples/server-node
 
 この3責務を基本とし、Jevアダプターはserver内の独立モジュールに置く。パッケージ名 `@imicue/*` はリポジトリ内のworkspace名であり、npmからインストールできる公開名ではない。
 
-開発環境はNode.js 24.14.0、npm 11.9.0、TypeScript strict、npm workspaces、単一lockfileに固定している。テストにはVitestとPlaywright、ビルドにはtscとViteを使う。依存の更新時は互換性を確認し、API契約の変更を文書とテストに反映する。
+開発環境はNode.js 24.22.1、npm 11.9.0、TypeScript strict、npm workspaces、単一lockfileに固定している。テストにはVitestとPlaywright、ビルドにはtscとViteを使う。依存の更新時は互換性を確認し、API契約の変更を文書とテストに反映する。
 
 ## 7. 静的サイトとサーバーの境界
 
