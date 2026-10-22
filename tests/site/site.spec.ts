@@ -101,6 +101,30 @@ test('keyboard controls, copy success and refusal, and narrow layouts', async ({
   }
 });
 
+test('the narrow install command can be reached, scrolled and left by keyboard', async ({ page, browserName }) => {
+  await page.setViewportSize({ width: 320, height: 850 });
+  await page.goto('/');
+  const terminal = page.getByRole('region', { name: 'ターミナル', exact: true });
+  const copy = page.getByRole('button', { name: 'コピー', exact: true });
+  await expect(copy).toBeEnabled();
+  await expect.poll(() => terminal.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeGreaterThan(0);
+
+  const tabKey = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
+  await terminal.scrollIntoViewIfNeeded();
+  await copy.focus();
+  await page.keyboard.press(tabKey);
+  await expect(terminal).toBeFocused();
+  await expect(terminal).toBeInViewport({ ratio: 1 });
+  const initialScrollLeft = await terminal.evaluate((element) => element.scrollLeft);
+  // Use a short key hold so WebKit can start native scrolling before keyup.
+  await page.keyboard.press('ArrowRight', { delay: 100 });
+  await expect.poll(() => terminal.evaluate((element) => element.scrollLeft)).toBeGreaterThan(initialScrollLeft);
+
+  await page.keyboard.press(tabKey);
+  await expect(page.getByRole('link', { name: '詳しい導入手順' })).toBeFocused();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test('static content and documentation remain usable without JavaScript', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
