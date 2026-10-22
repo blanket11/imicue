@@ -1,4 +1,3 @@
-import { chromium, firefox, webkit, expect } from '@playwright/test';
 import { createDecisionHandler, createJevEngine, createMemoryProviderLimiter, createNodeServer, JEV_MODEL } from '@imicue/server';
 import { catalogDefinition } from '../examples/vanilla/catalog/definition.js';
 import { CatalogBudget, catalogMeasuredTransport, type CatalogRequestMetric } from './lib/catalog-budget.js';
@@ -10,11 +9,6 @@ const run = createHarnessRun('catalog-browser');
 
 const origin = 'http://127.0.0.1:5194';
 const endpoint = 'http://127.0.0.1:5193/v1/decide';
-const scenarios = [
-  { browser: 'chromium', topic: 'features', launcher: chromium },
-  { browser: 'firefox', topic: 'cases', launcher: firefox },
-  { browser: 'webkit', topic: 'features', launcher: webkit },
-] as const;
 interface Result {
   browser: CatalogBrowserName;
   topic: CatalogBrowserTopic;
@@ -48,6 +42,12 @@ async function main() {
   if (process.argv.slice(2).length) throw new Error('catalog_browser_unexpected_argument');
   const budget = new CatalogBudget('test-results/catalog-budget.json');
   if (600 - (await budget.inspect()).attempts.length < CATALOG_BROWSER_MAX_ATTEMPTS) throw new Error('catalog_browser_insufficient_attempt_budget');
+  const { chromium, firefox, webkit, expect } = await import('@playwright/test');
+  const scenarios = [
+    { browser: 'chromium', topic: 'features', launcher: chromium },
+    { browser: 'firefox', topic: 'cases', launcher: firefox },
+    { browser: 'webkit', topic: 'features', launcher: webkit },
+  ] as const;
   const cap = createCatalogBrowserAttemptCap();
   const providerLimiter = createMemoryProviderLimiter();
   let active: { handler: ReturnType<typeof createDecisionHandler>; posts: number } | undefined;

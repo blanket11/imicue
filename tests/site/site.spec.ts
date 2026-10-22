@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('browsing examples update records, meaning and Rules results without collection or outbound API', async ({ page }) => {
+test('browsing examples update records, meaning and Rules results without collection or outbound API', async ({ page, baseURL }) => {
   const requests: string[] = [];
   const errors: string[] = [];
   page.on('request', (request) => requests.push(`${request.method()} ${new URL(request.url()).origin}`));
@@ -49,7 +49,7 @@ test('browsing examples update records, meaning and Rules results without collec
   await expect(page.locator('#reason')).not.toHaveAttribute('open');
   expect(errors).toEqual([]);
   await expect(page.locator('html')).not.toHaveAttribute('data-csp-violation');
-  expect(requests.every((request) => request === 'GET http://127.0.0.1:4187')).toBe(true);
+  expect(requests.every((request) => request === `GET ${new URL(baseURL!).origin}`)).toBe(true);
 });
 
 test('rapid selection changes keep the final records, meaning and result together', async ({ page }) => {
@@ -101,10 +101,10 @@ test('keyboard controls, copy success and refusal, and narrow layouts', async ({
   }
 });
 
-test('static content and documentation remain usable without JavaScript', async ({ browser }) => {
+test('static content and documentation remain usable without JavaScript', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4187/');
+  await page.goto(new URL('/', baseURL!).href);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.locator('noscript .notice')).toBeVisible();
   await expect(page.locator('noscript .notice')).toContainText('JavaScriptを有効にしてください', { useInnerText: true });
@@ -140,7 +140,7 @@ test('deployment headers block inline scripts and decision requests', async ({ p
   await expect(page.locator('html')).not.toHaveAttribute('data-inline-executed');
 });
 
-test('missing and private paths return the 404 page with working assets and home link', async ({ page, request }) => {
+test('missing and private paths return the 404 page with working assets and home link', async ({ page, request, baseURL }) => {
   const response = await page.goto('/missing/nested/page');
   expect(response?.status()).toBe(404);
   await expect(page.getByRole('heading', { name: 'ページが見つかりません' })).toBeVisible();
@@ -154,7 +154,7 @@ test('missing and private paths return the 404 page with working assets and home
   await page.setViewportSize({ width: 320, height: 850 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link', { name: 'トップページへ戻る', exact: true }).click();
-  await expect(page).toHaveURL('http://127.0.0.1:4187/');
+  await expect(page).toHaveURL(new URL('/', baseURL!).href);
   await expect(page.getByRole('button', { name: '機能', exact: true })).toBeEnabled();
 });
 

@@ -8,5 +8,10 @@ export default defineConfig({
       `@imicue/${name}`, fileURLToPath(new URL(`./packages/${name}/src/index.ts`, import.meta.url)),
     ])),
   },
-  test: { include: ['packages/**/*.test.ts', 'tests/integration/**/*.test.{ts,tsx}'], environment: 'node' },
+  test: {
+    include: ['packages/**/*.test.ts', 'tests/integration/**/*.test.{ts,tsx}'],
+    environment: 'node',
+    // Leave capacity for the Node/tsx processes spawned by CLI integration tests.
+    maxWorkers: 3,
+  },
 });

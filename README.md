@@ -31,7 +31,7 @@ Imicueは[Apache-2.0ライセンス](LICENSE)のOSSです。ライセンスの�
 
 ## ローカルデモを動かす
 
-Node.js **24.14.0** と npm **11.9.0** を使います。nvmを使う場合は、リポジトリ内で `nvm install && nvm use` を実行してください。
+Node.js **24.22.1** と npm **11.9.0** を使います。nvmを使う場合は、リポジトリ内で `nvm install && nvm use` を実行してください。Node.jsを切り替えた後、npmのバージョンが異なる場合は `npm install --global npm@11.9.0` で揃えてください。
 
 ```sh
 git clone https://github.com/blanket11/imicue.git
