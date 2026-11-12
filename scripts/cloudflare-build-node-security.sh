@@ -18,4 +18,5 @@ hash -r
 [[ $(node --version) == "v${version}" ]]
 echo "Build Node.js $(node --version)"
 echo "Node.js executable: $(command -v node)"
-npx --yes --package=npm@11.9.0 -c 'npm --version && npm ci --include=dev && npm run build:site && npm run check:site'
+export SECURE_BUILD_NODE_VERSION="$version"
+npx --yes --package=npm@11.9.0 -c 'test "$(node --version)" = "v$SECURE_BUILD_NODE_VERSION" && echo "Install Node.js $(node --version), npm $(npm --version)" && npm ci --include=dev && npm exec -c "node -v" && test "$(npm exec -c "node -v")" = "v$SECURE_BUILD_NODE_VERSION" && npm run build:site && npm run check:site'
