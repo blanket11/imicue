@@ -48,6 +48,8 @@ Pagesの初期化に使うNode.jsと、ビルドに使うNode.jsは異なる。P
 
 Pagesの設定と `.nvmrc` の値だけでビルド時のバージョンを判断せず、デプロイのログでSHA-256の照合とNode.js 24.22.3への切り替えを確認する。
 
+プレビューを使う場合も同じ変数を設定する。古いブランチにはスクリプトがない場合があるため、プレビューする前にこの変更を取り込む。
+
 JevのAPIキー、CloudflareのAPIトークン、アカウントID、独自ドメインをビルド環境変数やリポジトリへ追加する必要はない。Git連携の認証とカスタムドメインは管理画面で扱う。
 
 この構成ではPages Functionsを使わず、npmパッケージの公開も行わない。配信の料金やビルド上限は、[公式料金](https://developers.cloudflare.com/pages/functions/pricing/)と[制限](https://developers.cloudflare.com/pages/platform/limits/)、利用するプランで確認する。
